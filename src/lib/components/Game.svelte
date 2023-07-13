@@ -2,16 +2,20 @@
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
+    import { generateTerrain, drawTerrain } from '../services/terrain';
 
     let _p5: p5;
+
+    let terrain = generateTerrain();
 
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
-            p5.createCanvas(p5.windowWidth * 0.5, (7 / 16) * p5.windowWidth * 0.5);
+            p5.createCanvas(900, 200);
         };
         p5.draw = () => {
-            p5.background([8, 84, 19]);
+            p5.background(0);
+            drawTerrain(p5, terrain);
         };
     };
 
@@ -24,4 +28,5 @@
 
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
+    <button on:click={() => (terrain = generateTerrain())}>Generate</button>
 </div>
