@@ -36,5 +36,5 @@ export const interpolations = [
     linearSquareCompositeMap,
     cubeMap,
     sqrtMap,
-    sqrtMap,
+    cbrtMap,
 ];

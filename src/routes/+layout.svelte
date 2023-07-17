@@ -1,5 +1,5 @@
 <header>
-    <h1>P5+Svelte template</h1>
+    <h1>2D Golf</h1>
 
     <nav>
         <a href="/">Home</a> |

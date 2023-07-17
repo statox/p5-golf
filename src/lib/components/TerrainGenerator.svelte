@@ -11,7 +11,7 @@
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
-            p5.createCanvas(900, 200);
+            p5.createCanvas(900, 600);
         };
         p5.draw = () => {
             p5.background(0);
@@ -23,8 +23,6 @@
         _p5?.remove();
     });
 </script>
-
-<span>Hello Game</span>
 
 <div class="d-flex justify-content-center">
     <P5 {sketch} />

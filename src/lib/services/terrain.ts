@@ -3,13 +3,19 @@ import type p5 from 'p5';
 import { interpolations } from './interpolation';
 
 export const generateTerrain = (): Terrain => {
+    const terrainLength = 900;
+    const maxHeight = 175;
+    const minHeight = 25;
+    const nbSegments = 7;
+
     const ground = [];
-    const yOffset = 50;
     let prevX = 0;
-    let prevY = 50 + yOffset;
-    for (let x = 0; x <= 900; x += 100) {
+    let prevY = maxHeight - (maxHeight - minHeight) / 2;
+
+    for (let x = 0; x <= terrainLength; x += terrainLength / nbSegments) {
         const f = interpolations[Math.floor(Math.random() * interpolations.length)];
-        const y = Math.random() * 100 + yOffset;
+        const y = minHeight + Math.random() * (maxHeight - minHeight);
+
         ground.push({ x1: prevX, y1: prevY, x2: x, y2: y, f });
         prevX = x;
         prevY = y;
@@ -24,7 +30,7 @@ export const drawTerrain = (p5: p5, terrain: Terrain) => {
         for (let x = groundLine.x1; x < groundLine.x2; x++) {
             const percent = p5.map(x, groundLine.x1, groundLine.x2, 0, 1);
 
-            const y = groundLine.f(percent, groundLine.y1, groundLine.y2);
+            const y = p5.height - groundLine.f(percent, groundLine.y1, groundLine.y2);
             p5.point(x, y);
         }
     }

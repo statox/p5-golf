@@ -1,14 +1,14 @@
 <script>
     import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';
-    import Game from '$lib/components/Game.svelte';
+    import TerrainGenerator from '$lib/components/TerrainGenerator.svelte';
 </script>
 
 <Tabs>
     <TabList>
-        <Tab>Game</Tab>
+        <Tab>Terrain Generator</Tab>
     </TabList>
 
     <TabPanel>
-        <Game />
+        <TerrainGenerator />
     </TabPanel>
 </Tabs>
