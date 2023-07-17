@@ -3,6 +3,7 @@
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
     import { generateTerrain, drawTerrain } from '../services/terrain';
+    import { generateBall, drawBall, updateBall, setBall } from '../services/ball';
 
     let _p5: p5;
 
@@ -13,6 +14,7 @@
         nbSegments: 1
     };
     let terrain = generateTerrain(terrainOptions);
+    const ball = generateBall({ x: 450, y: 500 });
 
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
@@ -21,7 +23,16 @@
         };
         p5.draw = () => {
             p5.background(0);
+            updateBall(ball);
             drawTerrain(p5, terrain);
+            drawBall(p5, ball);
+        };
+        p5.mousePressed = () => {
+            const { mouseX: x, mouseY: y, width, height } = p5;
+            if (x < 0 || x > width || y < 0 || y > height) {
+                return;
+            }
+            setBall(ball, { x, y: height - y });
         };
     };
 
