@@ -2,11 +2,14 @@ import type { Terrain } from '$lib/types/terrain';
 import type p5 from 'p5';
 import { interpolations } from './interpolation';
 
-export const generateTerrain = (): Terrain => {
-    const terrainLength = 900;
-    const maxHeight = 175;
-    const minHeight = 25;
-    const nbSegments = 7;
+export const generateTerrain = (params: {
+    terrainLength: number;
+    maxHeight: number;
+    minHeight: number;
+    nbSegments: number;
+}): Terrain => {
+
+    const { terrainLength, maxHeight, minHeight, nbSegments } = params;
 
     const ground = [];
     let prevX = 0;

@@ -8,9 +8,9 @@
 
     const terrainOptions = {
         terrainLength: 900,
-        maxHeight: 175,
-        minHeight: 25,
-        nbSegments: 7
+        maxHeight: 100,
+        minHeight: 100,
+        nbSegments: 1
     };
     let terrain = generateTerrain(terrainOptions);
 
