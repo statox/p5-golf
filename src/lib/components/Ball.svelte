@@ -26,13 +26,16 @@
             updateBall(ball);
             drawTerrain(p5, terrain);
             drawBall(p5, ball);
+            // p5.frameRate(2);
         };
         p5.mousePressed = () => {
             const { mouseX: x, mouseY: y, width, height } = p5;
             if (x < 0 || x > width || y < 0 || y > height) {
                 return;
             }
-            setBall(ball, { x, y: height - y });
+            const dx = Math.random() * 500 - 250;
+            const dy = Math.random() * 250;
+            setBall(ball, { x, y: height - y, dx, dy });
         };
     };
 
