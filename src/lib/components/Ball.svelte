@@ -13,6 +13,7 @@
         minHeight: 100,
         nbSegments: 1
     };
+    let prevTick: number;
     let terrain = generateTerrain(terrainOptions);
     const ball = generateBall({ x: 450, y: 500 });
 
@@ -23,7 +24,10 @@
         };
         p5.draw = () => {
             p5.background(0);
-            updateBall(ball);
+            const tick = p5.millis();
+            const dt = (tick - (prevTick || tick)) / (1000 / 60) / 10;
+            prevTick = tick;
+            updateBall(ball, dt);
             drawTerrain(p5, terrain);
             drawBall(p5, ball);
             // p5.frameRate(2);
@@ -33,7 +37,7 @@
             if (x < 0 || x > width || y < 0 || y > height) {
                 return;
             }
-            const dx = Math.random() * 500 - 250;
+            const dx = Math.random() * 250;
             const dy = Math.random() * 250;
             setBall(ball, { x, y: height - y, dx, dy });
         };

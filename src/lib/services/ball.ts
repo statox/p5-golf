@@ -36,7 +36,7 @@ export const setBall = (ball: Ball, params: { x: number, y: number, dx: number, 
 }
 
 const gravity = new Victor(0, -10);
-const maxSpeedLength = 100;
+const maxSpeedLength = 1000;
 
 const limitVelocity = (ball: Ball) => {
     if (ball.velocity.magnitude() > maxSpeedLength) {
@@ -44,9 +44,9 @@ const limitVelocity = (ball: Ball) => {
     }
 };
 
-export const updateBall = (ball: Ball) => {
+export const updateBall = (ball: Ball, dt: number) => {
     ball.acceleration = gravity.clone();
     ball.velocity.add(ball.acceleration);
     limitVelocity(ball);
-    ball.position.add(ball.velocity);
+    ball.position.add(ball.velocity.clone().multiplyScalar(dt));
 };
