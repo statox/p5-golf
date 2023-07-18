@@ -1,3 +1,16 @@
+const constrain = function(n: number, low: number, high: number) {
+    return Math.max(Math.min(n, high), low);
+};
+
+export const map = function(n: number, start1: number, stop1: number, start2: number, stop2: number) {
+    const newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+    if (start2 < stop2) {
+        return constrain(newval, start2, stop2);
+    } else {
+        return constrain(newval, stop2, start2);
+    }
+};
+
 const linearMap = function(n: number, start: number, stop: number) {
     return n * (stop - start) + start;
 };

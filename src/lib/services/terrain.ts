@@ -38,3 +38,10 @@ export const drawTerrain = (p5: p5, terrain: Terrain) => {
         }
     }
 };
+
+export const getSegmentAtX = (x: number, terrain: Terrain) => {
+    if (x < 0 || x > terrain[terrain.length - 1].x2) {
+        return;
+    }
+    return terrain.find(s => s.x1 <= x && s.x2 > x);
+}

@@ -3,19 +3,30 @@
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
     import { generateTerrain, drawTerrain } from '../services/terrain';
-    import { generateBall, drawBall, updateBall, setBall } from '../services/ball';
+    import { generateBall, drawBall, setBall } from '../services/ball';
+    import { updateBall, drawNormalVector } from '../services/physics';
 
     let _p5: p5;
 
     const terrainOptions = {
         terrainLength: 900,
-        maxHeight: 100,
-        minHeight: 100,
-        nbSegments: 1
+        maxHeight: 150,
+        minHeight: 50,
+        nbSegments: 3
     };
     let prevTick: number;
     let terrain = generateTerrain(terrainOptions);
     const ball = generateBall({ x: 450, y: 500 });
+
+    const moveBall = (p5: p5) => {
+        const { mouseX: x, mouseY: y, width, height } = p5;
+        if (x < 0 || x > width || y < 0 || y > height) {
+            return;
+        }
+        const dx = Math.random() * 250;
+        const dy = Math.random() * 250;
+        setBall(ball, { x, y: height - y, dx: 0, dy: 0 });
+    };
 
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
@@ -27,19 +38,15 @@
             const tick = p5.millis();
             const dt = (tick - (prevTick || tick)) / (1000 / 60) / 10;
             prevTick = tick;
-            updateBall(ball, dt);
+            updateBall(ball, terrain, dt);
             drawTerrain(p5, terrain);
             drawBall(p5, ball);
-            // p5.frameRate(2);
-        };
-        p5.mousePressed = () => {
-            const { mouseX: x, mouseY: y, width, height } = p5;
-            if (x < 0 || x > width || y < 0 || y > height) {
-                return;
+            drawNormalVector(p5, ball, terrain);
+            // p5.frameRate(5);
+
+            if (p5.mouseIsPressed) {
+                moveBall(p5);
             }
-            const dx = Math.random() * 250;
-            const dy = Math.random() * 250;
-            setBall(ball, { x, y: height - y, dx, dy });
         };
     };
 
