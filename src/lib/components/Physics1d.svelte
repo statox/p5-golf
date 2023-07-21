@@ -1,17 +1,17 @@
 <script lang="ts">
-    import { drawBall, generateBall } from '$lib/services/ball';
+    import { drawBall } from '$lib/services/ball';
+    import type { GUI } from 'dat.gui';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import Victor from 'victor';
 
-    export type Ball = {
+    type Ball = {
         isColliding: boolean;
         r: number; // Radius in px
         position: Victor;
         velocity: Victor;
         velocity0: Victor;
-        maxVelocity: number;
         acceleration: Victor;
     };
 
@@ -23,8 +23,14 @@
         position: new Victor(450, 300),
         velocity0: new Victor(10, 10),
         velocity: new Victor(0, 10),
-        acceleration: new Victor(0, -10),
-        maxVelocity: 60
+        acceleration: new Victor(0, -10)
+    };
+
+    const settings = {
+        physics: {
+            coefRestitution: 0.8,
+            maxVelocity: 60
+        }
     };
 
     let lastTick = Date.now();
@@ -35,13 +41,13 @@
 
         if (!ball.isColliding && ball.position.y < ball.r) {
             ball.isColliding = true;
-            ball.velocity.y *= -0.8;
+            ball.velocity.y *= -settings.physics.coefRestitution;
         } else if (ball.isColliding && ball.position.y > ball.r) {
             ball.isColliding = false;
         }
 
         ball.velocity = ball.velocity0.add(ball.acceleration);
-        const maxV = ball.maxVelocity;
+        const maxV = settings.physics.maxVelocity;
         if (ball.velocity.length() > maxV) {
             ball.velocity.normalize().multiplyScalar(maxV);
         }
@@ -69,6 +75,24 @@
         return x > 0 && x < w && y > 0 && y < h;
     };
 
+    let gui: GUI;
+    const initGUI = async () => {
+        // Imported here to avoid "window is not defined" error
+        // https://github.com/dataarts/dat.gui/issues/271
+        const dat = await import('dat.gui');
+        gui = new dat.GUI();
+
+        gui.domElement.setAttribute('style', 'background-color: black');
+
+        const programFolder = gui.addFolder('Physics');
+        programFolder.open();
+        programFolder
+            .add(settings.physics, 'coefRestitution', 0, 1)
+            .name('C. restitution')
+            .listen();
+        programFolder.add(settings.physics, 'maxVelocity', 0, 200).name('max Velocity').listen();
+    };
+
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
@@ -78,17 +102,24 @@
         p5.draw = () => {
             p5.background(0);
             if (mouseIsPressedOnScreen(p5)) {
+                const maxV = settings.physics.maxVelocity;
                 ball.position.x = p5.mouseX;
                 ball.position.y = p5.height - p5.mouseY;
-                ball.velocity0.x = Math.random() * (2 * ball.maxVelocity) - ball.maxVelocity;
-                ball.velocity0.y = Math.random() * (2 * ball.maxVelocity) - ball.maxVelocity;
+                ball.velocity0.x = Math.random() * (2 * maxV) - maxV;
+                ball.velocity0.y = Math.random() * (2 * maxV) - maxV;
             }
 
             updateBall(ball);
             drawBall(p5, ball);
         };
     };
+
+    onMount(() => {
+        initGUI();
+    });
+
     onDestroy(() => {
+        gui?.destroy();
         _p5?.remove();
     });
 </script>
