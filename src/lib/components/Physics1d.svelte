@@ -114,7 +114,7 @@
                 ball.position.x = p5.mouseX;
                 ball.position.y = p5.height - p5.mouseY;
                 ball.velocity0.x = Math.random() * (2 * maxV) - maxV;
-                ball.velocity0.y = Math.random() * (2 * maxV) - maxV;
+                ball.velocity0.y = Math.random() * maxV;
             }
 
             updateBall(ball);
