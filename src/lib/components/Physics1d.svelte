@@ -30,6 +30,9 @@
         physics: {
             coefRestitution: 0.8,
             maxVelocity: 60
+        },
+        render: {
+            targetFPS: 10
         }
     };
 
@@ -38,6 +41,7 @@
         const tick = Date.now();
         const t = tick - lastTick;
         lastTick = tick;
+        // console.log(t);
 
         if (!ball.isColliding && ball.position.y < ball.r) {
             ball.isColliding = true;
@@ -86,18 +90,22 @@
 
         const programFolder = gui.addFolder('Physics');
         programFolder.open();
-        programFolder
-            .add(settings.physics, 'coefRestitution', 0, 1)
-            .name('C. restitution')
-            .listen();
-        programFolder.add(settings.physics, 'maxVelocity', 0, 200).name('max Velocity').listen();
+        programFolder.add(settings.physics, 'coefRestitution', 0, 1).name('C. restitution');
+        programFolder.add(settings.physics, 'maxVelocity', 0, 200).name('max Velocity');
+
+        const renderFolder = gui.addFolder('Render');
+        renderFolder.open();
+        renderFolder
+            .add(settings.render, 'targetFPS', 0, 60)
+            .name('Target FPS')
+            .onFinishChange(() => _p5.frameRate(settings.render.targetFPS));
     };
 
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
             p5.createCanvas(900, 600);
-            p5.frameRate(10);
+            p5.frameRate(settings.render.targetFPS);
         };
         p5.draw = () => {
             p5.background(0);
