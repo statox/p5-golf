@@ -24,7 +24,7 @@
         velocity0: new Victor(10, 10),
         velocity: new Victor(0, 10),
         acceleration: new Victor(0, -10),
-        maxVelocity: 100
+        maxVelocity: 60
     };
 
     let lastTick = Date.now();
@@ -48,6 +48,12 @@
         ball.position = ball.position.add(ball.velocity);
         if (ball.position.y < 0) {
             ball.position.y = 0;
+        }
+
+        if (ball.position.x < 0) {
+            ball.position.x = _p5.width;
+        } else if (ball.position.x > _p5.width) {
+            ball.position.x = 0;
         }
     };
 
@@ -90,4 +96,5 @@
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
     <button on:click={() => pushUp(ball)}>Push up</button>
+    <button on:click={() => (ball.position.y = _p5.height)}>Place on top</button>
 </div>
