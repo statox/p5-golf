@@ -27,7 +27,7 @@
     "p5-svelte": "^3.1.2",
     "prettier": "^2.8.0",
     "prettier-plugin-svelte": "^2.8.1",
-    "svelte": "^3.54.0",
+    "svelte": "^3.59.2",
     "svelte-adapter-github": "^1.0.0-next.0",
     "svelte-check": "^2.9.2",
     "svelte-tabs": "^1.1.0",
@@ -41,6 +41,7 @@
   "dependencies": {
     "@types/dat.gui": "^0.7.10",
     "dat.gui": "^0.7.9",
+    "svelte-frappe-charts": "^1.10.0",
     "victor": "^1.1.0"
   }
 }

@@ -6,6 +6,23 @@
     import { onDestroy, onMount } from 'svelte';
     import Victor from 'victor';
 
+    import Chart from 'svelte-frappe-charts';
+
+    let velocityHistory: {
+        labels: string[];
+        datasets: {
+            values: any[];
+        }[];
+    } = {
+        labels: [],
+        datasets: [
+            {
+                values: []
+            }
+        ]
+    };
+    let velocityChart: Chart;
+
     type Ball = {
         isColliding: boolean;
         r: number; // Radius in px
@@ -37,11 +54,12 @@
     };
 
     let lastTick = Date.now();
+    let frameNb = 0;
     const updateBall = (ball: Ball) => {
+        frameNb++;
         const tick = Date.now();
         const t = tick - lastTick;
         lastTick = tick;
-        // console.log(t);
 
         if (!ball.isColliding && ball.position.y < ball.r) {
             ball.isColliding = true;
@@ -64,6 +82,11 @@
             ball.position.x = _p5.width;
         } else if (ball.position.x > _p5.width) {
             ball.position.x = 0;
+        }
+
+        velocityChart.addDataPoint(tick, [ball.velocity.y]);
+        if (frameNb > 50) {
+            velocityChart.removeDataPoint(0);
         }
     };
 
@@ -137,3 +160,14 @@
     <button on:click={() => pushUp(ball)}>Push up</button>
     <button on:click={() => (ball.position.y = _p5.height)}>Place on top</button>
 </div>
+<Chart
+    data={velocityHistory}
+    type="line"
+    lineOptions={{
+        hideDots: 1
+    }}
+    axisOptions={{
+        xAxisMode: 'tick'
+    }}
+    bind:this={velocityChart}
+/>
