@@ -13,7 +13,12 @@ export const drawNormalVector = (p5: p5, ball: Ball, terrain: Terrain) => {
 
     p5.stroke('green');
     p5.fill('green');
-    p5.line(ball.position.x, p5.height - ball.position.y, ball.position.x + v.x, p5.height - (ball.position.y + v.y));
+    p5.line(
+        ball.position.x,
+        p5.height - ball.position.y,
+        ball.position.x + v.x,
+        p5.height - (ball.position.y + v.y)
+    );
 };
 
 const getTerrainForce = (ball: Ball, terrain: Terrain) => {
@@ -30,18 +35,20 @@ const getTerrainForce = (ball: Ball, terrain: Terrain) => {
     const v = new Victor(x2 - x1, y2 - y1);
     v.rotateByDeg(90);
 
-    const velocityMag = ball.velocity.length();
-    console.log({ velocityMag });
-    // v.normalize().multiplyScalar(velocityMag * 0.7);
-    v.normalize().multiplyScalar(50);
+    v.normalize();
 
     return v;
-}
+};
 
 export const updateBall = (ball: Ball, terrain: Terrain, dt: number) => {
-    ball.acceleration = gravity.clone();
-    ball.acceleration.add(getTerrainForce(ball, terrain));
-    console.log(ball.acceleration.length());
+    const g = gravity.clone();
+    const bounce = getTerrainForce(ball, terrain);
+    bounce.multiplyScalar(g.length());
+    ball.acceleration.zero();
+    ball.acceleration.add(g);
+    ball.acceleration.add(bounce);
+
+    ball.velocity.multiplyScalar(0.8);
     ball.velocity.add(ball.acceleration);
     limitVelocity(ball);
     ball.position.add(ball.velocity.clone().multiplyScalar(dt));
@@ -60,8 +67,16 @@ const getSlopeAtX = (ball: Ball, terrain: Terrain) => {
     const percent2 = map(x2, currentTerrainSegment.x1, currentTerrainSegment.x2, 0, 1);
 
     const y = currentTerrainSegment.f(percent, currentTerrainSegment.y1, currentTerrainSegment.y2);
-    const y1 = currentTerrainSegment.f(percent1, currentTerrainSegment.y1, currentTerrainSegment.y2);
-    const y2 = currentTerrainSegment.f(percent2, currentTerrainSegment.y1, currentTerrainSegment.y2);
+    const y1 = currentTerrainSegment.f(
+        percent1,
+        currentTerrainSegment.y1,
+        currentTerrainSegment.y2
+    );
+    const y2 = currentTerrainSegment.f(
+        percent2,
+        currentTerrainSegment.y1,
+        currentTerrainSegment.y2
+    );
 
     return { x1, y1, x2, y2, x, y };
 };

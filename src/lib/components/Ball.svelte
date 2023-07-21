@@ -11,8 +11,8 @@
     const terrainOptions = {
         terrainLength: 900,
         maxHeight: 150,
-        minHeight: 50,
-        nbSegments: 3
+        minHeight: 150,
+        nbSegments: 1
     };
     let prevTick: number;
     let terrain = generateTerrain(terrainOptions);

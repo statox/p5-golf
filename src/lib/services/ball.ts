@@ -35,7 +35,7 @@ export const setBall = (ball: Ball, params: { x: number, y: number, dx: number, 
     limitVelocity(ball);
 }
 
-const maxSpeedLength = 1000;
+const maxSpeedLength = 100;
 
 export const limitVelocity = (ball: Ball) => {
     if (ball.velocity.magnitude() > maxSpeedLength) {
