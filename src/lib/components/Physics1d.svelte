@@ -11,6 +11,7 @@
         position: Victor;
         velocity: Victor;
         velocity0: Victor;
+        maxVelocity: number;
         acceleration: Victor;
     };
 
@@ -22,7 +23,8 @@
         position: new Victor(450, 300),
         velocity0: new Victor(10, 10),
         velocity: new Victor(0, 10),
-        acceleration: new Victor(0, -10)
+        acceleration: new Victor(0, -10),
+        maxVelocity: 100
     };
 
     let lastTick = Date.now();
@@ -30,7 +32,6 @@
         const tick = Date.now();
         const t = tick - lastTick;
         lastTick = tick;
-        // console.log(t);
 
         if (!ball.isColliding && ball.position.y < ball.r) {
             ball.isColliding = true;
@@ -40,7 +41,7 @@
         }
 
         ball.velocity = ball.velocity0.add(ball.acceleration);
-        const maxV = 60;
+        const maxV = ball.maxVelocity;
         if (ball.velocity.length() > maxV) {
             ball.velocity.normalize().multiplyScalar(maxV);
         }
@@ -73,8 +74,8 @@
             if (mouseIsPressedOnScreen(p5)) {
                 ball.position.x = p5.mouseX;
                 ball.position.y = p5.height - p5.mouseY;
-                ball.velocity0.x = Math.random() * 120 - 60;
-                ball.velocity0.y = Math.random() * 120 - 60;
+                ball.velocity0.x = Math.random() * (2 * ball.maxVelocity) - ball.maxVelocity;
+                ball.velocity0.y = Math.random() * (2 * ball.maxVelocity) - ball.maxVelocity;
             }
 
             updateBall(ball);
