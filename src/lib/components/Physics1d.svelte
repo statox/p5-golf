@@ -11,12 +11,22 @@
     let velocityHistory: {
         labels: string[];
         datasets: {
-            values: any[];
+            name: string;
+            values: number[];
         }[];
     } = {
         labels: [],
         datasets: [
             {
+                name: 'position y',
+                values: []
+            },
+            {
+                name: 'velocity y',
+                values: []
+            },
+            {
+                name: 'acceleration y',
                 values: []
             }
         ]
@@ -73,7 +83,7 @@
         if (ball.velocity.length() > maxV) {
             ball.velocity.normalize().multiplyScalar(maxV);
         }
-        ball.position = ball.position.add(ball.velocity);
+        ball.position.add(ball.velocity);
         if (ball.position.y < 0) {
             ball.position.y = 0;
         }
@@ -84,7 +94,7 @@
             ball.position.x = 0;
         }
 
-        velocityChart.addDataPoint(tick, [ball.velocity.y]);
+        velocityChart.addDataPoint(tick, [ball.position.y, ball.velocity.y, ball.acceleration.y]);
         if (frameNb > 50) {
             velocityChart.removeDataPoint(0);
         }
@@ -124,6 +134,7 @@
             .onFinishChange(() => _p5.frameRate(settings.render.targetFPS));
     };
 
+    let pause = false;
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
@@ -140,7 +151,9 @@
                 ball.velocity0.y = Math.random() * maxV;
             }
 
-            updateBall(ball);
+            if (!pause) {
+                updateBall(ball);
+            }
             drawBall(p5, ball);
         };
     };
@@ -157,6 +170,7 @@
 
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
+    <button on:click={() => (pause = !pause)}>{pause ? 'Play' : 'Pause'}</button>
     <button on:click={() => pushUp(ball)}>Push up</button>
     <button on:click={() => (ball.position.y = _p5.height)}>Place on top</button>
 </div>
