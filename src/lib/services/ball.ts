@@ -2,14 +2,14 @@ import type p5 from 'p5';
 import Victor from 'victor';
 import type { Ball } from '$lib/types/ball';
 
-export const generateBall = (params: { x: number, y: number }): Ball => {
+export const generateBall = (params: { x: number; y: number }): Ball => {
     const { x, y } = params;
     return {
         r: 10,
         position: new Victor(x, y),
         velocity: new Victor(0, 0),
         acceleration: new Victor(0, 0)
-    }
+    };
 };
 
 export const drawBall = (p5: p5, ball: Ball) => {
@@ -27,13 +27,13 @@ const drawBallSpeed = (p5: p5, ball: Ball) => {
     p5.line(x, p5.height - y, x + dx, p5.height - y - dy);
 };
 
-export const setBall = (ball: Ball, params: { x: number, y: number, dx: number, dy: number }) => {
+export const setBall = (ball: Ball, params: { x: number; y: number; dx: number; dy: number }) => {
     ball.position.x = params.x;
     ball.position.y = params.y;
     ball.velocity.x = params.dx;
     ball.velocity.y = params.dy;
     limitVelocity(ball);
-}
+};
 
 const maxSpeedLength = 100;
 

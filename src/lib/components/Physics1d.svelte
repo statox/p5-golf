@@ -1,11 +1,9 @@
 <script lang="ts">
-    import { drawBall } from '$lib/services/ball';
     import type { GUI } from 'dat.gui';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy, onMount } from 'svelte';
     import Victor from 'victor';
-
     import Chart from 'svelte-frappe-charts';
 
     let velocityHistory: {
@@ -28,6 +26,10 @@
             {
                 name: 'acceleration y',
                 values: []
+            },
+            {
+                name: 'collision',
+                values: []
             }
         ]
     };
@@ -44,6 +46,8 @@
 
     let _p5: p5;
 
+    const G = new Victor(0, -10);
+
     const ball: Ball = {
         isColliding: false,
         r: 5,
@@ -56,10 +60,10 @@
     const settings = {
         physics: {
             coefRestitution: 0.8,
-            maxVelocity: 60
+            maxVelocity: 200
         },
         render: {
-            targetFPS: 10
+            targetFPS: 24
         }
     };
 
@@ -73,16 +77,25 @@
 
         if (!ball.isColliding && ball.position.y < ball.r) {
             ball.isColliding = true;
-            ball.velocity.y *= -settings.physics.coefRestitution;
         } else if (ball.isColliding && ball.position.y > ball.r) {
             ball.isColliding = false;
         }
 
-        ball.velocity = ball.velocity0.add(ball.acceleration);
+        ball.acceleration.zero();
+        if (ball.isColliding) {
+            if (ball.velocity.y < 0) {
+                ball.velocity.y *= -settings.physics.coefRestitution;
+            }
+            ball.acceleration.subtract(G);
+        }
+
+        ball.acceleration.add(G);
+        ball.velocity.add(ball.acceleration);
         const maxV = settings.physics.maxVelocity;
         if (ball.velocity.length() > maxV) {
             ball.velocity.normalize().multiplyScalar(maxV);
         }
+
         ball.position.add(ball.velocity);
         if (ball.position.y < 0) {
             ball.position.y = 0;
@@ -94,10 +107,30 @@
             ball.position.x = 0;
         }
 
-        velocityChart.addDataPoint(tick, [ball.position.y, ball.velocity.y, ball.acceleration.y]);
+        velocityChart.addDataPoint(frameNb, [
+            ball.position.y,
+            ball.velocity.y,
+            ball.acceleration.y,
+            ball.isColliding ? 100 : 0
+        ]);
         if (frameNb > 50) {
             velocityChart.removeDataPoint(0);
         }
+    };
+
+    const drawBall = (p5: p5, ball: Ball) => {
+        const color = ball.isColliding ? 'red' : 'white';
+        p5.stroke(color);
+        p5.fill(color);
+        p5.circle(ball.position.x, p5.height - ball.position.y, ball.r);
+        drawBallSpeed(p5, ball);
+    };
+    const drawBallSpeed = (p5: p5, ball: Ball) => {
+        p5.stroke('red');
+        p5.noFill();
+        const { x, y } = ball.position;
+        const { x: dx, y: dy } = ball.velocity;
+        p5.line(x, p5.height - y, x + dx, p5.height - y - dy);
     };
 
     const pushUp = (ball: Ball) => {
