@@ -61,7 +61,7 @@
 
     const settings = {
         physics: {
-            coefRestitution: 0.8,
+            coefRestitution: 0.53,
             maxVelocity: 200
         },
         render: {
