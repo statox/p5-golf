@@ -30,6 +30,10 @@
             {
                 name: 'collision',
                 values: []
+            },
+            {
+                name: 'displacement',
+                values: []
             }
         ]
     };
@@ -101,6 +105,7 @@
             ball.velocity.zero();
         }
 
+        const previousPosition = ball.position.clone();
         ball.position.add(ball.velocity);
         if (ball.position.y < 0) {
             ball.position.y = 0;
@@ -112,15 +117,25 @@
             ball.position.x = 0;
         }
 
+        const displacement = previousPosition.distance(ball.position);
+
         velocityChart.addDataPoint(frameNb, [
             ball.position.y,
             ball.velocity.y,
             ball.acceleration.y,
-            ball.isColliding ? 100 : 0
+            ball.isColliding ? 100 : 0,
+            displacement
         ]);
         if (frameNb > 50) {
             velocityChart.removeDataPoint(0);
         }
+    };
+
+    const runPhysics = () => {
+        if (!pause) {
+            updateBall(ball);
+        }
+        setTimeout(runPhysics, 40);
     };
 
     const drawBall = (p5: p5, ball: Ball) => {
@@ -188,6 +203,7 @@
             _p5 = p5;
             p5.createCanvas(900, 600);
             p5.frameRate(settings.render.targetFPS);
+            runPhysics();
         };
         p5.draw = () => {
             p5.background(0);
@@ -199,9 +215,6 @@
                 ball.velocity.y = 0;
             }
 
-            if (!pause) {
-                updateBall(ball);
-            }
             drawBall(p5, ball);
         };
     };
