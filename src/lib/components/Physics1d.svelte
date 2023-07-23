@@ -65,6 +65,8 @@
         }
     };
 
+    const shot = new Victor(0, 0);
+
     let lastTick = Date.now();
     let frameNb = 0;
     const updateBall = (ball: Ball) => {
@@ -139,6 +141,10 @@
         ball.velocity.y += 100;
     };
 
+    const shoot = (ball: Ball, shot: Victor) => {
+        ball.velocity.add(shot);
+    };
+
     const mouseIsPressedOnScreen = (p5: p5) => {
         if (!p5.mouseIsPressed) {
             return false;
@@ -167,6 +173,12 @@
             .add(settings.render, 'targetFPS', 0, 60)
             .name('Target FPS')
             .onFinishChange(() => _p5.frameRate(settings.render.targetFPS));
+
+        const shotFolder = gui.addFolder('Shot');
+        shotFolder.open();
+        shotFolder.add(shot, 'x', -100, 100).name('x');
+        shotFolder.add(shot, 'y', -100, 100).name('y');
+        shotFolder.add({ shoot: () => shoot(ball, shot) }, 'shoot');
     };
 
     let pause = false;
