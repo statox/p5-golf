@@ -40,7 +40,6 @@
         r: number; // Radius in px
         position: Victor;
         velocity: Victor;
-        velocity0: Victor;
         acceleration: Victor;
     };
 
@@ -52,7 +51,6 @@
         isColliding: false,
         r: 5,
         position: new Victor(450, 300),
-        velocity0: new Victor(10, 10),
         velocity: new Victor(0, 10),
         acceleration: new Victor(0, -10)
     };
@@ -96,6 +94,10 @@
             ball.velocity.normalize().multiplyScalar(maxV);
         }
 
+        if (ball.isColliding && ball.velocity.length() < 20) {
+            ball.velocity.zero();
+        }
+
         ball.position.add(ball.velocity);
         if (ball.position.y < 0) {
             ball.position.y = 0;
@@ -134,7 +136,7 @@
     };
 
     const pushUp = (ball: Ball) => {
-        ball.velocity0.y += 100;
+        ball.velocity.y += 100;
     };
 
     const mouseIsPressedOnScreen = (p5: p5) => {
@@ -180,8 +182,8 @@
                 const maxV = settings.physics.maxVelocity;
                 ball.position.x = p5.mouseX;
                 ball.position.y = p5.height - p5.mouseY;
-                ball.velocity0.x = Math.random() * (2 * maxV) - maxV;
-                ball.velocity0.y = Math.random() * maxV;
+                ball.velocity.x = 0;
+                ball.velocity.y = 0;
             }
 
             if (!pause) {
