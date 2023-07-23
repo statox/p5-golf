@@ -85,6 +85,7 @@
         if (ball.isColliding) {
             if (ball.velocity.y < 0) {
                 ball.velocity.y *= -settings.physics.coefRestitution;
+                ball.velocity.x *= settings.physics.coefRestitution;
             }
             ball.acceleration.subtract(G);
         }
@@ -226,6 +227,9 @@
     type="line"
     lineOptions={{
         hideDots: 1
+    }}
+    tooltipOptions={{
+        formatTooltipY: (d) => d.toFixed(3)
     }}
     axisOptions={{
         xAxisMode: 'tick'
