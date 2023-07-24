@@ -132,6 +132,7 @@
     };
 
     const runPhysics = () => {
+        stepCount++;
         if (!pause) {
             updateBall(ball);
         }
@@ -198,6 +199,8 @@
     };
 
     let pause = false;
+    let frameCount = 0;
+    let stepCount = 0;
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
@@ -206,6 +209,7 @@
             runPhysics();
         };
         p5.draw = () => {
+            frameCount++;
             p5.background(0);
             if (mouseIsPressedOnScreen(p5)) {
                 const maxV = settings.physics.maxVelocity;
@@ -230,6 +234,7 @@
 </script>
 
 <div class="d-flex justify-content-center">
+    <span>Frames: {frameCount} Steps: {stepCount} (r {(stepCount / frameCount).toFixed(2)})</span>
     <P5 {sketch} />
     <button on:click={() => (pause = !pause)}>{pause ? 'Play' : 'Pause'}</button>
     <button on:click={() => pushUp(ball)}>Push up</button>
