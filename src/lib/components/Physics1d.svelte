@@ -69,7 +69,7 @@
         }
     };
 
-    const shot = new Victor(0, 0);
+    const shot = new Victor(0, 100);
 
     let lastTick = Date.now();
     let frameNb = 0;
@@ -154,10 +154,6 @@
         p5.line(x, p5.height - y, x + dx, p5.height - y - dy);
     };
 
-    const pushUp = (ball: Ball) => {
-        ball.velocity.y += 100;
-    };
-
     const shoot = (ball: Ball, shot: Victor) => {
         ball.velocity.add(shot);
     };
@@ -212,7 +208,6 @@
             frameCount++;
             p5.background(0);
             if (mouseIsPressedOnScreen(p5)) {
-                const maxV = settings.physics.maxVelocity;
                 ball.position.x = p5.mouseX;
                 ball.position.y = p5.height - p5.mouseY;
                 ball.velocity.x = 0;
@@ -237,8 +232,9 @@
     <span>Frames: {frameCount} Steps: {stepCount} (r {(stepCount / frameCount).toFixed(2)})</span>
     <P5 {sketch} />
     <button on:click={() => (pause = !pause)}>{pause ? 'Play' : 'Pause'}</button>
-    <button on:click={() => pushUp(ball)}>Push up</button>
-    <button on:click={() => (ball.position.y = _p5.height)}>Place on top</button>
+    <button on:click={() => ((ball.position.y = _p5.height), (ball.position.x = _p5.width / 2))}
+        >Place on top</button
+    >
 </div>
 <Chart
     data={velocityHistory}
