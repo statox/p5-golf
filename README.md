@@ -1,16 +1,13 @@
-# P5 + svelte
+# P5 Golf
 
-Just a boilerplate.
+Some resources:
 
-- `npm install`
-- `npm run dev`
+https://gamedev.stackexchange.com/questions/1589/when-should-i-use-a-fixed-or-variable-time-step
 
-For Github pages publication:
+https://www.myphysicslab.com/develop/docs/Engine2D.html
+https://www.myphysicslab.com/engine2D/rigid-body-en.html
 
-- Clone this repo
-- Create new repo on Github
-- `git remote remove origin`
-- `git remote add origin [new repo url`
-- Update the `REPO_NAME` variable in [svelte.config.js](./svelte.config.js)
-- `git push`
-- Update the repository settings to enable Github Page deployments from the branch `gh-pages`
+https://www.myphysicslab.com/engine2D/collision-methods-en.html
+
+https://gafferongames.com/post/integration_basics/
+https://gafferongames.com/post/fix_your_timestep/
