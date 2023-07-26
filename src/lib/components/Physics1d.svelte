@@ -71,6 +71,40 @@
 
     const shot = new Victor(0, 100);
 
+    const testCollision = (ball: Ball) => {
+        return ball.position.y < ball.r && ball.velocity.y < 0;
+    };
+
+    const applyCollision = (ball: Ball) => {
+        ball.velocity.y *= -settings.physics.coefRestitution;
+        ball.velocity.x *= settings.physics.coefRestitution;
+        if (ball.velocity.length() < 20) {
+            ball.velocity.zero();
+        }
+    };
+
+    const applyProjectileMotion = (ball: Ball) => {
+        ball.acceleration.add(G);
+        ball.velocity.add(ball.acceleration);
+        const maxV = settings.physics.maxVelocity;
+        if (ball.velocity.length() > maxV) {
+            ball.velocity.normalize().multiplyScalar(maxV);
+        }
+    };
+
+    const horizontalWrap = (ball: Ball) => {
+        if (ball.position.x < 0) {
+            ball.position.x = _p5.width;
+        } else if (ball.position.x > _p5.width) {
+            ball.position.x = 0;
+        }
+    };
+    const verticalLimit = (ball: Ball) => {
+        if (ball.position.y < 0) {
+            ball.position.y = 0;
+        }
+    };
+
     let lastTick = Date.now();
     let frameNb = 0;
     const updateBall = (ball: Ball) => {
@@ -79,43 +113,18 @@
         const t = tick - lastTick;
         lastTick = tick;
 
-        if (!ball.isColliding && ball.position.y < ball.r) {
-            ball.isColliding = true;
-        } else if (ball.isColliding && ball.position.y > ball.r) {
-            ball.isColliding = false;
-        }
-
         ball.acceleration.zero();
-        if (ball.isColliding) {
-            if (ball.velocity.y < 0) {
-                ball.velocity.y *= -settings.physics.coefRestitution;
-                ball.velocity.x *= settings.physics.coefRestitution;
-            }
-            ball.acceleration.subtract(G);
-        }
-
-        ball.acceleration.add(G);
-        ball.velocity.add(ball.acceleration);
-        const maxV = settings.physics.maxVelocity;
-        if (ball.velocity.length() > maxV) {
-            ball.velocity.normalize().multiplyScalar(maxV);
-        }
-
-        if (ball.isColliding && ball.velocity.length() < 20) {
-            ball.velocity.zero();
+        const isColliding = testCollision(ball);
+        if (isColliding) {
+            applyCollision(ball);
+        } else {
+            applyProjectileMotion(ball);
         }
 
         const previousPosition = ball.position.clone();
         ball.position.add(ball.velocity);
-        if (ball.position.y < 0) {
-            ball.position.y = 0;
-        }
-
-        if (ball.position.x < 0) {
-            ball.position.x = _p5.width;
-        } else if (ball.position.x > _p5.width) {
-            ball.position.x = 0;
-        }
+        horizontalWrap(ball);
+        verticalLimit(ball);
 
         const displacement = previousPosition.distance(ball.position);
 
