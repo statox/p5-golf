@@ -1,6 +1,6 @@
 import type { Terrain } from '$lib/types/terrain';
 import type p5 from 'p5';
-import { interpolations } from './interpolation';
+import { interpolations, map } from './interpolation';
 
 export const generateTerrain = (params: {
     terrainLength: number;
@@ -40,9 +40,36 @@ export const drawTerrain = (p5: p5, terrain: Terrain) => {
     }
 };
 
-export const getSegmentAtX = (x: number, terrain: Terrain) => {
-    if (x < 0 || x > terrain[terrain.length - 1].x2) {
+export const getSegmentAtX = (terrain: Terrain, x: number) => {
+    if (!terrain || x < 0 || x > terrain[terrain.length - 1].x2) {
         return;
     }
-    return terrain.find(s => s.x1 <= x && s.x2 > x);
-}
+    return terrain.find((s) => s.x1 <= x && s.x2 >= x);
+};
+
+export const getElevationAtX = (terrain: Terrain, x: number) => {
+    const currentTerrainSegment = getSegmentAtX(terrain, x);
+    if (!currentTerrainSegment) {
+        return;
+    }
+    const percent = map(x, currentTerrainSegment.x1, currentTerrainSegment.x2, 0, 1);
+
+    const y = currentTerrainSegment.f(percent, currentTerrainSegment.y1, currentTerrainSegment.y2);
+
+    return y;
+};
+
+export const getContactSegmentAtX = (terrain: Terrain, x: number, segmentLength: number) => {
+    const segment = getSegmentAtX(terrain, x);
+    if (!segment) {
+        console.log('no segment');
+        return;
+    }
+    const x1 = Math.max(segment.x1, Math.ceil(x - segmentLength / 2));
+    const x2 = Math.min(segment.x2, Math.ceil(x + segmentLength / 2));
+    const y1 = getElevationAtX(terrain, x1);
+    const y2 = getElevationAtX(terrain, x2);
+    // console.log({ x1, y1, x2, y2 });
+
+    return { x1, y1, x2, y2 };
+};
