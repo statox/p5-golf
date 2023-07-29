@@ -8,14 +8,14 @@ export const generateTerrain = (params: {
     minHeight: number;
     nbSegments: number;
 }): Terrain => {
-
     const { terrainLength, maxHeight, minHeight, nbSegments } = params;
 
     const ground = [];
     let prevX = 0;
     let prevY = maxHeight - (maxHeight - minHeight) / 2;
 
-    for (let x = 0; x <= terrainLength; x += terrainLength / nbSegments) {
+    const segmentsLength = terrainLength / nbSegments;
+    for (let x = segmentsLength; x <= terrainLength; x += segmentsLength) {
         const f = interpolations[Math.floor(Math.random() * interpolations.length)];
         const y = minHeight + Math.random() * (maxHeight - minHeight);
 
@@ -27,6 +27,7 @@ export const generateTerrain = (params: {
 };
 
 export const drawTerrain = (p5: p5, terrain: Terrain) => {
+    p5.strokeWeight(2);
     p5.stroke('white');
 
     for (const groundLine of terrain) {
