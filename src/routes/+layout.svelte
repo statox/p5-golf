@@ -3,6 +3,7 @@
 
     <nav>
         <a href="/">Home</a> |
+        <a href="/v2">V2</a> |
     </nav>
 </header>
 
