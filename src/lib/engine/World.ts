@@ -79,6 +79,9 @@ export class World {
         this.t++;
 
         for (const o of this.objects) {
+            if (o.fixed) {
+                continue;
+            }
             this.applyDynamics(o);
             this.applyCollisions(o);
         }

@@ -10,8 +10,8 @@
     let history: any[] = [];
     const reporter = (world: World) => {
         const lastObject = world.objects[world.objects.length - 1];
-        const pos = lastObject.position.clone().toFixed(1);
-        const vel = lastObject.velocity.clone().toFixed(1);
+        const pos = lastObject.position.clone().toFixed(2);
+        const vel = lastObject.velocity.clone().toFixed(2);
         history.push(`${world.t} - pos: ${pos} - vel: ${vel}`);
         if (history.length > 50) {
             history.shift();
@@ -19,16 +19,28 @@
         history = history;
     };
 
-    const world = new World({ reporter, enableGravity: true });
+    const world = new World({ reporter, enableGravity: false });
 
     const addBallToWorld = () => {
         while (world.objects.length) world.objects.pop();
+        const bottom = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(100, 0)
+            },
+            position: new Victor(0, 0),
+            fixed: true
+        });
+        world.addObject(bottom);
         for (let _ = 0; _ < 1; _++) {
-            const o = createPhysicObjects();
-            o.position.x = 50;
-            o.position.y = 50;
-            o.velocity.x = Math.random() * 5 - 2.5;
-            o.velocity.y = Math.random() * 20;
+            const o = createPhysicObjects({
+                geometry: {
+                    type: 'sphere',
+                    r: 5
+                },
+                position: new Victor(20, 50),
+                velocity: new Victor(Math.random() * 5 - 2.5, Math.random() * 20)
+            });
             world.addObject(o);
         }
     };
@@ -52,8 +64,17 @@
             for (const o of world.objects) {
                 const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
                 const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
-                p5.strokeWeight(o.r * 2);
-                p5.point(x, y);
+                if (o.geometry.type === 'sphere') {
+                    p5.strokeWeight(o.geometry.r * 2);
+                    p5.point(x, y);
+                }
+
+                if (o.geometry.type === 'line') {
+                    const x1 = x + p5.map(o.geometry.vector.x, 0, world.dimensions.x, 0, p5.width);
+                    const y1 = y + p5.map(o.geometry.vector.y, 0, world.dimensions.y, 0, p5.height);
+                    p5.strokeWeight(2);
+                    p5.line(x, y, x1, y1);
+                }
             }
         };
     };
