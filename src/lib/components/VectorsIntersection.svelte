@@ -64,8 +64,16 @@
             p5.stroke(255);
             p5.line(v1.position.x, v1.position.y, v1.end.x, v1.end.y);
             p5.line(v2.position.x, v2.position.y, v2.end.x, v2.end.y);
-
             p5.noStroke();
+
+            p5.fill('green');
+            p5.circle(v1.position.x, v1.position.y, 10);
+            p5.circle(v2.position.x, v2.position.y, 10);
+
+            p5.fill('red');
+            p5.circle(v1.end.x, v1.end.y, 10);
+            p5.circle(v2.end.x, v2.end.y, 10);
+
             p5.fill(255);
             p5.text(vecStr(v1.position), v1.position.x, v1.position.y);
             p5.text(vecStr(v1.end), v1.end.x, v1.end.y);
@@ -73,8 +81,8 @@
             p5.text(vecStr(v2.end), v2.end.x, v2.end.y);
 
             if (intersection.x > 0) {
-                p5.fill('red');
-                p5.circle(intersection.x, intersection.y, 5);
+                p5.fill('blue');
+                p5.circle(intersection.x, intersection.y, 8);
             }
 
             if (p5.mouseIsPressed) {
