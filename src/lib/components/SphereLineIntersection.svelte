@@ -5,11 +5,13 @@
     import Victor from 'victor';
 
     let _p5: p5;
-    let t = 0;
-    let u = 0;
+    let watcherA = new Victor(0, 0);
+    let watcherB = new Victor(0, 0);
 
     // https://stackoverflow.com/a/1084899
     const updateIntersection = () => {
+        watcherA = intersection.clone();
+        watcherB = intersection.clone();
         const E = wall.position.clone();
         const L = wall.end.clone();
         const C = sphere.position.clone();
@@ -54,17 +56,27 @@
             sphere.intersectType = 'red';
             const newIntersection = E.add(d.multiplyScalar(t1));
             intersection.copy(newIntersection);
+
+            const intersectionToSphere = sphere.position.clone().subtract(intersection);
+            const intersectionToEnd = wall.end.clone().subtract(intersection);
+
+            const a = intersectionToSphere.clone();
+            const b = intersectionToEnd.clone();
+            const sphereProjectedOnEnd = b.multiplyScalar(a.dot(b) / b.dot(b));
+
+            watcherA = intersectionToSphere;
+            watcherB = sphereProjectedOnEnd;
             return;
         }
 
         // ExitWound
-        if (t2 >= 0 && t2 <= 1) {
-            sphere.intersect = true;
-            sphere.intersectType = 'blue';
-            const newIntersection = E.add(d.multiplyScalar(t2));
-            intersection.copy(newIntersection);
-            return;
-        }
+        // if (t2 >= 0 && t2 <= 1) {
+        //     sphere.intersect = true;
+        //     sphere.intersectType = 'blue';
+        //     const newIntersection = E.add(d.multiplyScalar(t2));
+        //     intersection.copy(newIntersection);
+        //     return;
+        // }
 
         // no intn: FallShort, Past, CompletelyInside
         sphere.intersect = false;
@@ -80,13 +92,13 @@
     const sphere = {
         intersect: false,
         intersectType: 'white',
-        radius: 50,
+        radius: 100,
         position: new Victor(200, 200),
         end: new Victor(600, 400)
     };
     const wall = {
-        position: new Victor(300, 500),
-        end: new Victor(500, 200)
+        position: new Victor(250, 300),
+        end: new Victor(700, 300)
     };
     const intersection = new Victor(-1, -1);
     let selected: string | undefined;
@@ -128,6 +140,21 @@
             if (intersection.x > 0) {
                 p5.fill('blue');
                 p5.circle(intersection.x, intersection.y, 8);
+                p5.stroke('purple');
+                p5.line(
+                    intersection.x,
+                    intersection.y,
+                    intersection.x + watcherA.x,
+                    intersection.y + watcherA.y
+                );
+                p5.stroke('yellow');
+                p5.line(
+                    intersection.x,
+                    intersection.y,
+                    intersection.x + watcherB.x,
+                    intersection.y + watcherB.y
+                );
+                p5.noStroke();
             }
 
             if (p5.mouseIsPressed) {
@@ -171,6 +198,4 @@
 
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
-    <p>t: {t}</p>
-    <p>u: {u}</p>
 </div>
