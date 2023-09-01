@@ -4,6 +4,7 @@
     import Ball from '$lib/components/Ball.svelte';
     import Physics1d from '$lib/components/Physics1d.svelte';
     import BounceDirection from '$lib/components/BounceDirection.svelte';
+    import VectorsIntersection from '$lib/components/VectorsIntersection.svelte';
 </script>
 
 <Tabs>
@@ -12,6 +13,7 @@
         <Tab>Physics 1d</Tab>
         <Tab>Ball</Tab>
         <Tab>Terrain Generator</Tab>
+        <Tab>Vectors intersection</Tab>
     </TabList>
 
     <TabPanel>
@@ -25,5 +27,8 @@
     </TabPanel>
     <TabPanel>
         <TerrainGenerator />
+    </TabPanel>
+    <TabPanel>
+        <VectorsIntersection />
     </TabPanel>
 </Tabs>
