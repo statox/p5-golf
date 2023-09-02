@@ -70,13 +70,23 @@
         }
 
         // ExitWound
-        // if (t2 >= 0 && t2 <= 1) {
-        //     sphere.intersect = true;
-        //     sphere.intersectType = 'blue';
-        //     const newIntersection = E.add(d.multiplyScalar(t2));
-        //     intersection.copy(newIntersection);
-        //     return;
-        // }
+        if (t2 >= 0 && t2 <= 1) {
+            sphere.intersect = true;
+            sphere.intersectType = 'blue';
+            const newIntersection = E.add(d.multiplyScalar(t2));
+            intersection.copy(newIntersection);
+
+            const intersectionToSphere = sphere.position.clone().subtract(intersection);
+            const intersectionToStart = wall.position.clone().subtract(intersection);
+
+            const a = intersectionToSphere.clone();
+            const b = intersectionToStart.clone();
+            const sphereProjectedOnStart = b.multiplyScalar(a.dot(b) / b.dot(b));
+
+            watcherA = intersectionToSphere;
+            watcherB = sphereProjectedOnStart;
+            return;
+        }
 
         // no intn: FallShort, Past, CompletelyInside
         sphere.intersect = false;
