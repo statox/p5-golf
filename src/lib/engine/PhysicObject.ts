@@ -12,7 +12,7 @@ export interface PhysicObject {
 
 export const createPhysicObjects = (options: {
     geometry: Geometry;
-    fixed: boolean;
+    fixed?: boolean;
     position?: Victor;
     velocity?: Victor;
     mass?: number;
