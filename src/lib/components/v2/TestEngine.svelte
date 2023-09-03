@@ -19,7 +19,7 @@
         history = history;
     };
 
-    const world = new World({ reporter, enableGravity: false });
+    const world = new World({ reporter, enableGravity: true });
 
     const addBallToWorld = () => {
         while (world.objects.length) world.objects.pop();
