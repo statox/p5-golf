@@ -1,4 +1,5 @@
 import Victor from 'victor';
+import { LineSphereCollider } from './collisions';
 import type { PhysicObject } from './PhysicObject';
 
 export type WorldReporter = (world: World) => void;
@@ -9,6 +10,7 @@ export class World {
     t: number;
     objects: PhysicObject[];
     gravity = new Victor(0, -9.8);
+    drag = 0.01; // [0. 1] 0= no drag
     reporter: WorldReporter;
     lastTick: number;
 
@@ -35,7 +37,8 @@ export class World {
 
     applyDynamics(o: PhysicObject) {
         const now = Date.now();
-        const dt = (now - this.lastTick) / (1000 / 60);
+        const dtOffset = 5;
+        const dt = (now - this.lastTick) / ((1000 / 60) * dtOffset);
 
         if (this.gravityEnabled) {
             this.applyGravity(o);
@@ -51,11 +54,22 @@ export class World {
         }
         totalForce.divideScalar(o.m);
 
-        o.velocity.add(totalForce.multiplyScalar(dt));
+        const drag = 1 - this.drag;
+        o.velocity.add(totalForce.multiplyScalar(dt)).multiplyScalar(drag);
         o.position.add(o.velocity.clone().multiplyScalar(dt));
     }
 
     applyCollisions(o: PhysicObject) {
+        const wall = this.objects[0];
+        const sphere = this.objects[1];
+        const intersection = LineSphereCollider(wall, sphere);
+        if (intersection) {
+            console.log(intersection);
+            sphere.data.isColliding = true;
+        } else {
+            sphere.data.isColliding = false;
+        }
+
         const restitutionCoeff = 0.9;
         if (o.position.x < 0 && o.velocity.x < 0) {
             o.velocity.x *= -restitutionCoeff;

@@ -8,6 +8,9 @@ export interface PhysicObject {
     position: Victor;
     velocity: Victor;
     acceleration: Victor[];
+    data: {
+        isColliding: boolean;
+    };
 }
 
 export const createPhysicObjects = (options: {
@@ -23,7 +26,10 @@ export const createPhysicObjects = (options: {
         position: options.position?.clone() ?? new Victor(0, 0),
         velocity: options.velocity?.clone() ?? new Victor(0, 0),
         acceleration: [],
-        fixed: options.fixed ?? false
+        fixed: options.fixed ?? false,
+        data: {
+            isColliding: false
+        }
     };
 };
 
