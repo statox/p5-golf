@@ -7,7 +7,7 @@ export const LineSphereCollider = (line: PhysicObject, sphere: PhysicObject) => 
     }
 
     const E = line.position.clone();
-    const L = line.geometry.vector.clone();
+    const L = line.position.clone().add(line.geometry.vector);
     const C = sphere.position.clone();
     const r = sphere.geometry.r;
 

@@ -64,7 +64,6 @@ export class World {
         const sphere = this.objects[1];
         const intersection = LineSphereCollider(wall, sphere);
         if (intersection) {
-            console.log(intersection);
             sphere.data.isColliding = true;
         } else {
             sphere.data.isColliding = false;
@@ -93,10 +92,9 @@ export class World {
         this.t++;
 
         for (const o of this.objects) {
-            if (o.fixed) {
-                continue;
+            if (!o.fixed) {
+                this.applyDynamics(o);
             }
-            this.applyDynamics(o);
             this.applyCollisions(o);
         }
 

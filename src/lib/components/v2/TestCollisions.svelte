@@ -2,7 +2,7 @@
     import Victor from 'victor';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { World, applyForce, createPhysicObjects } from '$lib/engine';
+    import { World, applyForce, createPhysicObjects, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
 
     console.clear();
@@ -21,29 +21,30 @@
     };
 
     const world = new World({ reporter, enableGravity: true });
+    let sphere: PhysicObject;
+    let wall: PhysicObject;
 
     const addBallToWorld = () => {
         while (world.objects.length) world.objects.pop();
-        const bottom = createPhysicObjects({
+        wall = createPhysicObjects({
             geometry: {
                 type: 'line',
-                vector: new Victor(100, 0)
+                vector: new Victor(80, 20)
             },
-            position: new Victor(0, 10),
+            position: new Victor(10, 20),
             fixed: true
         });
-        world.addObject(bottom);
-        for (let _ = 0; _ < 1; _++) {
-            const o = createPhysicObjects({
-                geometry: {
-                    type: 'sphere',
-                    r: 5
-                },
-                position: new Victor(20, 50),
-                velocity: new Victor(2.5, 2.5)
-            });
-            world.addObject(o);
-        }
+        world.addObject(wall);
+        sphere = createPhysicObjects({
+            geometry: {
+                type: 'sphere',
+                r: 10
+            },
+            position: new Victor(20, 50),
+            velocity: new Victor(2.5, 2.5),
+            fixed: true
+        });
+        world.addObject(sphere);
     };
 
     let _p5: p5;
@@ -55,6 +56,13 @@
 
             return (value as Victor).clone().multiplyScalar(SCALE);
         };
+        const screenToWorldScale = (value: number | Victor) => {
+            if (typeof value === 'number') {
+                return value / SCALE;
+            }
+
+            return (value as Victor).clone().divideScalar(SCALE);
+        };
         p5.setup = () => {
             _p5 = p5;
             const screenDim = worldToScreenScale(world.dimensions) as Victor;
@@ -65,11 +73,43 @@
             addBallToWorld();
         };
 
+        let selected: string | undefined;
         p5.draw = () => {
             p5.background(0);
             world.step();
 
+            if (p5.mouseIsPressed) {
+                const pos = screenToWorldScale(
+                    new Victor(p5.mouseX, p5.height - p5.mouseY)
+                ) as Victor;
+
+                if (!selected) {
+                    if (pos.distance(sphere.position) < 2) {
+                        selected = 'sphere';
+                    } else if (pos.distance(wall.position) < 2) {
+                        selected = 'wallstart';
+                    } else if (pos.distance(wall.geometry.vector.clone().add(wall.position)) < 2) {
+                        selected = 'wallend';
+                    }
+                }
+
+                if (selected === 'sphere') {
+                    sphere.position.copy(pos);
+                }
+                if (selected === 'wallstart') {
+                    wall.position.copy(pos);
+                }
+                if (selected === 'wallend') {
+                    const diff = pos.clone().subtract(wall.position);
+                    wall.geometry.vector.copy(diff);
+                }
+            } else {
+                selected = undefined;
+            }
+
             for (const o of world.objects) {
+                p5.stroke(sphere.data.isColliding ? 'red' : 'white');
+
                 const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
                 const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
                 if (o.geometry.type === 'sphere') {
@@ -80,7 +120,7 @@
 
                 if (o.geometry.type === 'line') {
                     const x1 = x + p5.map(o.geometry.vector.x, 0, world.dimensions.x, 0, p5.width);
-                    const y1 = y + p5.map(o.geometry.vector.y, 0, world.dimensions.y, 0, p5.height);
+                    const y1 = y - p5.map(o.geometry.vector.y, 0, world.dimensions.y, 0, p5.height);
                     p5.strokeWeight(2);
                     p5.line(x, y, x1, y1);
                 }
