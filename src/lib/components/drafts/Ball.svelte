@@ -2,9 +2,9 @@
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
-    import { generateTerrain, drawTerrain } from '../services/terrain';
-    import { generateBall, drawBall, setBall } from '../services/ball';
-    import { updateBall, drawNormalVector } from '../services/physics';
+    import { generateTerrain, drawTerrain } from '$lib/services/terrain';
+    import { generateBall, drawBall, setBall } from '$lib/services/ball';
+    import { updateBall, drawNormalVector } from '$lib/services/physics';
 
     let _p5: p5;
 

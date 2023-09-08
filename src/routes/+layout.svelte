@@ -1,9 +1,10 @@
 <header>
-    <h1>2D Golf</h1>
+    <h1>My physics engine</h1>
 
     <nav>
         <a href="/">Home</a> |
-        <a href="/v2">V2</a> |
+        <a href="/drafts">Drafts</a> |
+        <a href="/engineTests">Tests engine</a> |
     </nav>
 </header>
 

@@ -2,7 +2,7 @@
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
-    import { generateTerrain, drawTerrain } from '../services/terrain';
+    import { generateTerrain, drawTerrain } from '$lib/services/terrain';
 
     let _p5: p5;
 
