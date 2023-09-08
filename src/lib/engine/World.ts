@@ -60,13 +60,18 @@ export class World {
     }
 
     applyCollisions(o: PhysicObject) {
-        const wall = this.objects[0];
-        const sphere = this.objects[1];
-        const intersection = LineSphereCollider(wall, sphere);
-        if (intersection) {
-            sphere.data.isColliding = true;
-        } else {
-            sphere.data.isColliding = false;
+        const sphere = this.objects.find((o) => o.geometry.type === 'sphere');
+        const walls = this.objects.filter((o) => o.geometry.type === 'line');
+        if (!sphere) {
+            throw new Error('No sphere in world');
+        }
+
+        sphere.data.isColliding = false;
+        for (const wall of walls) {
+            const intersection = LineSphereCollider(wall, sphere);
+            if (intersection) {
+                sphere.data.isColliding = true;
+            }
         }
 
         const restitutionCoeff = 0.9;
