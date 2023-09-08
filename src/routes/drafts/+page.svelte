@@ -5,6 +5,7 @@
     import Physics1d from '$lib/components/drafts/Physics1d.svelte';
     import BounceDirection from '$lib/components/drafts/BounceDirection.svelte';
     import VectorsIntersection from '$lib/components/drafts/VectorsIntersection.svelte';
+    import VectorsAngle from '$lib/components/drafts/VectorsAngle.svelte';
     import SphereLineIntersection from '$lib/components/drafts/SphereLineIntersection.svelte';
 </script>
 
@@ -16,6 +17,7 @@
         <Tab>Terrain Generator</Tab>
         <Tab>Vectors intersection</Tab>
         <Tab>Sphere-Line intersection</Tab>
+        <Tab>Vectors angles</Tab>
     </TabList>
 
     <TabPanel>
@@ -35,5 +37,8 @@
     </TabPanel>
     <TabPanel>
         <SphereLineIntersection />
+    </TabPanel>
+    <TabPanel>
+        <VectorsAngle />
     </TabPanel>
 </Tabs>
