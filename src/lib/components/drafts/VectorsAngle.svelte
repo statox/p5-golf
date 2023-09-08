@@ -10,6 +10,8 @@
     let tanTheta = 0;
     let theta = 0;
 
+    let wallNormal: Victor;
+
     // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
     const updateIntersection = () => {
         const x1 = v1.position.x;
@@ -66,17 +68,30 @@
         // theta is the angle between the velocity and the wall
         tanTheta = (m1 - m2) / (1 + m1 * m2);
         theta = Math.atan(tanTheta);
+
+        // https://stackoverflow.com/a/1243676/4194289
+        const dx = x4 - x3;
+        const dy = y4 - y3;
+        // TO FIX: The normal is in the right direction only in half of the cases
+        wallNormal = new Victor(dy, -dx);
+        // if (theta > 0) {
+        //     wallNormal = new Victor(-dy, dx);
+        // } else {
+        //     wallNormal = new Victor(dy, -dx);
+        // }
     };
 
     const radToDeg = (r: number) => r * (180 / Math.PI);
 
     const v1 = {
-        position: new Victor(200, 300),
-        end: new Victor(600, 300)
+        position: new Victor(400, 200),
+        end: new Victor(500, 400),
+        color: 'white'
     };
     const v2 = {
-        position: new Victor(300, 500),
-        end: new Victor(300, 200)
+        position: new Victor(200, 300),
+        end: new Victor(600, 300),
+        color: 'yellow'
     };
     const intersection = new Victor(-1, -1);
     let selected: string | undefined;
@@ -92,8 +107,9 @@
             updateIntersection();
             updateAngle();
 
-            p5.stroke(255);
+            p5.stroke(v1.color);
             p5.line(v1.position.x, v1.position.y, v1.end.x, v1.end.y);
+            p5.stroke(v2.color);
             p5.line(v2.position.x, v2.position.y, v2.end.x, v2.end.y);
             p5.noStroke();
 
@@ -114,6 +130,16 @@
             if (intersection.x > 0) {
                 p5.fill('blue');
                 p5.circle(intersection.x, intersection.y, 8);
+
+                if (wallNormal) {
+                    p5.stroke('red');
+                    p5.line(
+                        intersection.x,
+                        intersection.y,
+                        intersection.x + wallNormal.x,
+                        intersection.y + wallNormal.y
+                    );
+                }
             }
 
             if (p5.mouseIsPressed) {
@@ -156,8 +182,8 @@
 
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
-    <p>slope 1: {slope1.toFixed(2)}</p>
-    <p>slope 2: {slope2.toFixed(2)}</p>
+    <p style="color:{v1.color}">slope velocity: {slope1.toFixed(2)}</p>
+    <p style="color:{v2.color}">slope wall: {slope2.toFixed(2)}</p>
 
     <br />
     <p>θ: {theta.toFixed(2)}rad ; {radToDeg(theta).toFixed(2)}deg</p>
