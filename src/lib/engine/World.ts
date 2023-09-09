@@ -35,11 +35,7 @@ export class World {
         o.acceleration.push(this.gravity);
     }
 
-    applyDynamics(o: PhysicObject) {
-        const now = Date.now();
-        const dtOffset = 5;
-        const dt = (now - this.lastTick) / ((1000 / 60) * dtOffset);
-
+    applyDynamics(dt: number, o: PhysicObject) {
         if (this.gravityEnabled) {
             this.applyGravity(o);
         }
@@ -59,34 +55,26 @@ export class World {
         o.position.add(o.velocity.clone().multiplyScalar(dt));
     }
 
-    applyCollisions(o: PhysicObject) {
+    applyCollisions(dt: number) {
         const sphere = this.objects.find((o) => o.geometry.type === 'sphere');
         const walls = this.objects.filter((o) => o.geometry.type === 'line');
         if (!sphere) {
             throw new Error('No sphere in world');
         }
 
-        sphere.data.isColliding = false;
+        const totalVelocity = new Victor(0, 0);
+        let nbCollisions = 0;
         for (const wall of walls) {
-            const intersection = LineSphereCollider(wall, sphere);
-            if (intersection) {
-                sphere.data.isColliding = true;
+            const bounceVelocity = LineSphereCollider(wall, sphere);
+            if (bounceVelocity) {
+                nbCollisions++;
+                totalVelocity.add(bounceVelocity);
             }
         }
-
-        const restitutionCoeff = 0.9;
-        if (o.position.x < 0 && o.velocity.x < 0) {
-            o.velocity.x *= -restitutionCoeff;
-        }
-        if (o.position.x > this.dimensions.x && o.velocity.x > 0) {
-            o.velocity.x *= -restitutionCoeff;
-        }
-
-        if (o.position.y < 0 && o.velocity.y < 0) {
-            o.velocity.y *= -restitutionCoeff;
-        }
-        if (o.position.y > this.dimensions.y && o.velocity.y > 0) {
-            o.velocity.y *= -restitutionCoeff;
+        if (nbCollisions > 0) {
+            totalVelocity.divideScalar(nbCollisions);
+            sphere.velocity.copy(totalVelocity);
+            sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
         }
     }
 
@@ -96,12 +84,16 @@ export class World {
         }
         this.t++;
 
+        const now = Date.now();
+        const dtOffset = 5;
+        const dt = (now - this.lastTick) / ((1000 / 60) * dtOffset);
+
         for (const o of this.objects) {
             if (!o.fixed) {
-                this.applyDynamics(o);
+                this.applyDynamics(dt, o);
             }
-            this.applyCollisions(o);
         }
+        this.applyCollisions(dt);
 
         if (this.reporter) {
             this.reporter(this);

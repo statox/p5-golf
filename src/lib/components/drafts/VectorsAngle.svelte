@@ -60,6 +60,7 @@
         const x4 = v2.end.x;
         const y4 = v2.end.y;
 
+        /* m1,m2: slope of each line */
         let m1 = (y2 - y1) / (x2 - x1);
         let m2 = (y4 - y3) / (x4 - x3);
 
@@ -78,7 +79,7 @@
         // https://stackoverflow.com/a/1243676/4194289
         const dx = x4 - x3;
         const dy = y4 - y3;
-        // TO FIX: The normal is in the right direction only in half of the cases
+
         const possibleWallNormal1 = new Victor(-dy, dx);
         const possibleWallNormal2 = new Victor(dy, -dx);
 
