@@ -7,38 +7,28 @@
     import VectorsIntersection from '$lib/components/drafts/VectorsIntersection.svelte';
     import VectorsAngle from '$lib/components/drafts/VectorsAngle.svelte';
     import SphereLineIntersection from '$lib/components/drafts/SphereLineIntersection.svelte';
+
+    const tabs = [
+        { title: 'Bounce', component: VectorsAngle },
+        { title: 'Sphere-Line intersection', component: SphereLineIntersection },
+        { title: 'Vectors intersection', component: VectorsIntersection },
+        { title: 'Terrain Generator', component: TerrainGenerator },
+        { title: 'Ball', component: Ball },
+        { title: 'Physics 1d', component: Physics1d },
+        { title: 'Bounce direction', component: BounceDirection }
+    ];
 </script>
 
 <Tabs>
     <TabList>
-        <Tab>Bounce direction</Tab>
-        <Tab>Physics 1d</Tab>
-        <Tab>Ball</Tab>
-        <Tab>Terrain Generator</Tab>
-        <Tab>Vectors intersection</Tab>
-        <Tab>Sphere-Line intersection</Tab>
-        <Tab>Vectors angles</Tab>
+        {#each tabs as tab}
+            <Tab>{tab.title}</Tab>
+        {/each}
     </TabList>
 
-    <TabPanel>
-        <BounceDirection />
-    </TabPanel>
-    <TabPanel>
-        <Physics1d />
-    </TabPanel>
-    <TabPanel>
-        <Ball />
-    </TabPanel>
-    <TabPanel>
-        <TerrainGenerator />
-    </TabPanel>
-    <TabPanel>
-        <VectorsIntersection />
-    </TabPanel>
-    <TabPanel>
-        <SphereLineIntersection />
-    </TabPanel>
-    <TabPanel>
-        <VectorsAngle />
-    </TabPanel>
+    {#each tabs as tab}
+        <TabPanel>
+            <svelte:component this={tab.component} />
+        </TabPanel>
+    {/each}
 </Tabs>
