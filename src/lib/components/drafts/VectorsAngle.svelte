@@ -11,6 +11,9 @@
     let theta = 0;
     let bouncedVelocity: Victor;
 
+    let frictionCoefficient = 0.2;
+    let restitutionCoefficient = 0.8;
+
     let wallNormal: Victor;
 
     // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
@@ -104,11 +107,9 @@
         const w = v.subtract(u);
 
         /* bouncedVelocity: Resulting velocity affected by friction and restitution */
-        const restitutionCoefficient = 0.8;
-        const frictionCoefficient = 0.2;
-        bouncedVelocity = w
-            .multiplyScalar(1 - frictionCoefficient)
-            .subtract(u.multiplyScalar(restitutionCoefficient));
+        const r = restitutionCoefficient;
+        const f = frictionCoefficient;
+        bouncedVelocity = w.multiplyScalar(1 - f).subtract(u.multiplyScalar(r));
     };
 
     const radToDeg = (r: number) => r * (180 / Math.PI);
@@ -140,7 +141,9 @@
             p5.stroke(v1.color);
             p5.line(v1.position.x, v1.position.y, v1.end.x, v1.end.y);
             p5.stroke(v2.color);
+            p5.strokeWeight(3);
             p5.line(v2.position.x, v2.position.y, v2.end.x, v2.end.y);
+            p5.strokeWeight(1);
             p5.noStroke();
 
             p5.fill('green');
@@ -221,13 +224,73 @@
 </script>
 
 <div class="d-flex justify-content-center">
-    <P5 {sketch} />
-    <p style="color:{v1.color}">slope velocity: {slope1.toFixed(2)}</p>
-    <p style="color:{v2.color}">slope wall: {slope2.toFixed(2)}</p>
+    <p>
+        The <span style="color:{v1.color}">{v1.color} line</span> represents an incoming velocity
+        and the <span style="color:{v2.color}">{v2.color} line</span> is a wall to bounce of off.
+    </p>
+    <p>
+        The <span style="color:{'red'}">red line</span> is the normal vector of the wall. And the
+        <span style="color:{'green'}">green line</span> is the velocity after the bounce applied to the
+        intersection point and affected by restitution and friction coefficient.
+    </p>
+    <p>Move the lines around by drag-and-droping each ends.</p>
 
-    <br />
-    <p>θ: {theta.toFixed(2)}rad ; {radToDeg(theta).toFixed(2)}deg</p>
-    <p>tan(θ): {tanTheta.toFixed(2)}</p>
-    <br />
-    <p>bounced velocity: {bouncedVelocity?.toString()}</p>
+    <P5 {sketch} />
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Friction coefficient</th>
+                <td
+                    ><input
+                        bind:value={frictionCoefficient}
+                        type="number"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                    /></td
+                >
+                <td>From 0 (No friction) to 1 (Maximal friction)</td>
+            </tr>
+            <tr>
+                <th>Restitution coefficient</th>
+                <td
+                    ><input
+                        bind:value={restitutionCoefficient}
+                        type="number"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                    /></td
+                >
+                <td>From 0 (Fully inelastic) to 1 (Fully elastic)</td>
+            </tr>
+            <tr>
+                <th>Slope</th>
+                <td>Velocity: {slope1.toFixed(2)}</td>
+                <td>Wall: {slope2.toFixed(2)}</td>
+            </tr>
+            <tr>
+                <th>Theta</th>
+                <td>{theta.toFixed(2)} rad</td>
+                <td>{radToDeg(theta).toFixed(2)} deg</td>
+            </tr>
+            <tr>
+                <th>Bounced velocity</th>
+                <td>{bouncedVelocity?.clone().unfloat().toString()}</td>
+                <td>
+                    Mag: {bouncedVelocity?.length().toFixed(2)}
+                    ({(
+                        (100 * bouncedVelocity?.length()) /
+                        v1.end.clone().subtract(v1.position)?.length()
+                    ).toFixed(2)})% of incoming
+                </td>
+            </tr>
+            <tr>
+                <th>Incoming velocity</th>
+                <td>{v1.end.clone().subtract(v1.position).unfloat().toString()}</td>
+                <td>Mag: {v1.end.clone().subtract(v1.position)?.length().toFixed(2)} </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
