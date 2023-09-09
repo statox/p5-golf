@@ -65,20 +65,32 @@
         slope1 = m1;
         slope2 = m2;
 
+        /* theta: angle between the vectors */
         // theta is the angle between the velocity and the wall
         tanTheta = (m1 - m2) / (1 + m1 * m2);
         theta = Math.atan(tanTheta);
 
+        /* wallNormal: Normal to the wall with in the direction of the incoming speed*/
         // https://stackoverflow.com/a/1243676/4194289
         const dx = x4 - x3;
         const dy = y4 - y3;
         // TO FIX: The normal is in the right direction only in half of the cases
-        wallNormal = new Victor(dy, -dx);
-        // if (theta > 0) {
-        //     wallNormal = new Victor(-dy, dx);
-        // } else {
-        //     wallNormal = new Victor(dy, -dx);
-        // }
+        const possibleWallNormal1 = new Victor(-dy, dx);
+        const possibleWallNormal2 = new Victor(dy, -dx);
+
+        // Test points are used to determine which side of the line each normal points to
+        // to allow choosing the normal pointing in the incoming direction of v1
+        const testPointWallNormal1 = intersection.clone().add(possibleWallNormal1);
+        const testPointWallNormal2 = intersection.clone().add(possibleWallNormal2);
+
+        if (
+            v1.position.distanceSq(testPointWallNormal1) <
+            v1.position.distanceSq(testPointWallNormal2)
+        ) {
+            wallNormal = possibleWallNormal1;
+        } else {
+            wallNormal = possibleWallNormal2;
+        }
     };
 
     const radToDeg = (r: number) => r * (180 / Math.PI);
