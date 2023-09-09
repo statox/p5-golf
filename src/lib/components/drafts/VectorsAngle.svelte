@@ -9,6 +9,7 @@
     let slope2 = 0;
     let tanTheta = 0;
     let theta = 0;
+    let bouncedVelocity: Victor;
 
     let wallNormal: Victor;
 
@@ -91,6 +92,23 @@
         } else {
             wallNormal = possibleWallNormal2;
         }
+
+        /* u,w: Components of the speed along the wall and the normal */
+        // https://stackoverflow.com/a/573206/4194289
+        const n = wallNormal.clone().normalize();
+        const v = v1.end.clone().subtract(v1.position);
+
+        // u = (v · n / n · n) n
+        // w = v − u
+        const u = n.multiplyScalar(v.dot(n));
+        const w = v.subtract(u);
+
+        /* bouncedVelocity: Resulting velocity affected by friction and restitution */
+        const restitutionCoefficient = 0.8;
+        const frictionCoefficient = 0.2;
+        bouncedVelocity = w
+            .multiplyScalar(1 - frictionCoefficient)
+            .subtract(u.multiplyScalar(restitutionCoefficient));
     };
 
     const radToDeg = (r: number) => r * (180 / Math.PI);
@@ -152,6 +170,16 @@
                         intersection.y + wallNormal.y
                     );
                 }
+
+                if (bouncedVelocity) {
+                    p5.stroke('green');
+                    p5.line(
+                        intersection.x,
+                        intersection.y,
+                        intersection.x + bouncedVelocity.x,
+                        intersection.y + bouncedVelocity.y
+                    );
+                }
             }
 
             if (p5.mouseIsPressed) {
@@ -201,4 +229,5 @@
     <p>θ: {theta.toFixed(2)}rad ; {radToDeg(theta).toFixed(2)}deg</p>
     <p>tan(θ): {tanTheta.toFixed(2)}</p>
     <br />
+    <p>bounced velocity: {bouncedVelocity?.toString()}</p>
 </div>
