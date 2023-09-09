@@ -1,4 +1,4 @@
-import{S as V,i as j,s as w,C as z,k as v,q as f,a as L,l as y,m as E,r as _,h as r,c as N,n as M,b as R,D as s,E as B,F as I,G as J,f as K,t as O}from"../../chunks/index-33d6e1ba.js";function P(h){let n,o,$,c,t,u,A,D,d,H,T,p,b,q,g,m;const C=h[1].default,a=z(C,h,h[0],null);return{c(){n=v("header"),o=v("h1"),$=f("My physics engine"),c=L(),t=v("nav"),u=v("a"),A=f("Home"),D=f(` |
+import{S as V,i as j,s as w,C as z,k as v,q as f,a as L,l as y,m as E,r as _,h as r,c as N,n as M,b as R,D as s,E as B,F as I,G as J,f as K,t as O}from"../../chunks/index-f06bf7c7.js";function P(h){let n,o,$,c,t,u,A,D,d,H,T,p,b,q,g,m;const C=h[1].default,a=z(C,h,h[0],null);return{c(){n=v("header"),o=v("h1"),$=f("My physics engine"),c=L(),t=v("nav"),u=v("a"),A=f("Home"),D=f(` |
         `),d=v("a"),H=f("Drafts"),T=f(` |
         `),p=v("a"),b=f("Tests engine"),q=f(" |"),g=L(),a&&a.c(),this.h()},l(e){n=y(e,"HEADER",{});var l=E(n);o=y(l,"H1",{});var S=E(o);$=_(S,"My physics engine"),S.forEach(r),c=N(l),t=y(l,"NAV",{});var i=E(t);u=y(i,"A",{href:!0});var k=E(u);A=_(k,"Home"),k.forEach(r),D=_(i,` |
         `),d=y(i,"A",{href:!0});var F=E(d);H=_(F,"Drafts"),F.forEach(r),T=_(i,` |
