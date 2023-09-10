@@ -1,7 +1,11 @@
 import Victor from 'victor';
 import type { PhysicObject } from './PhysicObject';
 
-// https://stackoverflow.com/a/1084899
+// TO FIX:
+//  - If the speed is big enough the ball is too far for getLineSphereIntersectionPoint to detect
+//  a collision so the sphere passes through.
+//  - In some cases (e.g. dropping the ball on the extremity of an 45deg inclined wall) the sphere
+//  gets impaled on the wall, maybe I need to move the sphere to make it impossible to get stuck.
 export const LineSphereCollider = (line: PhysicObject, sphere: PhysicObject) => {
     if (sphere.geometry.type !== 'sphere' || line.geometry.type !== 'line') {
         throw new Error('invalid geometry');
@@ -69,6 +73,8 @@ export const getLineSphereIntersectionPoint = (line: PhysicObject, sphere: Physi
         throw new Error('invalid geometry');
     }
 
+    // Get the intersection point between a sphere and a line
+    // https://stackoverflow.com/a/1084899
     const E = line.position.clone();
     const L = line.position.clone().add(line.geometry.vector);
     const C = sphere.position.clone();
