@@ -5,4 +5,4 @@ export type Ball = {
     position: Victor;
     velocity: Victor;
     acceleration: Victor;
-}
+};
