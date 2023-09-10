@@ -10,7 +10,7 @@ export class World {
     t: number;
     objects: PhysicObject[];
     gravity = new Victor(0, -9.8);
-    // drag = 0.01; // [0. 1] 0= no drag
+    // drag = 0.001; // [0. 1] 0= no drag
     drag = 0.0; // [0. 1] 0= no drag
     reporter: WorldReporter;
 
@@ -88,16 +88,52 @@ export class World {
             }
         }
         this.applyCollisions(dt);
+    }
+
+    stepFixedDt() {
+        const dt = 0.01;
+        const now = Date.now() / 1000;
+        realDt = now - lastTick;
+        lastTick = now;
+
+        this._step(dt);
+        this.t += dt;
+
         if (this.reporter) {
-            this.reporter(this);
+            this.reporter({ ...this, frameTime: realDt });
+        }
+    }
+
+    // c.f. "The final touch" in https://gafferongames.com/post/fix_your_timestep/
+    stepAccumulator() {
+        const dt = 0.01;
+        const now = Date.now() / 1000;
+        if (lastTick === 0) {
+            lastTick = now;
+        }
+        realDt = now - lastTick;
+
+        accumulator += realDt;
+        let steps = 0;
+        while (accumulator >= dt && steps < 5) {
+            steps++;
+            this._step(dt);
+            accumulator -= dt;
+            this.t += dt;
+
+            if (this.reporter) {
+                this.reporter({ ...this, frameTime: realDt });
+            }
         }
     }
 
     step() {
-        const dt = 0.02;
-        console.log(dt);
-
-        this._step(dt);
-        this.t += dt;
+        // this.stepFixedDt();
+        this.stepAccumulator();
     }
 }
+
+let lastTick = 0;
+let realDt = 0;
+
+let accumulator = 0;

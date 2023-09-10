@@ -8,11 +8,14 @@
 
     console.clear();
 
-    let pauseOnCollision = false;
+    let pauseOnCollision = true;
     let pause = true;
     let observedData = {
         t: '0',
-        spherePos: new Victor(0, 0)
+        frameTime: '0',
+        spherePos: new Victor(0, 0),
+        sphereVel: new Victor(0, 0),
+        ballIsColliding: false
     };
     let world: World;
 
@@ -20,10 +23,13 @@
     const resetWorld = () => {
         world = new World({
             dimensions: new Victor(10, 10),
-            reporter: () => {
-                observedData.t = world?.t?.toFixed(2);
+            reporter: (reportedData: any) => {
+                observedData.t = reportedData?.t?.toFixed(2);
                 observedData.spherePos.copy(sphere.position);
+                observedData.sphereVel.copy(sphere.velocity);
+                observedData.frameTime = reportedData.frameTime.toFixed(3);
                 observedData = observedData;
+                observedData.ballIsColliding = sphere.data.isColliding;
 
                 if (pauseOnCollision && sphere.data.isColliding && !pause) {
                     pause = true;
@@ -35,16 +41,34 @@
         const bottom = createPhysicObjects({
             geometry: {
                 type: 'line',
-                vector: new Victor(100, 0)
+                vector: new Victor(10, 0)
             },
             position: new Victor(0, 0),
             fixed: true
         });
         world.addObject(bottom);
+        const left = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(0, 100)
+            },
+            position: new Victor(0, 0),
+            fixed: true
+        });
+        world.addObject(left);
+        const right = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(0, 100)
+            },
+            position: new Victor(10, 0),
+            fixed: true
+        });
+        world.addObject(right);
         sphere = createPhysicObjects({
             geometry: {
                 type: 'sphere',
-                r: 5
+                r: 0.1
             },
             position: new Victor(5, 10),
             velocity: new Victor(0, 0)
@@ -69,7 +93,7 @@
 
     const drawWorld = (p5: p5, world: World) => {
         for (const o of world.objects) {
-            p5.stroke(o.data.isColliding ? 'red' : 'white');
+            p5.stroke(observedData.ballIsColliding ? 'red' : 'white');
 
             const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
             const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
@@ -158,9 +182,12 @@
 <table>
     <tbody>
         <tr>
-            <th>Time</th>
+            <th>Simulation time/Frame duration</th>
             <td>
                 {observedData.t}
+            </td>
+            <td>
+                {observedData.frameTime}
             </td>
         </tr>
         <tr>
@@ -170,6 +197,14 @@
             </td>
             <td>
                 {observedData.spherePos.y.toFixed(2)}
+            </td>
+        <tr>
+            <th>Sphere velocity</th>
+            <td>
+                {observedData.sphereVel.x.toFixed(2)}
+            </td>
+            <td>
+                {observedData.sphereVel.y.toFixed(2)}
             </td>
         </tr>
     </tbody>
