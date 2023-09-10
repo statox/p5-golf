@@ -1,3 +1,5 @@
-<h2>Hello</h2>
+<script>
+    import About from '$lib/components/about/About.svelte';
+</script>
 
-<p>This application is my work-in-progress physic engine</p>
+<About />
