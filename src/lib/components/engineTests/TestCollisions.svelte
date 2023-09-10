@@ -13,7 +13,7 @@
         const lastObject = world.objects[world.objects.length - 1];
         const pos = lastObject.position.clone().toFixed(2);
         const vel = lastObject.velocity.clone().toFixed(2);
-        history.push(`${world.t} - pos: ${pos} - vel: ${vel}`);
+        history.push(`${world.t.toFixed(2)} - pos: ${pos} - vel: ${vel}`);
         if (history.length > 50) {
             history.shift();
         }

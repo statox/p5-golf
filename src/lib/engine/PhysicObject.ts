@@ -22,7 +22,7 @@ export const createPhysicObjects = (options: {
 }): PhysicObject => {
     return {
         geometry: options.geometry,
-        m: options.mass ?? 10,
+        m: options.mass ?? 1,
         position: options.position?.clone() ?? new Victor(0, 0),
         velocity: options.velocity?.clone() ?? new Victor(0, 0),
         acceleration: [],

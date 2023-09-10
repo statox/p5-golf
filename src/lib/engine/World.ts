@@ -10,9 +10,9 @@ export class World {
     t: number;
     objects: PhysicObject[];
     gravity = new Victor(0, -9.8);
-    drag = 0.01; // [0. 1] 0= no drag
+    // drag = 0.01; // [0. 1] 0= no drag
+    drag = 0.0; // [0. 1] 0= no drag
     reporter: WorldReporter;
-    lastTick: number;
 
     constructor(options: {
         reporter?: WorldReporter;
@@ -24,7 +24,6 @@ export class World {
         this.objects = [];
         this.t = 0;
         this.reporter = options.reporter || console.log;
-        this.lastTick = 0;
     }
 
     toggleGravity() {
@@ -82,27 +81,23 @@ export class World {
         }
     }
 
-    step() {
-        if (this.t === 0) {
-            this.lastTick = Date.now();
-        }
-        this.t++;
-
-        const now = Date.now();
-        const dtOffset = 5;
-        const dt = (now - this.lastTick) / ((1000 / 60) * dtOffset);
-
+    _step(dt: number) {
         for (const o of this.objects) {
             if (!o.fixed) {
                 this.applyDynamics(dt, o);
             }
         }
         this.applyCollisions(dt);
-
         if (this.reporter) {
             this.reporter(this);
         }
+    }
 
-        this.lastTick = Date.now();
+    step() {
+        const dt = 0.02;
+        console.log(dt);
+
+        this._step(dt);
+        this.t += dt;
     }
 }

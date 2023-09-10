@@ -8,16 +8,30 @@
 
     console.clear();
 
-    const world = new World({
-        reporter: () => {
-            return;
-        },
-        enableGravity: true
-    });
+    let pauseOnCollision = false;
+    let pause = true;
+    let observedData = {
+        t: '0',
+        spherePos: new Victor(0, 0)
+    };
+    let world: World;
 
     let sphere: PhysicObject;
     const resetWorld = () => {
-        while (world.objects.length) world.objects.pop();
+        world = new World({
+            dimensions: new Victor(10, 10),
+            reporter: () => {
+                observedData.t = world?.t?.toFixed(2);
+                observedData.spherePos.copy(sphere.position);
+                observedData = observedData;
+
+                if (pauseOnCollision && sphere.data.isColliding && !pause) {
+                    pause = true;
+                }
+            },
+            enableGravity: true
+        });
+
         const bottom = createPhysicObjects({
             geometry: {
                 type: 'line',
@@ -27,49 +41,13 @@
             fixed: true
         });
         world.addObject(bottom);
-        const top = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(100, 0)
-            },
-            position: new Victor(0, 100),
-            fixed: true
-        });
-        world.addObject(top);
-        const left = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(0, 100)
-            },
-            position: new Victor(0, 0),
-            fixed: true
-        });
-        world.addObject(left);
-        const right = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(0, 100)
-            },
-            position: new Victor(100, 0),
-            fixed: true
-        });
-        world.addObject(right);
-        const diag = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(50, 50)
-            },
-            position: new Victor(20, 10),
-            fixed: true
-        });
-        world.addObject(diag);
         sphere = createPhysicObjects({
             geometry: {
                 type: 'sphere',
-                r: 2
+                r: 5
             },
-            position: new Victor(20, 50),
-            velocity: new Victor(Math.random() * 5 - 2.5, Math.random() * 20)
+            position: new Victor(5, 10),
+            velocity: new Victor(0, 0)
         });
         world.addObject(sphere);
     };
@@ -110,19 +88,18 @@
         }
     };
 
-    const SCALE = 6;
+    const SCALE = 60;
     let _p5: p5;
     const sketch: Sketch = (p5) => {
         p5.setup = () => {
             _p5 = p5;
+            resetWorld();
             const screenDim = worldToScreenScale(world.dimensions) as Victor;
             p5.createCanvas(screenDim.x, screenDim.y);
             p5.background(0);
             p5.fill(255);
             p5.stroke(255);
             resetWorld();
-
-            // p5.frameRate(30);
         };
 
         p5.draw = () => {
@@ -136,7 +113,9 @@
             } else {
                 sphere.fixed = false;
             }
-            world.step();
+            if (!pause) {
+                world.step();
+            }
             drawWorld(p5, world);
         };
 
@@ -157,6 +136,7 @@
             const vel = pressPosition.subtract(pos);
             sphere.position.copy(pos);
             sphere.velocity.copy(vel);
+
         };
     };
 
@@ -169,13 +149,29 @@
     <P5 {sketch} />
 </div>
 
+<div>
+    <button on:click={() => pauseOnCollision = !pauseOnCollision}>{pauseOnCollision? 'Disable' : 'Enable'} pause on collision</button>
+    <button on:click={() => pause = !pause}>{pause ? 'Play' : 'Pause'}</button>
+    <button on:click={resetWorld}>Reset</button>
+</div>
+
 <table>
     <tbody>
         <tr>
-            <th>Gravity</th>
+            <th>Time</th>
             <td>
-                <button on:click={() => world.toggleGravity()}> Toggle </button>
+                {observedData.t}
+            </td>
+        </tr>
+        <tr>
+            <th>Sphere position</th>
+            <td>
+                {observedData.spherePos.x.toFixed(2)}
+            </td>
+            <td>
+                {observedData.spherePos.y.toFixed(2)}
             </td>
         </tr>
     </tbody>
 </table>
+
