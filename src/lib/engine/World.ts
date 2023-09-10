@@ -27,6 +27,10 @@ export class World {
         this.lastTick = 0;
     }
 
+    toggleGravity() {
+        this.gravityEnabled = !this.gravityEnabled;
+    }
+
     addObject(o: PhysicObject) {
         this.objects.push(o);
     }

@@ -3,8 +3,10 @@
     import TestEngine from '$lib/components/engineTests/TestEngine.svelte';
     import TestCollisions from '$lib/components/engineTests/TestCollisions.svelte';
     import TestCollisions2 from '$lib/components/engineTests/TestCollisions2.svelte';
+    import TestCollisions3 from '$lib/components/engineTests/TestCollisions3.svelte';
 
     const tabs = [
+        { title: 'Test collisions 3', component: TestCollisions3 },
         { title: 'Test collisions 2', component: TestCollisions2 },
         { title: 'Test collisions', component: TestCollisions },
         { title: 'Test engine', component: TestEngine }
