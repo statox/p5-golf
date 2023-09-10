@@ -1,10 +1,14 @@
+<script>
+    import { base } from '$app/paths';
+</script>
+
 <header>
     <h1>My physics engine</h1>
 
     <nav>
-        <a href="/">Home</a> |
-        <a href="/drafts">Drafts</a> |
-        <a href="/engineTests">Tests engine</a> |
+        <a href="{base}/">Home</a> |
+        <a href="{base}/drafts">Drafts</a> |
+        <a href="{base}/engineTests">Tests engine</a> |
     </nav>
 </header>
 
