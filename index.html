@@ -12,16 +12,16 @@
         
 		<link href="./_app/immutable/assets/0.2d7f1649.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/2.d3381522.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.c5f255ae.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.e8e3b186.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.e421d989.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.d16b8cf5.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.4ea73526.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.4444311c.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/paths.f33b0fef.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.672b416d.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/paths.b8c6c853.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.1c5bbaaf.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.a4192956.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.52486247.js">
 		<link rel="modulepreload" href="./_app/immutable/nodes/0.59145b92.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/2.1712e8f2.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.37858eb5.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/each.e59479a4.js">
     </head>
 
@@ -29,11 +29,11 @@
         <div style="display: contents">  <header data-svelte-h="svelte-17kqdy2"><h1>My physics engine</h1> <nav><a href="/">Home</a> |
         <a href="/drafts">Drafts</a> |
         <a href="/engineTests">Tests engine</a> |</nav></header> <h2 id="work-in-progress">Work in progress</h2><p>This website is a work-in-progress implementation of my homemade physics engine.</p><p>The <a target="_blank" rel="noopener noreferrer" href="./drafts">Drafts</a> page holds my preliminaries experiments to get myself familiar with different math concepts.
-The <a target="_blank" rel="noopener noreferrer" href="./engineTests">Tests engine</a> page is had various small projects using the engine allowing me to test it while I implement it.</p><h2 id="resources">Resources</h2><h3 id="general-introduction">General introduction</h3><ul><li>"2D Physics Engine Overview" An introduction to a 2D Rigid Body Physics Engine distributed with <code>myphysicslab</code>. <a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/develop/docs/Engine2D.html">https://www.myphysicslab.com/develop/docs/Engine2D.html</a> </li><li>"Physically Based Modeling: Principles and Practice Differential Equation Basics" The maths behind Euler's integration and timesteps <a target="_blank" rel="noopener noreferrer" href="https://www.cs.cmu.edu/afs/cs.cmu.edu/user/baraff/www/sigcourse/notesb.pdf">https://www.cs.cmu.edu/afs/cs.cmu.edu/user/baraff/www/sigcourse/notesb.pdf</a> </li></ul><h3 id="engine-implementation">Engine implementation</h3><ul><li>Discussion of various integration methods to run an engine. <a target="_blank" rel="noopener noreferrer" href="https://gafferongames.com/post/integration_basics/">https://gafferongames.com/post/integration_basics/</a> </li><li>Various approaches and good advice to handle timesteps in an engine. <a target="_blank" rel="noopener noreferrer" href="https://gafferongames.com/post/fix_your_timestep/">https://gafferongames.com/post/fix_your_timestep/</a> </li><li><a target="_blank" rel="noopener noreferrer" href="https://gamedev.stackexchange.com/q/1589">"When should I use a fixed or variable time step?"</a> (citing "fix your timestep") </li></ul><h3 id="collisions">Collisions</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://gamedev.stackexchange.com/q/32611">"What is the best way to handle simultaneous collisions in a physics engine?"</a> </li><li>"Multiple Simultaneous Collisions" An explanation of how myphysicslab's engine handles collisions <a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/engine2D/collision-methods-en.html">https://www.myphysicslab.com/engine2D/collision-methods-en.html</a> </li></ul><h3 id="maths">Maths</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://stackoverflow.com/q/1073336">"Circle line-segment collision detection algorithm?"</a> </li></ul><h3 id="other-implementations-and-examples">Other implementations and examples</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/engine2D/collision-en.html">Rigid Body Collisions</a> </li><li><a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/engine2D/rigid-body-en.html">Rigid Body Forces</a> </li></ul><h3 id="other">Other</h3><ul><li>"Physics Based Animation (Graphics Series) 1st Edition" (ISBN 978-1584503804) A book I'm considering buying. </li></ul> 
+The <a target="_blank" rel="noopener noreferrer" href="./engineTests">Tests engine</a> page is had various small projects using the engine allowing me to test it while I implement it.</p><h2 id="resources">Resources</h2><h3 id="general-introduction">General introduction</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/develop/docs/Engine2D.html">"2D Physics Engine Overview"</a> An introduction to a 2D Rigid Body Physics Engine distributed with <code>myphysicslab</code> </li><li><a target="_blank" rel="noopener noreferrer" href="https://www.cs.cmu.edu/afs/cs.cmu.edu/user/baraff/www/sigcourse/notesb.pdf">"Physically Based Modeling: Principles and Practice Differential Equation Basics"</a> The maths behind Euler's integration and timesteps </li></ul><h3 id="engine-implementation">Engine implementation</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://gafferongames.com/post/integration_basics/">Integration bascis</a> Discussion of various integration methods to run an engine. </li><li><a target="_blank" rel="noopener noreferrer" href="https://gafferongames.com/post/fix_your_timestep/">Fix your timestep</a> Various approaches and good advice to handle timesteps in an engine. </li><li><a target="_blank" rel="noopener noreferrer" href="https://gamedev.stackexchange.com/q/1589">"When should I use a fixed or variable time step?"</a> (citing "fix your timestep") </li></ul><h3 id="collisions">Collisions</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://gamedev.stackexchange.com/q/32611">"What is the best way to handle simultaneous collisions in a physics engine?"</a> </li><li><a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/engine2D/collision-methods-en.html">"Multiple Simultaneous Collisions"</a> An explanation of how myphysicslab's engine handles collisions </li></ul><h3 id="maths">Maths</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://stackoverflow.com/q/1073336">"Circle line-segment collision detection algorithm?"</a> </li></ul><h3 id="other-implementations-and-examples">Other implementations and examples</h3><ul><li><a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/engine2D/collision-en.html">Rigid Body Collisions</a> </li><li><a target="_blank" rel="noopener noreferrer" href="https://www.myphysicslab.com/engine2D/rigid-body-en.html">Rigid Body Forces</a> </li></ul><h3 id="other">Other</h3><ul><li>"Physics Based Animation (Graphics Series) 1st Edition" (ISBN 978-1584503804) A book I'm considering buying. </li></ul> 
 			
 			<script>
 				{
-					__sveltekit_1izmjjx = {
+					__sveltekit_135nzea = {
 						base: new URL(".", location).pathname.slice(0, -1),
 						env: {}
 					};
@@ -43,8 +43,8 @@ The <a target="_blank" rel="noopener noreferrer" href="./engineTests">Tests engi
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.c5f255ae.js"),
-						import("./_app/immutable/entry/app.672b416d.js")
+						import("./_app/immutable/entry/start.e8e3b186.js"),
+						import("./_app/immutable/entry/app.1c5bbaaf.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 2],
