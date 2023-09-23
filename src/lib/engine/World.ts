@@ -10,8 +10,8 @@ export class World {
     t: number;
     objects: PhysicObject[];
     gravity = new Victor(0, -9.8);
-    // drag = 0.001; // [0. 1] 0= no drag
-    drag = 0.0; // [0. 1] 0= no drag
+    antiGravity = new Victor(0, 9.8);
+    drag = 0.001; // [0. 1] 0= no drag
     reporter: WorldReporter;
 
     constructor(options: {
@@ -78,16 +78,22 @@ export class World {
             totalVelocity.divideScalar(nbCollisions);
             sphere.velocity.copy(totalVelocity);
             sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
+
+            // Hacky fix to avoid the ball slowly going throug the ground when
+            // its speed is really small we add an artificial force invert to the gravity
+            // TODO There is probably a better way to handle that
+            // TODO This fix might also make non vertical bounces innacurrate
+            sphere.acceleration.push(this.gravity.clone().multiplyScalar(-1));
         }
     }
 
     _step(dt: number) {
+        this.applyCollisions(dt);
         for (const o of this.objects) {
             if (!o.fixed) {
                 this.applyDynamics(dt, o);
             }
         }
-        this.applyCollisions(dt);
     }
 
     stepFixedDt() {
