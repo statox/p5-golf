@@ -8,8 +8,8 @@
 
     console.clear();
 
-    let pauseOnCollision = true;
-    let pause = true;
+    let pauseOnCollision = false;
+    let pause = false;
     let observedData = {
         t: '0',
         frameTime: '0',
@@ -65,6 +65,27 @@
             fixed: true
         });
         world.addObject(right);
+
+        const obstacle1 = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(3, -3)
+            },
+            position: new Victor(2, 8),
+            fixed: true
+        });
+        world.addObject(obstacle1);
+
+        const obstacle2 = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(3, 3)
+            },
+            position: new Victor(2, 5),
+            fixed: true
+        });
+        world.addObject(obstacle2);
+
         sphere = createPhysicObjects({
             geometry: {
                 type: 'sphere',
@@ -157,7 +178,7 @@
                 return;
             }
             const pos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY)) as Victor;
-            const vel = pressPosition.subtract(pos);
+            const vel = pressPosition.subtract(pos).multiplyScalar(3);
             sphere.position.copy(pos);
             sphere.velocity.copy(vel);
 
