@@ -23,7 +23,7 @@
     let sphere: PhysicObject;
     const resetWorld = () => {
         world = new World({
-            dimensions: new Victor(10, 10),
+            dimensions: new Victor(15, 15),
             reporter: (reportedData: any) => {
                 observedData.t = reportedData?.t?.toFixed(2);
                 observedData.spherePos.copy(sphere.position);
@@ -42,7 +42,7 @@
         const bottom = createPhysicObjects({
             geometry: {
                 type: 'line',
-                vector: new Victor(10, 0)
+                vector: new Victor(15, 0)
             },
             position: new Victor(0, 0),
             fixed: true
@@ -62,7 +62,7 @@
                 type: 'line',
                 vector: new Victor(0, 100)
             },
-            position: new Victor(10, 0),
+            position: new Victor(15, 0),
             fixed: true
         });
         world.addObject(right);
