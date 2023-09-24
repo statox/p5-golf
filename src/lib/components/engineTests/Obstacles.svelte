@@ -203,9 +203,10 @@
                 world.step();
             }
             drawWorld(p5, world);
+            drawInputForce(p5);
         };
 
-        let pressPosition: Victor;
+        let pressPosition: Victor | undefined;
         p5.mousePressed = () => {
             if (!mouseIsOnScreen(p5)) {
                 return;
@@ -218,11 +219,25 @@
             if (!mouseIsOnScreen(p5)) {
                 return;
             }
+            if (!pressPosition) {
+                return;
+            }
             const pos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY)) as Victor;
             const vel = pressPosition.subtract(pos).multiplyScalar(3);
+            pressPosition = undefined;
             sphere.position.copy(pos);
             sphere.velocity.copy(vel);
+        };
+        const drawInputForce = (p5: p5) => {
+            if (!pressPosition) {
+                return;
+            }
 
+            p5.stroke('blue');
+            p5.strokeWeight(2);
+
+            const pressPosScreen = worldToScreenScale(pressPosition) as Victor;
+            p5.line(pressPosScreen.x, p5.height -pressPosScreen.y, p5.mouseX, p5.mouseY);
         };
     };
 
