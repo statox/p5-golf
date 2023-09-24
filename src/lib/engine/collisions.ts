@@ -93,7 +93,15 @@ export const getLineSphereIntersectionPoint = (line: PhysicObject, sphere: Physi
 
     discriminant = Math.sqrt(discriminant);
 
-    // either solution may be on or off the ray so we need to test both
+    // t1 is the leftmost point of contact between the wall and the sphere
+    // t2 is the rightmost point of contact between the wall and the sphere
+    // To exist t1 and t2 need to be between [0, 1]
+    // At 0 the point is at one extremity of the line and at 1 it is at the
+    // other extremity
+    // To get the 2d point we add to the begining of the line (E) the slope
+    // of the line (d) multiplied by the chosen selection t1 or t2
+    //
+    // Either solution may be on or off the ray so we need to test both
     // t1 is always the smaller value, because BOTH discriminant and
     // a are nonnegative.
     const t1 = (-b - discriminant) / (2 * a);
