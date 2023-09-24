@@ -107,14 +107,23 @@ export const getLineSphereIntersectionPoint = (line: PhysicObject, sphere: Physi
     const t1 = (-b - discriminant) / (2 * a);
     const t2 = (-b + discriminant) / (2 * a);
 
-    // Impale, Poke
-    if (t1 >= 0 && t1 <= 1) {
-        return E.add(d.multiplyScalar(t1));
+    const t1Valid = t1 >= 0 && t1 <= 1;
+    const t2Valid = t2 >= 0 && t2 <= 1;
+
+    // If both points exists the actual interception is in the middle
+    if (t1Valid && t2Valid) {
+        return E.add(d.multiplyScalar(t1 + (t2 - t1) * 0.5));
+    }
+
+    // If only one point exists we want to put the actual interception at
+    // the end of the line so that objects don't empale themselve on the line
+    if (t1Valid) {
+        return E.add(d.multiplyScalar(1));
     }
 
     // ExitWound
-    if (t2 >= 0 && t2 <= 1) {
-        return E.add(d.multiplyScalar(t2));
+    if (t2Valid) {
+        return E.add(d.multiplyScalar(0));
     }
     return;
 };
