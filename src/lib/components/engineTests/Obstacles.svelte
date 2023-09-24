@@ -5,6 +5,7 @@
     import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
     import { mouseIsOnScreen, mouseIsPressedOnScreen } from '$lib/services/p5utils';
+    import EngineSettings from '../engine/EngineSettings.svelte';
 
     console.clear();
 
@@ -239,6 +240,8 @@
     <button on:click={() => pause = !pause}>{pause ? 'Play' : 'Pause'}</button>
     <button on:click={resetWorld}>Reset</button>
 </div>
+
+<EngineSettings {world} />
 
 <table>
     <tbody>

@@ -12,6 +12,7 @@ export class World {
     gravity = new Victor(0, -9.8);
     antiGravity = new Victor(0, 9.8);
     drag = 0.001; // [0. 1] 0= no drag
+    dt = 0.005;
     reporter: WorldReporter;
 
     constructor(options: {
@@ -116,7 +117,7 @@ export class World {
 
     // c.f. "The final touch" in https://gafferongames.com/post/fix_your_timestep/
     stepAccumulator() {
-        const dt = 0.01;
+        const dt = this.dt;
         const now = Date.now() / 1000;
         if (lastTick === 0) {
             lastTick = now;
