@@ -69,13 +69,32 @@ export class World {
 
         const totalVelocity = new Victor(0, 0);
         let nbCollisions = 0;
+
+        // When a collision happens:
+        // - Compute the new velocity after bouncing on each wall and make it the new velocity
+        // - Update the position to prevent from clipping in the wall
+        // - Apply the velocity to change the position
         for (const wall of walls) {
             wall.data.isColliding = false;
-            const bounceVelocity = LineSphereCollider(wall, sphere);
-            if (bounceVelocity) {
-                nbCollisions++;
-                totalVelocity.add(bounceVelocity);
-                wall.data.isColliding = true;
+            const collision = LineSphereCollider(wall, sphere);
+            if (!collision) {
+                continue;
+            }
+            const { bouncedVelocity, intersection } = collision;
+
+            wall.data.isColliding = true;
+            nbCollisions++;
+            // Velocity
+            totalVelocity.add(bouncedVelocity);
+
+            // Position correction
+            const wallToSphere = sphere.position.clone().subtract(intersection);
+            const distanceToWall = wallToSphere.length();
+            if (distanceToWall <= sphere.geometry.r) {
+                const diff = sphere.geometry.r - distanceToWall;
+                const offset = diff;
+                wallToSphere.normalize().multiplyScalar(offset);
+                sphere.position.add(wallToSphere);
             }
         }
         if (nbCollisions > 0) {
@@ -88,7 +107,7 @@ export class World {
             // its speed is really small we add an artificial force invert to the gravity
             // TODO There is probably a better way to handle that
             // TODO This fix might also make non vertical bounces innacurrate
-            sphere.acceleration.push(this.gravity.clone().multiplyScalar(-1));
+            sphere.acceleration.push(this.antiGravity);
         }
     }
 

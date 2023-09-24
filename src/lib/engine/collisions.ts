@@ -63,7 +63,7 @@ export const LineSphereCollider = (line: PhysicObject, sphere: PhysicObject) => 
     const f = frictionCoefficient;
     const bouncedVelocity = w.multiplyScalar(1 - f).subtract(u.multiplyScalar(r));
 
-    return bouncedVelocity;
+    return { bouncedVelocity, intersection };
 };
 
 export const getLineSphereIntersectionPoint = (line: PhysicObject, sphere: PhysicObject) => {
