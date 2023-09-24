@@ -29,8 +29,6 @@
         </tr>
     </tbody>
 </table>
-
-<p>{JSON.stringify(world)}</p>
 {/if}
 
 

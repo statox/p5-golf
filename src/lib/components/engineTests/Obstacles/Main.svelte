@@ -2,10 +2,11 @@
     import Victor from 'victor';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
+    import { World, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
     import { mouseIsOnScreen, mouseIsPressedOnScreen } from '$lib/services/p5utils';
     import EngineSettings from '$lib/components/engine/EngineSettings.svelte';
+    import { makeObjects } from './worldUtils';
 
     console.clear();
 
@@ -25,10 +26,10 @@
         world = new World({
             dimensions: new Victor(15, 15),
             reporter: (reportedData: any) => {
-                observedData.t = reportedData?.t?.toFixed(2);
-                observedData.spherePos.copy(sphere.position);
-                observedData.sphereVel.copy(sphere.velocity);
-                observedData.frameTime = reportedData.frameTime.toFixed(3);
+                observedData.t = reportedData?.t?.toFixed(1);
+                observedData.spherePos.copy(sphere.position).unfloat();
+                observedData.sphereVel.copy(sphere.velocity).unfloat();
+                observedData.frameTime = reportedData.frameTime.toFixed(2);
                 observedData = observedData;
                 observedData.ballIsColliding = sphere.data.isColliding;
 
@@ -39,103 +40,11 @@
             enableGravity: true
         });
 
-        const bottom = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(15, 0)
-            },
-            position: new Victor(0, 0),
-            fixed: true
-        });
-        world.addObject(bottom);
-        const left = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(0, 100)
-            },
-            position: new Victor(0, 0),
-            fixed: true
-        });
-        world.addObject(left);
-        const right = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(0, 100)
-            },
-            position: new Victor(15, 0),
-            fixed: true
-        });
-        world.addObject(right);
-
-        const cross1 = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(3, -3)
-            },
-            position: new Victor(3.5, 8),
-            fixed: true
-        });
-        world.addObject(cross1);
-
-        const cross2 = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(3, 3)
-            },
-            position: new Victor(3.5, 5),
-            fixed: true
-        });
-        world.addObject(cross2);
-
-        const line1 = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(6, 0)
-            },
-            position: new Victor(2, 2),
-            fixed: true
-        });
-        world.addObject(line1);
-
-        const line2 = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(4, 0)
-            },
-            position: new Victor(3, 2.5),
-            fixed: true
-        });
-        world.addObject(line2);
-
-        const line3 = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(2, 0)
-            },
-            position: new Victor(4, 3),
-            fixed: true
-        });
-        world.addObject(line3);
-
-        const line4 = createPhysicObjects({
-            geometry: {
-                type: 'line',
-                vector: new Victor(0.6, 0)
-            },
-            position: new Victor(4.7, 3.5),
-            fixed: true
-        });
-        world.addObject(line4);
-
-        sphere = createPhysicObjects({
-            geometry: {
-                type: 'sphere',
-                r: 0.1
-            },
-            position: new Victor(5, 10),
-            velocity: new Victor(0, 0)
-        });
-        world.addObject(sphere);
+        const objects = makeObjects();
+        sphere = objects.sphere;
+        for (const object of objects.objects) {
+            world.addObject(object);
+        }
     };
 
     const worldToScreenScale = (value: number | Victor) => {

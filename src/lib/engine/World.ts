@@ -123,6 +123,7 @@ export class World {
             lastTick = now;
         }
         realDt = now - lastTick;
+        lastTick = now;
 
         accumulator += realDt;
         let steps = 0;
