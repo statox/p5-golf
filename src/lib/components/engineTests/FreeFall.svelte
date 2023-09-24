@@ -66,25 +66,65 @@
         });
         world.addObject(right);
 
-        const obstacle1 = createPhysicObjects({
+        const cross1 = createPhysicObjects({
             geometry: {
                 type: 'line',
                 vector: new Victor(3, -3)
             },
-            position: new Victor(2, 8),
+            position: new Victor(3.5, 8),
             fixed: true
         });
-        world.addObject(obstacle1);
+        world.addObject(cross1);
 
-        const obstacle2 = createPhysicObjects({
+        const cross2 = createPhysicObjects({
             geometry: {
                 type: 'line',
                 vector: new Victor(3, 3)
             },
-            position: new Victor(2, 5),
+            position: new Victor(3.5, 5),
             fixed: true
         });
-        world.addObject(obstacle2);
+        world.addObject(cross2);
+
+        const line1 = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(6, 0)
+            },
+            position: new Victor(2, 2),
+            fixed: true
+        });
+        world.addObject(line1);
+
+        const line2 = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(4, 0)
+            },
+            position: new Victor(3, 2.5),
+            fixed: true
+        });
+        world.addObject(line2);
+
+        const line3 = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(2, 0)
+            },
+            position: new Victor(4, 3),
+            fixed: true
+        });
+        world.addObject(line3);
+
+        const line4 = createPhysicObjects({
+            geometry: {
+                type: 'line',
+                vector: new Victor(0.6, 0)
+            },
+            position: new Victor(4.7, 3.5),
+            fixed: true
+        });
+        world.addObject(line4);
 
         sphere = createPhysicObjects({
             geometry: {
