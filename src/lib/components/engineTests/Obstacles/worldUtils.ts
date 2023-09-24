@@ -142,6 +142,21 @@ export const makeObjects = () => {
     });
     objects.push(bucket5);
 
+    // rays
+    for (let space = 0.2; space < 0.5; space += 0.1) {
+        for (let i = 0; i < 10; i++) {
+            const ray = createPhysicObjects({
+                geometry: {
+                    type: 'line',
+                    vector: new Victor(0, 3)
+                },
+                position: new Victor(9 + i * space, 1),
+                fixed: true
+            });
+            objects.push(ray);
+        }
+    }
+
     // Sphere
     const sphere = createPhysicObjects({
         geometry: {

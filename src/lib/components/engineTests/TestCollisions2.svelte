@@ -17,6 +17,15 @@
     let sphere: PhysicObject;
     const resetWorld = () => {
         while (world.objects.length) world.objects.pop();
+        sphere = createPhysicObjects({
+            geometry: {
+                type: 'sphere',
+                r: 5
+            },
+            position: new Victor(20, 50),
+            velocity: new Victor(Math.random() * 5 - 2.5, Math.random() * 20)
+        });
+        world.addObject(sphere);
         const bottom = createPhysicObjects({
             geometry: {
                 type: 'line',
@@ -62,15 +71,6 @@
             fixed: true
         });
         world.addObject(diag);
-        sphere = createPhysicObjects({
-            geometry: {
-                type: 'sphere',
-                r: 5
-            },
-            position: new Victor(20, 50),
-            velocity: new Victor(Math.random() * 5 - 2.5, Math.random() * 20)
-        });
-        world.addObject(sphere);
     };
 
     const worldToScreenScale = (value: number | Victor) => {
@@ -100,6 +100,7 @@
                 p5.point(x, y);
             }
 
+            p5.stroke(o.data.isColliding ? 'orange' : 'white');
             if (o.geometry.type === 'line') {
                 const x1 = x + p5.map(o.geometry.vector.x, 0, world.dimensions.x, 0, p5.width);
                 const y1 = y - p5.map(o.geometry.vector.y, 0, world.dimensions.y, 0, p5.height);
