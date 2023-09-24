@@ -4,7 +4,7 @@
     import TestCollisions from '$lib/components/engineTests/TestCollisions.svelte';
     import TestCollisions2 from '$lib/components/engineTests/TestCollisions2.svelte';
     import TestCollisions3 from '$lib/components/engineTests/TestCollisions3.svelte';
-    import Obstacles from '$lib/components/engineTests/Obstacles.svelte';
+    import Obstacles from '$lib/components/engineTests/Obstacles/Main.svelte';
 
     const tabs = [
         { title: 'Obstacles', component: Obstacles },
