@@ -101,10 +101,6 @@
             p5.background(0);
             if (mouseIsPressedOnScreen(p5)) {
                 sphere.fixed = true;
-                const pos = screenToWorldScale(
-                    new Victor(p5.mouseX, p5.height - p5.mouseY)
-                ) as Victor;
-                sphere.position.copy(pos);
             } else {
                 sphere.fixed = false;
             }
@@ -123,6 +119,7 @@
             pressPosition = screenToWorldScale(
                 new Victor(p5.mouseX, p5.height - p5.mouseY)
             ) as Victor;
+            sphere.position.copy(pressPosition);
         };
         p5.mouseReleased = () => {
             if (!mouseIsOnScreen(p5)) {
@@ -134,7 +131,6 @@
             const pos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY)) as Victor;
             const vel = pressPosition.subtract(pos).multiplyScalar(3);
             pressPosition = undefined;
-            sphere.position.copy(pos);
             sphere.velocity.copy(vel);
         };
         const drawInputForce = (p5: p5) => {
