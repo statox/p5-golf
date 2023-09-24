@@ -64,20 +64,24 @@ export class World {
         if (!sphere) {
             throw new Error('No sphere in world');
         }
+        sphere.data.isColliding = false;
 
         const totalVelocity = new Victor(0, 0);
         let nbCollisions = 0;
         for (const wall of walls) {
+            wall.data.isColliding = false;
             const bounceVelocity = LineSphereCollider(wall, sphere);
             if (bounceVelocity) {
                 nbCollisions++;
                 totalVelocity.add(bounceVelocity);
+                wall.data.isColliding = true;
             }
         }
         if (nbCollisions > 0) {
             totalVelocity.divideScalar(nbCollisions);
             sphere.velocity.copy(totalVelocity);
             sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
+            sphere.data.isColliding = true;
 
             // Hacky fix to avoid the ball slowly going throug the ground when
             // its speed is really small we add an artificial force invert to the gravity

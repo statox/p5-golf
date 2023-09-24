@@ -13,10 +13,8 @@ export const LineSphereCollider = (line: PhysicObject, sphere: PhysicObject) => 
 
     const intersection = getLineSphereIntersectionPoint(line, sphere);
     if (!intersection) {
-        sphere.data.isColliding = false;
         return;
     }
-    sphere.data.isColliding = true;
 
     const restitutionCoefficient = 0.8;
     const frictionCoefficient = 0.2;

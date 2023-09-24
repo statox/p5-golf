@@ -114,7 +114,7 @@
 
     const drawWorld = (p5: p5, world: World) => {
         for (const o of world.objects) {
-            p5.stroke(observedData.ballIsColliding ? 'red' : 'white');
+            p5.stroke(o.data.isColliding ? 'red' : 'white');
 
             const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
             const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
