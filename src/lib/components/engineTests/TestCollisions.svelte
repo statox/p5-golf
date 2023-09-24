@@ -29,9 +29,9 @@
         wall = createPhysicObjects({
             geometry: {
                 type: 'line',
-                vector: new Victor(80, 20)
+                vector: new Victor(40, 40)
             },
-            position: new Victor(10, 20),
+            position: new Victor(30, 30),
             fixed: true
         });
         world.addObject(wall);
