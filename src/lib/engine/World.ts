@@ -39,6 +39,10 @@ export class World {
         o.acceleration.push(this.gravity);
     }
 
+    applyForce(o: PhysicObject, force: Victor) {
+        o.acceleration.push(force);
+    }
+
     applyDynamics(dt: number, o: PhysicObject) {
         if (this.gravityEnabled) {
             this.applyGravity(o);

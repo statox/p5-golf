@@ -6,6 +6,7 @@
     import { onDestroy } from 'svelte';
     import { mouseIsOnScreen, mouseIsPressedOnScreen } from '$lib/services/p5utils';
     import EngineSettings from '$lib/components/engine/EngineSettings.svelte';
+    import Shooter from '$lib/components/engine/Shooter.svelte';
     import { makeObjects } from './worldUtils';
 
     console.clear();
@@ -146,6 +147,11 @@
         };
     };
 
+    const shoot = (shoot: Victor) => {
+        shoot.multiplyScalar(10000);
+        world.applyForce(sphere, shoot);
+    };
+
     onDestroy(() => {
         _p5?.remove();
     });
@@ -161,6 +167,7 @@
     <button on:click={resetWorld}>Reset</button>
 </div>
 
+<Shooter onShoot={shoot} />
 <EngineSettings {world} />
 
 <table>
