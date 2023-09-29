@@ -8,6 +8,8 @@ export interface PhysicObject {
     position: Victor;
     velocity: Victor;
     acceleration: Victor[];
+    restitution: number;
+    friction: number;
     data: {
         isColliding: boolean;
     };
@@ -19,6 +21,8 @@ export const createPhysicObjects = (options: {
     position?: Victor;
     velocity?: Victor;
     mass?: number;
+    restitution?: number;
+    friction?: number;
 }): PhysicObject => {
     return {
         geometry: options.geometry,
@@ -26,6 +30,8 @@ export const createPhysicObjects = (options: {
         position: options.position?.clone() ?? new Victor(0, 0),
         velocity: options.velocity?.clone() ?? new Victor(0, 0),
         acceleration: [],
+        restitution: options.restitution ?? 0.9,
+        friction: options.friction ?? 0.4,
         fixed: options.fixed ?? false,
         data: {
             isColliding: false

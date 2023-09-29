@@ -124,7 +124,9 @@ const makeBucket = (params: { x: number; y: number; h: number; w: number; topRat
             vector: new Victor(bottomLen - 2 * gap, 0)
         },
         position: new Victor(x + topLen + gap, y - h / 2 - gap),
-        fixed: true
+        fixed: true,
+        friction: 1,
+        restitution: 0
     });
     objects.push(middle);
     const borderRight = createPhysicObjects({

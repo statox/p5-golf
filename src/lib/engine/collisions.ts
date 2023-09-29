@@ -16,8 +16,8 @@ export const LineSphereCollider = (line: PhysicObject, sphere: PhysicObject) => 
         return;
     }
 
-    const restitutionCoefficient = 0.8;
-    const frictionCoefficient = 0.2;
+    const restitutionCoefficient = line.restitution * sphere.restitution;
+    const frictionCoefficient = line.friction * sphere.friction;
 
     /* x1,y1, x2,y2: both extremities of the line */
     const x1 = line.position.x;
