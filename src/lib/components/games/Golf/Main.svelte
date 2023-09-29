@@ -14,6 +14,7 @@
     let sphere: PhysicObject;
     const onHitTarget = () => {
         console.log('hit target');
+        resetWorld();
     };
     const resetWorld = () => {
         world = new World({

@@ -16,23 +16,22 @@ export const makeObjects = (worldDimenstions: Victor, hitTargetCb: () => void) =
     const maxR = 0.5;
     const minR = 0.2;
 
-    for (let x = 1; x < worldW - maxW; x += worldW / 2) {
-        for (let y = worldH - 1; y > maxH; y -= worldH / 2) {
-            const w = Math.random() * maxW + minW;
-            const h = Math.random() * maxH + minH;
-            const r = Math.random() * maxR + minR;
-            makeBucket(
-                {
-                    x,
-                    y,
-                    w,
-                    h,
-                    topRatio: r
-                },
-                hitTargetCb
-            ).forEach((o) => objects.push(o));
-        }
-    }
+    const x = Math.random() * (worldW - maxW);
+    const y = worldH - Math.random() * (worldH - maxH);
+    const w = Math.random() * maxW + minW;
+    const h = Math.random() * maxH + minH;
+    const r = Math.random() * maxR + minR;
+    makeBucket(
+        {
+            x,
+            y,
+            w,
+            h,
+            topRatio: r
+        },
+        hitTargetCb
+    ).forEach((o) => objects.push(o));
+
     makeWalls(worldDimenstions).forEach((o) => objects.push(o));
     const sphere = makeSphere();
     objects.push(sphere);
