@@ -9,6 +9,7 @@
         <a href="{base}/">Home</a> |
         <a href="{base}/drafts">Drafts</a> |
         <a href="{base}/engineTests">Tests engine</a> |
+        <a href="{base}/games">Games</a> |
     </nav>
 </header>
 
