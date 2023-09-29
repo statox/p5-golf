@@ -1,7 +1,7 @@
 import { createPhysicObjects } from '$lib/engine';
 import Victor from 'victor';
 
-export const makeObjects = (worldDimenstions: Victor) => {
+export const makeObjects = (worldDimenstions: Victor, hitTargetCb: () => void) => {
     const objects = [];
 
     const worldW = worldDimenstions.x;
@@ -21,13 +21,16 @@ export const makeObjects = (worldDimenstions: Victor) => {
             const w = Math.random() * maxW + minW;
             const h = Math.random() * maxH + minH;
             const r = Math.random() * maxR + minR;
-            makeBucket({
-                x,
-                y,
-                w,
-                h,
-                topRatio: r
-            }).forEach((o) => objects.push(o));
+            makeBucket(
+                {
+                    x,
+                    y,
+                    w,
+                    h,
+                    topRatio: r
+                },
+                hitTargetCb
+            ).forEach((o) => objects.push(o));
         }
     }
     makeWalls(worldDimenstions).forEach((o) => objects.push(o));
@@ -82,7 +85,10 @@ const makeWalls = (worldDimenstions: Victor) => {
     return objects;
 };
 
-const makeBucket = (params: { x: number; y: number; h: number; w: number; topRatio: number }) => {
+const makeBucket = (
+    params: { x: number; y: number; h: number; w: number; topRatio: number },
+    hitTargetCb: () => void
+) => {
     const { x, y, h, w, topRatio } = params;
     if (topRatio < 0 || topRatio > 1) {
         throw new Error('topRatio must be between 0 and 1');
@@ -128,7 +134,8 @@ const makeBucket = (params: { x: number; y: number; h: number; w: number; topRat
         position: new Victor(x + topLen + gap, y - h / 2 - gap),
         fixed: true,
         friction: 1,
-        restitution: 0
+        restitution: 0,
+        collisionListener: hitTargetCb
     });
     objects.push(middle);
     const borderRight = createPhysicObjects({

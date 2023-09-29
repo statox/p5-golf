@@ -13,6 +13,7 @@ export interface PhysicObject {
     data: {
         isColliding: boolean;
     };
+    collisionListener: () => void;
 }
 
 /** Returns a physic object to be added to the world
@@ -24,6 +25,7 @@ export interface PhysicObject {
  * @params mass Default to 1
  * @params restitution [0, 1] 0 = no bounce
  * @params friction [0, 1] 0 = no friction
+ * @params collisionListener Function called when the object collides
  */
 export const createPhysicObjects = (options: {
     geometry: Geometry;
@@ -33,6 +35,7 @@ export const createPhysicObjects = (options: {
     mass?: number;
     restitution?: number;
     friction?: number;
+    collisionListener?: () => void;
 }): PhysicObject => {
     return {
         geometry: options.geometry,
@@ -45,7 +48,8 @@ export const createPhysicObjects = (options: {
         fixed: options.fixed ?? false,
         data: {
             isColliding: false
-        }
+        },
+        collisionListener: options.collisionListener || (() => {})
     };
 };
 

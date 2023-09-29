@@ -87,6 +87,7 @@ export class World {
             const { bouncedVelocity, intersection } = collision;
 
             wall.data.isColliding = true;
+            wall.collisionListener();
             nbCollisions++;
             // Velocity
             totalVelocity.add(bouncedVelocity);
@@ -106,6 +107,7 @@ export class World {
             sphere.velocity.copy(totalVelocity);
             sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
             sphere.data.isColliding = true;
+            sphere.collisionListener();
 
             // Hacky fix to avoid the ball slowly going throug the ground when
             // its speed is really small we add an artificial force invert to the gravity

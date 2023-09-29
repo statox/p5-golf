@@ -12,6 +12,9 @@
     let world: World;
 
     let sphere: PhysicObject;
+    const onHitTarget = () => {
+        console.log('hit target');
+    };
     const resetWorld = () => {
         world = new World({
             dimensions: new Victor(15, 15),
@@ -19,7 +22,7 @@
             enableGravity: true
         });
 
-        const objects = makeObjects(world.dimensions);
+        const objects = makeObjects(world.dimensions, onHitTarget);
         sphere = objects.sphere;
         for (const object of objects.objects) {
             world.addObject(object);
