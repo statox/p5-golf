@@ -10,8 +10,8 @@ export const makeObjects = (worldDimenstions: Victor, hitTargetCb: () => void) =
     const minW = 1;
     const maxW = 5;
 
-    const minH = 1;
-    const maxH = 6;
+    const minH = 0.3;
+    const maxH = 4;
 
     const maxR = 0.5;
     const minR = 0.2;
@@ -125,18 +125,18 @@ const makeBucket = (
         fixed: true
     });
     objects.push(bottom);
-    const middle = createPhysicObjects({
+    const target = createPhysicObjects({
         geometry: {
             type: 'line',
             vector: new Victor(bottomLen - 2 * gap, 0)
         },
-        position: new Victor(x + topLen + gap, y - h / 2 - gap),
+        position: new Victor(x + topLen + gap, y - h + gap),
         fixed: true,
         friction: 1,
         restitution: 0,
         collisionListener: hitTargetCb
     });
-    objects.push(middle);
+    objects.push(target);
     const borderRight = createPhysicObjects({
         geometry: {
             type: 'line',
