@@ -1,8 +1,8 @@
 <script>
     import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';
-    import Golf from '$lib/components/games/Golf/Main.svelte';
+    import Bucket from '$lib/components/games/Bucket/Main.svelte';
     const tabs = [
-        { title: 'Golf', component: Golf }
+        { title: 'Bucket', component: Bucket }
     ];
 </script>
 
