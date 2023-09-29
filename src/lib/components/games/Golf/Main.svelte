@@ -5,43 +5,21 @@
     import { World, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
     import { mouseIsOnScreen, mouseIsPressedOnScreen } from '$lib/services/p5utils';
-    import EngineSettings from '$lib/components/engine/EngineSettings.svelte';
-    import Shooter from '$lib/components/engine/Shooter.svelte';
     import { makeObjects } from './worldUtils';
 
     console.clear();
 
-    let pauseOnCollision = false;
-    let pause = false;
-    let observedData = {
-        t: '0',
-        frameTime: '0',
-        spherePos: new Victor(0, 0),
-        sphereVel: new Victor(0, 0),
-        ballIsColliding: false
-    };
     let world: World;
 
     let sphere: PhysicObject;
     const resetWorld = () => {
         world = new World({
             dimensions: new Victor(15, 15),
-            reporter: (reportedData: any) => {
-                observedData.t = reportedData?.t?.toFixed(1);
-                observedData.spherePos.copy(sphere.position).unfloat();
-                observedData.sphereVel.copy(sphere.velocity).unfloat();
-                observedData.frameTime = reportedData.frameTime.toFixed(2);
-                observedData = observedData;
-                observedData.ballIsColliding = sphere.data.isColliding;
-
-                if (pauseOnCollision && sphere.data.isColliding && !pause) {
-                    pause = true;
-                }
-            },
+            reporter: () => {},
             enableGravity: true
         });
 
-        const objects = makeObjects();
+        const objects = makeObjects(world.dimensions);
         sphere = objects.sphere;
         for (const object of objects.objects) {
             world.addObject(object);
@@ -105,9 +83,7 @@
             } else {
                 sphere.fixed = false;
             }
-            if (!pause) {
-                world.step();
-            }
+            world.step();
             drawWorld(p5, world);
             drawInputForce(p5);
         };
@@ -162,42 +138,5 @@
 </div>
 
 <div>
-    <button on:click={() => pauseOnCollision = !pauseOnCollision}>{pauseOnCollision? 'Disable' : 'Enable'} pause on collision</button>
-    <button on:click={() => pause = !pause}>{pause ? 'Play' : 'Pause'}</button>
     <button on:click={resetWorld}>Reset</button>
 </div>
-
-<Shooter onShoot={shoot} />
-<EngineSettings {world} />
-
-<table>
-    <tbody>
-        <tr>
-            <th>Simulation time/Frame duration</th>
-            <td>
-                {observedData.t}
-            </td>
-            <td>
-                {observedData.frameTime}
-            </td>
-        </tr>
-        <tr>
-            <th>Sphere position</th>
-            <td>
-                {observedData.spherePos.x.toFixed(2)}
-            </td>
-            <td>
-                {observedData.spherePos.y.toFixed(2)}
-            </td>
-        <tr>
-            <th>Sphere velocity</th>
-            <td>
-                {observedData.sphereVel.x.toFixed(2)}
-            </td>
-            <td>
-                {observedData.sphereVel.y.toFixed(2)}
-            </td>
-        </tr>
-    </tbody>
-</table>
-
