@@ -12,31 +12,30 @@
         
 		<link href="./_app/immutable/assets/0.2d7f1649.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/p5utils.6417fb07.css" rel="stylesheet">
-		<link href="./_app/immutable/assets/Shooter.7c2275ea.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.2d3947ad.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.108678c8.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.e421d989.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.1c954585.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.7b2c6f69.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.4444311c.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/paths.428ed147.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.8925fcec.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/paths.b7642065.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.d455ce73.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.a4192956.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.52486247.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.0c2a577b.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/5.aad10e14.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.299e0029.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/5.3a798934.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/each.e59479a4.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/p5utils.fe4d08ff.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/Shooter.0cf88a6f.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/PhysicObject.d19d6eec.js">
     </head>
 
     <body data-sveltekit-preload-data="hover">
         <div style="display: contents">  <header data-svelte-h="svelte-1wv7h3w"><h1>My physics engine</h1> <nav><a href="/p5-golf/">Home</a> |
         <a href="/p5-golf/drafts">Drafts</a> |
         <a href="/p5-golf/engineTests">Tests engine</a> |
-        <a href="/p5-golf/games">Games</a> |</nav></header> <div class="svelte-tabs"><ul role="tablist" class="svelte-tabs__tab-list svelte-12yby2a"><li role="tab" id="svelte-tabs-25" aria-selected="true" tabindex="0" class="svelte-tabs__tab svelte-1fbofsd svelte-tabs__selected">Golf</li></ul> <div id="svelte-tabs-26" class="svelte-tabs__tab-panel svelte-epfyet" role="tabpanel"><div class="d-flex justify-content-center"><div style="display: block;" class="m-0"></div></div> <div><button>Enable pause on collision</button> <button>Pause</button> <button data-svelte-h="svelte-tlxueg">Reset</button></div> <p class="title svelte-g74uk9" data-svelte-h="svelte-198ugk3">Shooter</p> <span><label for="angleSlider" data-svelte-h="svelte-lab87n">Angle</label> <input id="angleSlider" type="range" min="0" max="360" value="0"> 0 deg</span> <span><label for="magSlider" data-svelte-h="svelte-1vc5oxa">Magnitude</label> <input id="magSlider" type="range" min="0" max="1" step="0.01" value="0.5"> 0.5</span> <br> <button data-svelte-h="svelte-8jpwxr">Shoot</button> <p class="title svelte-g74uk9" data-svelte-h="svelte-gf3gek">Engine settings</p>  <table><tbody><tr><th data-svelte-h="svelte-rirgm4">Simulation time/Frame duration</th> <td>0</td> <td>0</td></tr> <tr><th data-svelte-h="svelte-1y1nif6">Sphere position</th> <td>0.00</td> <td>0.00</td> </tr><tr><th data-svelte-h="svelte-1uw1fs2">Sphere velocity</th> <td>0.00</td> <td>0.00</td></tr></tbody></table> </div></div> 
+        <a href="/p5-golf/games">Games</a> |</nav></header> <div class="svelte-tabs"><ul role="tablist" class="svelte-tabs__tab-list svelte-12yby2a"><li role="tab" id="svelte-tabs-25" aria-selected="true" tabindex="0" class="svelte-tabs__tab svelte-1fbofsd svelte-tabs__selected">Golf</li></ul> <div id="svelte-tabs-26" class="svelte-tabs__tab-panel svelte-epfyet" role="tabpanel"><div class="d-flex justify-content-center"><div style="display: block;" class="m-0"></div></div> <div><button data-svelte-h="svelte-tlxueg">Reset</button></div> </div></div> 
 			
 			<script>
 				{
-					__sveltekit_pf28ri = {
+					__sveltekit_16kjfro = {
 						assets: "/p5-golf",
 						base: new URL(".", location).pathname.slice(0, -1),
 						env: {}
@@ -47,8 +46,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.2d3947ad.js"),
-						import("./_app/immutable/entry/app.8925fcec.js")
+						import("./_app/immutable/entry/start.108678c8.js"),
+						import("./_app/immutable/entry/app.d455ce73.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 5],
