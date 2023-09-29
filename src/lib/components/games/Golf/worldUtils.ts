@@ -30,7 +30,7 @@ export const makeObjects = (worldDimenstions: Victor) => {
             }).forEach((o) => objects.push(o));
         }
     }
-    makeWalls().forEach((o) => objects.push(o));
+    makeWalls(worldDimenstions).forEach((o) => objects.push(o));
     const sphere = makeSphere();
     objects.push(sphere);
 
@@ -48,12 +48,14 @@ const makeSphere = () => {
     });
 };
 
-const makeWalls = () => {
+const makeWalls = (worldDimenstions: Victor) => {
+    const w = worldDimenstions.x;
+    const h = worldDimenstions.y;
     const objects = [];
     const bottom = createPhysicObjects({
         geometry: {
             type: 'line',
-            vector: new Victor(15, 0)
+            vector: new Victor(w, 0)
         },
         position: new Victor(0, 0),
         fixed: true
@@ -62,7 +64,7 @@ const makeWalls = () => {
     const left = createPhysicObjects({
         geometry: {
             type: 'line',
-            vector: new Victor(0, 100)
+            vector: new Victor(0, h * 10)
         },
         position: new Victor(0, 0),
         fixed: true
@@ -71,7 +73,7 @@ const makeWalls = () => {
     const right = createPhysicObjects({
         geometry: {
             type: 'line',
-            vector: new Victor(0, 100)
+            vector: new Victor(0, h * 10)
         },
         position: new Victor(15, 0),
         fixed: true

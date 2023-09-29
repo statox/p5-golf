@@ -15,6 +15,16 @@ export interface PhysicObject {
     };
 }
 
+/** Returns a physic object to be added to the world
+ *
+ * @param geometry The Geometry of the object
+ * @param fixed If true object doesn't move
+ * @param position Position of the anchor pont of the object (depends on Geometry)
+ * @param velocity Initial Velocity
+ * @params mass Default to 1
+ * @params restitution [0, 1] 0 = no bounce
+ * @params friction [0, 1] 0 = no friction
+ */
 export const createPhysicObjects = (options: {
     geometry: Geometry;
     fixed?: boolean;
