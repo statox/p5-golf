@@ -107,17 +107,15 @@
             sphere.fixed = false;
         };
         const drawInputForce = (p5: p5) => {
+            if (!sphere.fixed) {
+                return;
+            }
             p5.stroke('blue');
             p5.strokeWeight(2);
 
             const pressPosScreen = worldToScreenScale(sphere.position) as Victor;
             p5.line(pressPosScreen.x, p5.height -pressPosScreen.y, p5.mouseX, p5.mouseY);
         };
-    };
-
-    const shoot = (shoot: Victor) => {
-        shoot.multiplyScalar(10000);
-        world.applyForce(sphere, shoot);
     };
 
     onDestroy(() => {

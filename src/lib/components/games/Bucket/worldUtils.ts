@@ -33,19 +33,28 @@ export const makeObjects = (worldDimenstions: Victor, hitTargetCb: () => void) =
     ).forEach((o) => objects.push(o));
 
     makeWalls(worldDimenstions).forEach((o) => objects.push(o));
-    const sphere = makeSphere();
+    const sphere = makeSphere(new Victor(Math.random() * worldW, Math.random() * worldH));
+    while (
+        sphere.position.x > x &&
+        sphere.position.x < x + w &&
+        sphere.position.y < y &&
+        sphere.position.y > y + h
+    ) {
+        sphere.position.x = Math.random() * worldW;
+        sphere.position.y = Math.random() * worldH;
+    }
     objects.push(sphere);
 
     return { objects, sphere };
 };
 
-const makeSphere = () => {
+const makeSphere = (pos: Victor) => {
     return createPhysicObjects({
         geometry: {
             type: 'sphere',
             r: 0.1
         },
-        position: new Victor(5, 10),
+        position: pos,
         velocity: new Victor(0, 0)
     });
 };
