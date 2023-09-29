@@ -12,8 +12,8 @@
     let world: World;
 
     let sphere: PhysicObject;
+    let sphereInitialPosition: Victor;
     const onHitTarget = () => {
-        console.log('hit target');
         resetWorld();
     };
     const resetWorld = () => {
@@ -24,7 +24,9 @@
         });
 
         const objects = makeObjects(world.dimensions, onHitTarget);
+        objects.sphere.fixed = true;
         sphere = objects.sphere;
+        sphereInitialPosition = sphere.position.clone();
         for (const object of objects.objects) {
             world.addObject(object);
         }
@@ -82,47 +84,33 @@
 
         p5.draw = () => {
             p5.background(0);
-            if (mouseIsPressedOnScreen(p5)) {
-                sphere.fixed = true;
-            } else {
-                sphere.fixed = false;
-            }
             world.step();
             drawWorld(p5, world);
             drawInputForce(p5);
         };
 
-        let pressPosition: Victor | undefined;
         p5.mousePressed = () => {
             if (!mouseIsOnScreen(p5)) {
                 return;
             }
-            pressPosition = screenToWorldScale(
-                new Victor(p5.mouseX, p5.height - p5.mouseY)
-            ) as Victor;
-            sphere.position.copy(pressPosition);
+            sphere.position.copy(sphereInitialPosition);
+            sphere.velocity.zero();
+            sphere.fixed = true;
         };
         p5.mouseReleased = () => {
             if (!mouseIsOnScreen(p5)) {
                 return;
             }
-            if (!pressPosition) {
-                return;
-            }
             const pos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY)) as Victor;
-            const vel = pressPosition.subtract(pos).multiplyScalar(3);
-            pressPosition = undefined;
+            const vel = sphereInitialPosition.clone().subtract(pos).multiplyScalar(3);
             sphere.velocity.copy(vel);
+            sphere.fixed = false;
         };
         const drawInputForce = (p5: p5) => {
-            if (!pressPosition) {
-                return;
-            }
-
             p5.stroke('blue');
             p5.strokeWeight(2);
 
-            const pressPosScreen = worldToScreenScale(pressPosition) as Victor;
+            const pressPosScreen = worldToScreenScale(sphere.position) as Victor;
             p5.line(pressPosScreen.x, p5.height -pressPosScreen.y, p5.mouseX, p5.mouseY);
         };
     };

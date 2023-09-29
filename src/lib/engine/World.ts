@@ -44,6 +44,9 @@ export class World {
     }
 
     applyDynamics(dt: number, o: PhysicObject) {
+        if (o.fixed) {
+            return;
+        }
         if (this.gravityEnabled) {
             this.applyGravity(o);
         }
@@ -120,9 +123,7 @@ export class World {
     _step(dt: number) {
         this.applyCollisions(dt);
         for (const o of this.objects) {
-            if (!o.fixed) {
-                this.applyDynamics(dt, o);
-            }
+            this.applyDynamics(dt, o);
         }
     }
 
