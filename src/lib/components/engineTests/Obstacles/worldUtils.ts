@@ -101,7 +101,7 @@ export const makeObjects = () => {
             type: 'line',
             vector: new Victor(1, 0)
         },
-        position: new Victor(10, 10),
+        position: new Victor(10, 10.1),
         fixed: true
     });
     objects.push(bucket1);
@@ -137,7 +137,7 @@ export const makeObjects = () => {
             type: 'line',
             vector: new Victor(1, 0)
         },
-        position: new Victor(12, 10),
+        position: new Victor(12, 10.1),
         fixed: true
     });
     objects.push(bucket5);
