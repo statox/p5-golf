@@ -7,14 +7,14 @@ export const makeObjects = (worldDimenstions: Victor, hitTargetCb: () => void) =
     const worldW = worldDimenstions.x;
     const worldH = worldDimenstions.y;
 
-    const minW = 1;
+    const minW = 3;
     const maxW = 5;
 
     const minH = 0.3;
     const maxH = 4;
 
     const maxR = 0.5;
-    const minR = 0.2;
+    const minR = 0.1;
 
     const x = Math.random() * (worldW - maxW);
     const y = worldH - Math.random() * (worldH - maxH);

@@ -89,32 +89,51 @@
             drawInputForce(p5);
         };
 
+        let pressPosition: Victor | undefined;
         p5.mousePressed = () => {
             if (!mouseIsOnScreen(p5)) {
                 return;
             }
+            pressPosition = new Victor(p5.width, p5.height).divideScalar(2);
             sphere.position.copy(sphereInitialPosition);
             sphere.velocity.zero();
             sphere.fixed = true;
         };
         p5.mouseReleased = () => {
-            if (!mouseIsOnScreen(p5)) {
+            if (!mouseIsOnScreen(p5) || !pressPosition) {
                 return;
             }
-            const pos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY)) as Victor;
-            const vel = sphereInitialPosition.clone().subtract(pos).multiplyScalar(3);
-            sphere.velocity.copy(vel);
+
+            const origin = pressPosition;
+            const dest = new Victor(p5.mouseX, p5.mouseY);
+            const vel = dest.clone().subtract(origin).multiplyScalar(20);
+            vel.x *= -1;
+
+            world.applyForce(sphere, vel);
             sphere.fixed = false;
+            pressPosition = undefined;
         };
         const drawInputForce = (p5: p5) => {
-            if (!sphere.fixed) {
+            if (!sphere.fixed || !pressPosition) {
                 return;
             }
+            p5.stroke('red');
+            p5.strokeWeight(1);
+            p5.noFill();
+            p5.circle(pressPosition.x, pressPosition.y, 15);
             p5.stroke('blue');
             p5.strokeWeight(2);
 
-            const pressPosScreen = worldToScreenScale(sphere.position) as Victor;
-            p5.line(pressPosScreen.x, p5.height -pressPosScreen.y, p5.mouseX, p5.mouseY);
+            const origin = pressPosition;
+            const dest = new Victor(p5.mouseX, p5.mouseY);
+            const vel = dest.clone().subtract(origin);
+
+            p5.line(origin.x, origin.y, origin.x + vel.x, origin.y + vel.y);
+
+            const sphereScreenPos = worldToScreenScale(sphere.position) as Victor;
+            vel.x *= -1;
+            vel.y *= -1;
+            p5.line(sphereScreenPos.x, p5.height - sphereScreenPos.y, sphereScreenPos.x + vel.x, p5.height - sphereScreenPos.y + vel.y);
         };
     };
 
