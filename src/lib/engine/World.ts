@@ -67,56 +67,56 @@ export class World {
     }
 
     applyCollisions(dt: number) {
-        const sphere = this.objects.find((o) => o.geometry.type === 'sphere');
+        const spheres = this.objects.filter((o) => o.geometry.type === 'sphere');
         const walls = this.objects.filter((o) => o.geometry.type === 'line');
-        if (!sphere) {
-            throw new Error('No sphere in world');
-        }
-        sphere.data.isColliding = false;
 
-        const totalVelocity = new Victor(0, 0);
-        let nbCollisions = 0;
+        for (const sphere of spheres) {
+            sphere.data.isColliding = false;
 
-        // When a collision happens:
-        // - Compute the new velocity after bouncing on each wall and make it the new velocity
-        // - Update the position to prevent from clipping in the wall
-        // - Apply the velocity to change the position
-        for (const wall of walls) {
-            wall.data.isColliding = false;
-            const collision = LineSphereCollider(wall, sphere);
-            if (!collision) {
-                continue;
+            const totalVelocity = new Victor(0, 0);
+            let nbCollisions = 0;
+
+            // When a collision happens:
+            // - Compute the new velocity after bouncing on each wall and make it the new velocity
+            // - Update the position to prevent from clipping in the wall
+            // - Apply the velocity to change the position
+            for (const wall of walls) {
+                wall.data.isColliding = false;
+                const collision = LineSphereCollider(wall, sphere);
+                if (!collision) {
+                    continue;
+                }
+                const { bouncedVelocity, intersection } = collision;
+
+                wall.data.isColliding = true;
+                wall.collisionListener();
+                nbCollisions++;
+                // Velocity
+                totalVelocity.add(bouncedVelocity);
+
+                // Position correction
+                const wallToSphere = sphere.position.clone().subtract(intersection);
+                const distanceToWall = wallToSphere.length();
+                if (distanceToWall <= sphere.geometry.r) {
+                    const diff = sphere.geometry.r - distanceToWall;
+                    const offset = diff;
+                    wallToSphere.normalize().multiplyScalar(offset);
+                    sphere.position.add(wallToSphere);
+                }
             }
-            const { bouncedVelocity, intersection } = collision;
+            if (nbCollisions > 0) {
+                totalVelocity.divideScalar(nbCollisions);
+                sphere.velocity.copy(totalVelocity);
+                sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
+                sphere.data.isColliding = true;
+                sphere.collisionListener();
 
-            wall.data.isColliding = true;
-            wall.collisionListener();
-            nbCollisions++;
-            // Velocity
-            totalVelocity.add(bouncedVelocity);
-
-            // Position correction
-            const wallToSphere = sphere.position.clone().subtract(intersection);
-            const distanceToWall = wallToSphere.length();
-            if (distanceToWall <= sphere.geometry.r) {
-                const diff = sphere.geometry.r - distanceToWall;
-                const offset = diff;
-                wallToSphere.normalize().multiplyScalar(offset);
-                sphere.position.add(wallToSphere);
+                // Hacky fix to avoid the ball slowly going throug the ground when
+                // its speed is really small we add an artificial force invert to the gravity
+                // TODO There is probably a better way to handle that
+                // TODO This fix might also make non vertical bounces innacurrate
+                sphere.acceleration.push(this.antiGravity);
             }
-        }
-        if (nbCollisions > 0) {
-            totalVelocity.divideScalar(nbCollisions);
-            sphere.velocity.copy(totalVelocity);
-            sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
-            sphere.data.isColliding = true;
-            sphere.collisionListener();
-
-            // Hacky fix to avoid the ball slowly going throug the ground when
-            // its speed is really small we add an artificial force invert to the gravity
-            // TODO There is probably a better way to handle that
-            // TODO This fix might also make non vertical bounces innacurrate
-            sphere.acceleration.push(this.antiGravity);
         }
     }
 

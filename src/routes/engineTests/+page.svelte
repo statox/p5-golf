@@ -5,8 +5,10 @@
     import TestCollisions2 from '$lib/components/engineTests/TestCollisions2.svelte';
     import TestCollisions3 from '$lib/components/engineTests/TestCollisions3.svelte';
     import Obstacles from '$lib/components/engineTests/Obstacles/Main.svelte';
+    import Obstacles2 from '$lib/components/engineTests/Obstacles2/Main.svelte';
 
     const tabs = [
+        { title: 'Obstacles2', component: Obstacles2 },
         { title: 'Obstacles', component: Obstacles },
         { title: 'Test collisions 3', component: TestCollisions3 },
         { title: 'Test collisions 2', component: TestCollisions2 },
