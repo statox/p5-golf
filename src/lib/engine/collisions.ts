@@ -25,6 +25,31 @@ export const LineSphereCollider = (line: PhysicObject, sphere: PhysicObject) => 
     const x2 = line.position.x + line.geometry.vector.x;
     const y2 = line.position.y + line.geometry.vector.y;
 
+    const x3 = sphere.position.x;
+    const y3 = sphere.position.y;
+    const x4 = sphere.position.x + sphere.velocity.x;
+    const y4 = sphere.position.y + sphere.velocity.y;
+
+    /* m1,m2: slope of each line */
+    let m1 = (y2 - y1) / (x2 - x1);
+    let m2 = (y4 - y3) / (x4 - x3);
+
+    m1 = [Infinity, -Infinity].includes(m1) ? 360 : m1;
+    m2 = [Infinity, -Infinity].includes(m2) ? 360 : m2;
+
+    /* theta: angle between the vectors */
+    // theta is the angle between the velocity and the wall
+    const tanTheta = (m1 - m2) / (1 + m1 * m2);
+
+    // If tanTheta is zero lines are colinear
+    // This is a hack made by me to avoid the ball getting stuck on the end of a line
+    if (tanTheta === 0) {
+        const r = restitutionCoefficient;
+        const f = frictionCoefficient;
+        const bouncedVelocity = sphere.velocity.multiplyScalar(1 - f).multiplyScalar(-r);
+        return { bouncedVelocity, intersection };
+    }
+
     /* wallNormal: Normal to the wall with in the direction of the incoming speed*/
     // https://stackoverflow.com/a/1243676/4194289
     const dx = x2 - x1;
