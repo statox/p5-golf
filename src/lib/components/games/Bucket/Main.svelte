@@ -14,7 +14,7 @@
     let sphere: PhysicObject;
     let sphereInitialPosition: Victor;
     const onHitTarget = () => {
-        resetWorld();
+        setTimeout(resetWorld, 1000);
     };
     const resetWorld = () => {
         world = new World({
