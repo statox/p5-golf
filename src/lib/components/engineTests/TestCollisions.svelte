@@ -2,7 +2,7 @@
     import Victor from 'victor';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { World, applyForce, createPhysicObjects, type PhysicObject } from '$lib/engine';
+    import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
 
     console.clear();

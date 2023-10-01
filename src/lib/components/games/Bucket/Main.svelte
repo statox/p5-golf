@@ -4,7 +4,7 @@
     import P5, { type Sketch } from 'p5-svelte';
     import { World, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
-    import { mouseIsOnScreen, mouseIsPressedOnScreen } from '$lib/services/p5utils';
+    import { drawWorld, mouseIsOnScreen } from '$lib/services/p5utils';
     import { makeObjects } from './worldUtils';
 
     console.clear();
@@ -38,34 +38,6 @@
         }
 
         return (value as Victor).clone().multiplyScalar(SCALE);
-    };
-    const screenToWorldScale = (value: number | Victor) => {
-        if (typeof value === 'number') {
-            return value / SCALE;
-        }
-
-        return (value as Victor).clone().divideScalar(SCALE);
-    };
-
-    const drawWorld = (p5: p5, world: World) => {
-        for (const o of world.objects) {
-            p5.stroke(o.data.isColliding ? 'red' : 'white');
-
-            const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
-            const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
-            if (o.geometry.type === 'sphere') {
-                const scaledDiameter = worldToScreenScale(o.geometry.r * 2) as number;
-                p5.strokeWeight(scaledDiameter);
-                p5.point(x, y);
-            }
-
-            if (o.geometry.type === 'line') {
-                const x1 = x + p5.map(o.geometry.vector.x, 0, world.dimensions.x, 0, p5.width);
-                const y1 = y - p5.map(o.geometry.vector.y, 0, world.dimensions.y, 0, p5.height);
-                p5.strokeWeight(2);
-                p5.line(x, y, x1, y1);
-            }
-        }
     };
 
     const SCALE = 60;
