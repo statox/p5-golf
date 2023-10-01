@@ -55,7 +55,7 @@ export const updateBall = (ball: Ball, terrain: Terrain, dt: number) => {
 };
 
 const getSlopeAtX = (ball: Ball, terrain: Terrain) => {
-    const currentTerrainSegment = getSegmentAtX(ball.position.x, terrain);
+    const currentTerrainSegment = getSegmentAtX(terrain, ball.position.x);
     if (!currentTerrainSegment) {
         return;
     }

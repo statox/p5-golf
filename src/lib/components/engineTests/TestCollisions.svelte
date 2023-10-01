@@ -4,13 +4,16 @@
     import P5, { type Sketch } from 'p5-svelte';
     import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
     import { onDestroy } from 'svelte';
+    import type { Line } from '$lib/engine/Geometry';
 
     console.clear();
 
-    let history: any[] = [];
+    let history: string[] = [];
     const SCALE = 6;
     const reporter = (world: World) => {
         const lastObject = world.objects[world.objects.length - 1];
+        // Type errors should be fixed with this MR
+        // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/66892
         const pos = lastObject.position.clone().toFixed(2);
         const vel = lastObject.velocity.clone().toFixed(2);
         history.push(`${world.t.toFixed(2)} - pos: ${pos} - vel: ${vel}`);
@@ -88,7 +91,7 @@
                         selected = 'sphere';
                     } else if (pos.distance(wall.position) < 2) {
                         selected = 'wallstart';
-                    } else if (pos.distance(wall.geometry.vector.clone().add(wall.position)) < 2) {
+                    } else if (pos.distance((wall.geometry as Line).vector.clone().add(wall.position)) < 2) {
                         selected = 'wallend';
                     }
                 }
@@ -101,7 +104,7 @@
                 }
                 if (selected === 'wallend') {
                     const diff = pos.clone().subtract(wall.position);
-                    wall.geometry.vector.copy(diff);
+                    (wall.geometry as Line).vector.copy(diff);
                 }
             } else {
                 selected = undefined;

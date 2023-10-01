@@ -1,6 +1,7 @@
 import Victor from 'victor';
 import { LineSphereCollider } from './collisions';
 import type { PhysicObject } from './PhysicObject';
+import type { Sphere } from './Geometry';
 
 export type WorldReporter = (world: World) => void;
 
@@ -97,8 +98,8 @@ export class World {
                 // Position correction
                 const wallToSphere = sphere.position.clone().subtract(intersection);
                 const distanceToWall = wallToSphere.length();
-                if (distanceToWall <= sphere.geometry.r) {
-                    const diff = sphere.geometry.r - distanceToWall;
+                if (distanceToWall <= (sphere.geometry as Sphere).r) {
+                    const diff = (sphere.geometry as Sphere).r - distanceToWall;
                     const offset = diff;
                     wallToSphere.normalize().multiplyScalar(offset);
                     sphere.position.add(wallToSphere);

@@ -2,14 +2,17 @@
     import Victor from 'victor';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { World, applyForce, createPhysicObjects } from '$lib/engine';
+    import { World, createPhysicObjects } from '$lib/engine';
     import { onDestroy } from 'svelte';
 
     console.clear();
 
-    let history: any[] = [];
+    let history: string[] = [];
     const reporter = (world: World) => {
         const lastObject = world.objects[world.objects.length - 1];
+
+        // Type errors should be fixed with this MR
+        // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/66892
         const pos = lastObject.position.clone().toFixed(2);
         const vel = lastObject.velocity.clone().toFixed(2);
         history.push(`${world.t.toFixed(2)} - pos: ${pos} - vel: ${vel}`);

@@ -106,13 +106,9 @@
         }
     };
 
-    let lastTick = Date.now();
     let frameNb = 0;
     const updateBall = (ball: Ball) => {
         frameNb++;
-        const tick = Date.now();
-        const t = tick - lastTick;
-        lastTick = tick;
 
         ball.acceleration.zero();
         const isColliding = testCollision(ball);

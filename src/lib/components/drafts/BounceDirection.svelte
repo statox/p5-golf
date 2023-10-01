@@ -33,7 +33,7 @@
         p5.strokeWeight(3);
         p5.stroke('green');
         const contactSegment = getContactSegmentAtX(terrain, intersectionPointX, 50);
-        if (!contactSegment) {
+        if (!contactSegment || contactSegment.y1 === undefined || contactSegment.y2 === undefined) {
             return;
         }
         p5.line(
