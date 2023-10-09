@@ -1,20 +1,20 @@
 <script>
     import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
 
-    import TestEngine from '$lib/components/engineTests/TestEngine.svelte';
-    import TestCollisions from '$lib/components/engineTests/TestCollisions.svelte';
-    import TestCollisions2 from '$lib/components/engineTests/TestCollisions2.svelte';
-    import TestCollisions3 from '$lib/components/engineTests/TestCollisions3.svelte';
-    import Obstacles from '$lib/components/engineTests/Obstacles/Main.svelte';
-    import Obstacles2 from '$lib/components/engineTests/Obstacles2/Main.svelte';
+    import SingleBallAndGround from '$lib/components/engineTests/SingleBallAndGround.svelte';
+    import SphereLinePullAppart from '$lib/components/engineTests/SphereLinePullAppart.svelte';
+    import SphereLineDynamicsCollisions1 from '$lib/components/engineTests/SphereLineDynamicsCollisions1.svelte';
+    import SphereLineDynamicsCollisions2 from '$lib/components/engineTests/SphereLineDynamicsCollisions2.svelte';
+    import EngineSettings from '$lib/components/engineTests/EngineSettings/Main.svelte';
+    import MultipleBalls from '$lib/components/engineTests/MultipleBalls/Main.svelte';
 
     const tabs = [
-        { label: 'Obstacles2', value: Obstacles2 },
-        { label: 'Obstacles', value: Obstacles },
-        { label: 'Test collisions 3', value: TestCollisions3 },
-        { label: 'Test collisions 2', value: TestCollisions2 },
-        { label: 'Test collisions', value: TestCollisions },
-        { label: 'Test engine', value: TestEngine }
+        { label: 'Perfs - Multiple balls', value: MultipleBalls },
+        { label: 'Playground - Engine settings', value: EngineSettings },
+        { label: 'Dynamics + collisions - 1', value: SphereLineDynamicsCollisions2 },
+        { label: 'Dynamics + collisions - 2', value: SphereLineDynamicsCollisions1 },
+        { label: 'Sphere Line - pull apart', value: SphereLinePullAppart },
+        { label: 'One ball bounce', value: SingleBallAndGround }
     ];
 </script>
 
