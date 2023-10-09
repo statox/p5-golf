@@ -1,5 +1,5 @@
-<script>
-    import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';
+<script lang="ts">
+    import Select from 'svelte-select';
     import TerrainGenerator from '$lib/components/drafts/TerrainGenerator.svelte';
     import Ball from '$lib/components/drafts/Ball.svelte';
     import Physics1d from '$lib/components/drafts/Physics1d.svelte';
@@ -10,27 +10,25 @@
     import SphereSphereIntersection from '$lib/components/drafts/SphereSphereIntersection.svelte';
 
     const tabs = [
-        { title: 'Sphere-Line intersection', component: SphereSphereIntersection },
-        { title: 'Bounce', component: VectorsAngle },
-        { title: 'Sphere-Line intersection', component: SphereLineIntersection },
-        { title: 'Vectors intersection', component: VectorsIntersection },
-        { title: 'Terrain Generator', component: TerrainGenerator },
-        { title: 'Ball', component: Ball },
-        { title: 'Physics 1d', component: Physics1d },
-        { title: 'Bounce direction', component: BounceDirection }
+        { label: 'Sphere-Sphere intersection', value: SphereSphereIntersection },
+        { label: 'Bounce', value: VectorsAngle },
+        { label: 'Sphere-Line intersection', value: SphereLineIntersection },
+        { label: 'Vectors intersection', value: VectorsIntersection },
+        { label: 'Terrain Generator', value: TerrainGenerator },
+        { label: 'Ball', value: Ball },
+        { label: 'Physics 1d', value: Physics1d },
+        { label: 'Bounce direction', value: BounceDirection }
     ];
+
+    let currentTab = tabs[0];
 </script>
 
-<Tabs>
-    <TabList>
-        {#each tabs as tab}
-            <Tab>{tab.title}</Tab>
-        {/each}
-    </TabList>
+<div>
+    <span>This page is a list of preparatory tests. They don't use the actual engine (or only some part of it) and I use them to test out the math and prepare my algorithms.</span>
+    <br/>
+    <span>Use the selection menu to see the different pages</span>
+</div>
+<br/>
 
-    {#each tabs as tab}
-        <TabPanel>
-            <svelte:component this={tab.component} />
-        </TabPanel>
-    {/each}
-</Tabs>
+<Select items={tabs} showChevron={true} bind:value={currentTab}/>
+<svelte:component this={currentTab.value} />

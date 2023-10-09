@@ -1,21 +1,17 @@
 <script>
-    import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';
+    import Select from 'svelte-select';
     import Bucket from '$lib/components/games/Bucket/Main.svelte';
     const tabs = [
-        { title: 'Bucket', component: Bucket }
+        { label: 'Bucket', value: Bucket }
     ];
+
+    let currentTab = tabs[0];
 </script>
 
-<Tabs>
-    <TabList>
-        {#each tabs as tab}
-            <Tab>{tab.title}</Tab>
-        {/each}
-    </TabList>
+<div>
+    <span>A list of games implemented using the engine.</span>
+</div>
+<br/>
 
-    {#each tabs as tab}
-        <TabPanel>
-            <svelte:component this={tab.component} />
-        </TabPanel>
-    {/each}
-</Tabs>
+<Select items={tabs} showChevron={true} bind:value={currentTab}/>
+<svelte:component this={currentTab.value} />
