@@ -1,5 +1,6 @@
 <script lang="ts">
-    import Select from 'svelte-select';
+    import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
+
     import TerrainGenerator from '$lib/components/drafts/TerrainGenerator.svelte';
     import Ball from '$lib/components/drafts/Ball.svelte';
     import Physics1d from '$lib/components/drafts/Physics1d.svelte';
@@ -19,8 +20,6 @@
         { label: 'Physics 1d', value: Physics1d },
         { label: 'Bounce direction', value: BounceDirection }
     ];
-
-    let currentTab = tabs[0];
 </script>
 
 <div>
@@ -30,5 +29,4 @@
 </div>
 <br/>
 
-<Select items={tabs} showChevron={true} bind:value={currentTab}/>
-<svelte:component this={currentTab.value} />
+<ComponentSelector {tabs}/>

@@ -1,5 +1,6 @@
 <script>
-    import Select from 'svelte-select';
+    import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
+
     import TestEngine from '$lib/components/engineTests/TestEngine.svelte';
     import TestCollisions from '$lib/components/engineTests/TestCollisions.svelte';
     import TestCollisions2 from '$lib/components/engineTests/TestCollisions2.svelte';
@@ -15,8 +16,6 @@
         { label: 'Test collisions', value: TestCollisions },
         { label: 'Test engine', value: TestEngine }
     ];
-
-    let currentTab = tabs[0];
 </script>
 
 <div>
@@ -26,5 +25,4 @@
 </div>
 <br/>
 
-<Select items={tabs} showChevron={true} bind:value={currentTab}/>
-<svelte:component this={currentTab.value} />
+<ComponentSelector {tabs}/>
