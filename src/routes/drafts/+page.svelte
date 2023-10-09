@@ -3,22 +3,22 @@
 
     import TerrainGenerator from '$lib/components/drafts/TerrainGenerator.svelte';
     import Ball from '$lib/components/drafts/Ball.svelte';
-    import Physics1d from '$lib/components/drafts/Physics1d.svelte';
-    import BounceDirection from '$lib/components/drafts/BounceDirection.svelte';
+    import BouncingBallGraph from '$lib/components/drafts/BouncingBallGraph.svelte';
+    import TerrainBounceDirection from '$lib/components/drafts/TerrainBounceDirection.svelte';
     import VectorsIntersection from '$lib/components/drafts/VectorsIntersection.svelte';
-    import VectorsAngle from '$lib/components/drafts/VectorsAngle.svelte';
+    import BounceVelocity from '$lib/components/drafts/BounceVelocity.svelte';
     import SphereLineIntersection from '$lib/components/drafts/SphereLineIntersection.svelte';
     import SphereSphereIntersection from '$lib/components/drafts/SphereSphereIntersection.svelte';
 
     const tabs = [
-        { label: 'Sphere-Sphere intersection', value: SphereSphereIntersection },
-        { label: 'Bounce', value: VectorsAngle },
-        { label: 'Sphere-Line intersection', value: SphereLineIntersection },
-        { label: 'Vectors intersection', value: VectorsIntersection },
-        { label: 'Terrain Generator', value: TerrainGenerator },
-        { label: 'Ball', value: Ball },
-        { label: 'Physics 1d', value: Physics1d },
-        { label: 'Bounce direction', value: BounceDirection }
+        { label: 'Intersection - Sphere-Sphere', value: SphereSphereIntersection },
+        { label: 'Intersection - Sphere-Line', value: SphereLineIntersection },
+        { label: 'Intersection - Line-Line', value: VectorsIntersection },
+        { label: 'Bounce velocity', value: BounceVelocity },
+        { label: 'Terrain - Generator', value: TerrainGenerator },
+        { label: 'Terrain - Bounce direction', value: TerrainBounceDirection },
+        { label: 'Ball bounce with graph', value: BouncingBallGraph },
+        { label: 'Broken bouncing ball', value: Ball },
     ];
 </script>
 
