@@ -103,8 +103,7 @@
         intersect: false,
         intersectType: 'white',
         radius: 100,
-        position: new Victor(200, 200),
-        end: new Victor(600, 400)
+        position: new Victor(200, 200)
     };
     const wall = {
         position: new Victor(250, 300),
@@ -125,7 +124,6 @@
 
             p5.noFill();
             p5.stroke(255);
-            p5.line(sphere.position.x, sphere.position.y, sphere.end.x, sphere.end.y);
             p5.line(wall.position.x, wall.position.y, wall.end.x, wall.end.y);
             p5.noStroke();
 
@@ -138,12 +136,10 @@
             p5.circle(wall.position.x, wall.position.y, 10);
 
             p5.fill('red');
-            p5.circle(sphere.end.x, sphere.end.y, 10);
             p5.circle(wall.end.x, wall.end.y, 10);
 
             p5.fill(255);
             p5.text(vecStr(sphere.position), sphere.position.x, sphere.position.y);
-            p5.text(vecStr(sphere.end), sphere.end.x, sphere.end.y);
             p5.text(vecStr(wall.position), wall.position.x, wall.position.y);
             p5.text(vecStr(wall.end), wall.end.x, wall.end.y);
 
@@ -172,8 +168,6 @@
                 if (!selected) {
                     if (mousePosition.distance(sphere.position) < 20) {
                         selected = '1pos';
-                    } else if (mousePosition.distance(sphere.end) < 20) {
-                        selected = '1end';
                     } else if (mousePosition.distance(wall.position) < 20) {
                         selected = '2pos';
                     } else if (mousePosition.distance(wall.end) < 20) {
@@ -181,19 +175,12 @@
                     }
                 }
 
-                let diff = mousePosition.clone().subtract(sphere.position);
                 if (selected === '1pos') {
                     sphere.position = mousePosition;
-                } else if (selected === '1end') {
-                    sphere.end = mousePosition;
                 } else if (selected === '2pos') {
                     wall.position = mousePosition;
                 } else if (selected === '2end') {
                     wall.end = mousePosition;
-                }
-
-                if (p5.keyIsDown(p5.CONTROL)) {
-                    sphere.end.add(diff);
                 }
             } else {
                 selected = undefined;
@@ -208,4 +195,13 @@
 
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
+</div>
+
+<div>
+    <p>
+        Drag and drop the ball and the wall's ends to find the collision point.
+    </p>
+    <p>
+        The <span style="color: yellow">yellow line</span> is the projection of the sphere's position on the line.
+    </p>
 </div>
