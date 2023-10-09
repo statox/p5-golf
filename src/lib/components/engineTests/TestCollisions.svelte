@@ -110,7 +110,7 @@
                 selected = undefined;
             }
 
-            for (const o of world.objects) {
+            for (const o of world.objects.sort((a, b) => a.geometry.type < b.geometry.type ? 1 : -1)) {
                 p5.stroke(sphere.data.isColliding ? 'red' : 'white');
 
                 const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
@@ -124,6 +124,7 @@
                 if (o.geometry.type === 'line') {
                     const x1 = x + p5.map(o.geometry.vector.x, 0, world.dimensions.x, 0, p5.width);
                     const y1 = y - p5.map(o.geometry.vector.y, 0, world.dimensions.y, 0, p5.height);
+                    p5.stroke('blue');
                     p5.strokeWeight(2);
                     p5.line(x, y, x1, y1);
                 }
