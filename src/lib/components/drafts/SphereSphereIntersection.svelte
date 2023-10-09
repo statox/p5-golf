@@ -27,6 +27,10 @@
     let intersectionPoint1: Victor | undefined;
     let intersectionPoint2: Victor | undefined;
     const testIntersect = () => {
+        if (s1.geometry.type !== 'sphere' || s2.geometry.type !=='sphere') {
+            return;
+        }
+
         const r1 = s1.geometry.r;
         const r2 = s2.geometry.r;
 
@@ -49,13 +53,17 @@
     const SCALE = 6;
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
-        const screenDimensions = worldToScreenScale(worldDimensions, SCALE);
+        const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
         p5.setup = () => {
             _p5 = p5;
             p5.createCanvas(screenDimensions.x, screenDimensions.y);
         };
         p5.draw = () => {
             p5.background(0);
+
+            if (s1.geometry.type !== 'sphere' || s2.geometry.type !=='sphere') {
+                return;
+            }
 
             if (mouseIsPressedOnScreen(p5)) {
                 const worldPos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY), SCALE) as Victor;
@@ -68,24 +76,24 @@
             p5.stroke(intersect ? 'red' : 'white');
             p5.noFill();
 
-            const s1pos = worldToScreenScale(s1.position, SCALE);
+            const s1pos = worldToScreenScale(s1.position, SCALE) as Victor;
             p5.circle(s1pos.x, p5.height - s1pos.y, 2 * s1.geometry.r * SCALE);
             p5.text(`${s1.position.x.toFixed(0)};${s1.position.y.toFixed(0)}`, s1pos.x, p5.height - s1pos.y);
 
-            const s2pos = worldToScreenScale(s2.position, SCALE);
+            const s2pos = worldToScreenScale(s2.position, SCALE) as Victor;
             p5.circle(s2pos.x, p5.height - s2pos.y, 2 * s2.geometry.r * SCALE);
             p5.text(`${s2.position.x.toFixed(0)};${s2.position.y.toFixed(0)}`, s2pos.x, p5.height - s2pos.y);
 
             if (intersectionPoint1) {
                 p5.fill('blue');
                 p5.stroke('blue');
-                const interPos = worldToScreenScale(intersectionPoint1, SCALE);
+                const interPos = worldToScreenScale(intersectionPoint1, SCALE) as Victor;
                 p5.circle(interPos.x, p5.height - interPos.y, 10);
             }
             if (intersectionPoint2) {
                 p5.fill('green');
                 p5.stroke('green');
-                const interPos = worldToScreenScale(intersectionPoint2, SCALE);
+                const interPos = worldToScreenScale(intersectionPoint2, SCALE) as Victor;
                 p5.circle(interPos.x, p5.height - interPos.y, 10);
             }
         };
