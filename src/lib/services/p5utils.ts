@@ -15,12 +15,20 @@ export const mouseIsOnScreen = (p5: p5) => {
     return x > 0 && x < w && y > 0 && y < h;
 };
 
-const worldToScreenScale = (value: number | Victor, scale: number) => {
+export const worldToScreenScale = (value: number | Victor, scale: number) => {
     if (typeof value === 'number') {
         return value * scale;
     }
 
     return (value as Victor).clone().multiplyScalar(scale);
+};
+
+export const screenToWorldScale = (value: number | Victor, scale: number) => {
+    if (typeof value === 'number') {
+        return value / scale;
+    }
+
+    return (value as Victor).clone().divideScalar(scale);
 };
 
 export const drawWorld = (p5: p5, world: World) => {

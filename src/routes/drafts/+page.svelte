@@ -7,8 +7,10 @@
     import VectorsIntersection from '$lib/components/drafts/VectorsIntersection.svelte';
     import VectorsAngle from '$lib/components/drafts/VectorsAngle.svelte';
     import SphereLineIntersection from '$lib/components/drafts/SphereLineIntersection.svelte';
+    import SphereSphereIntersection from '$lib/components/drafts/SphereSphereIntersection.svelte';
 
     const tabs = [
+        { title: 'Sphere-Line intersection', component: SphereSphereIntersection },
         { title: 'Bounce', component: VectorsAngle },
         { title: 'Sphere-Line intersection', component: SphereLineIntersection },
         { title: 'Vectors intersection', component: VectorsIntersection },
