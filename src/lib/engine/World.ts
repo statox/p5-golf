@@ -85,27 +85,18 @@ export class World {
             // - Apply the velocity to change the position
             for (const wall of walls) {
                 wall.data.isColliding = false;
-                const collision = lineSphereCollider.bounce(wall, sphere);
-                if (!collision) {
+                const collision = lineSphereCollider.apply(wall, sphere);
+                if (!collision.intersection) {
                     continue;
                 }
-                const { bouncedVelocity, intersection } = collision;
+                const { bouncedVelocity, positionCorrection } = collision;
 
                 wall.data.isColliding = true;
                 wall.collisionListener();
                 nbCollisions++;
-                // Velocity
-                totalVelocity.add(bouncedVelocity);
 
-                // Position correction
-                const wallToSphere = sphere.position.clone().subtract(intersection);
-                const distanceToWall = wallToSphere.length();
-                if (distanceToWall <= (sphere.geometry as Sphere).r) {
-                    const diff = (sphere.geometry as Sphere).r - distanceToWall;
-                    const offset = diff;
-                    wallToSphere.normalize().multiplyScalar(offset);
-                    sphere.position.add(wallToSphere);
-                }
+                totalVelocity.add(bouncedVelocity);
+                sphere.position.add(positionCorrection);
             }
             if (nbCollisions > 0) {
                 totalVelocity.divideScalar(nbCollisions);

@@ -1,12 +1,15 @@
 import Victor from 'victor';
 import type { PhysicObject } from './PhysicObject';
 import type { Collider } from './Collider';
+import type { Sphere } from './Geometry';
 
 export class LineSphereCollider implements Collider {
     constructor() {}
 
     apply = (line: PhysicObject, sphere: PhysicObject) => {
-        return this.bounce(line, sphere);
+        const bounce = this.bounce(line, sphere);
+        const pullApart = this.pullApart(line, sphere);
+        return { ...bounce!, ...pullApart! };
     };
 
     intersectionPoint = (line: PhysicObject, sphere: PhysicObject) => {
@@ -159,5 +162,27 @@ export class LineSphereCollider implements Collider {
         const bouncedVelocity = w.multiplyScalar(1 - f).subtract(u.multiplyScalar(r));
 
         return { bouncedVelocity, intersection };
+    };
+
+    pullApart = (line: PhysicObject, sphere: PhysicObject) => {
+        if (sphere.geometry.type !== 'sphere' || line.geometry.type !== 'line') {
+            throw new Error('invalid geometry');
+        }
+
+        const intersection = this.intersectionPoint(line, sphere);
+        if (!intersection) {
+            return;
+        }
+        const wallToSphere = sphere.position.clone().subtract(intersection);
+        const distanceToWall = wallToSphere.length();
+
+        if (distanceToWall > (sphere.geometry as Sphere).r) {
+            return { positionCorrection: new Victor(0, 0) };
+        }
+
+        const diff = (sphere.geometry as Sphere).r - distanceToWall;
+        const offset = diff;
+        const positionCorrection = wallToSphere.normalize().multiplyScalar(offset);
+        return { positionCorrection };
     };
 }
