@@ -1,16 +1,14 @@
 import Victor from 'victor';
 import type { PhysicObject } from './PhysicObject';
 import type { Collider } from './Collider';
-import type { Sphere } from './Geometry';
 
 export class SphereSphereCollider implements Collider {
     constructor() {}
 
     apply = (s1: PhysicObject, s2: PhysicObject) => {
         return {
-            intersection: this.intersectionPoint(s1, s2)!,
-            bouncedVelocity: new Victor(0, 0),
-            ...this.pullApart(s1, s2)!
+            ...this.pullApart(s1, s2)!,
+            ...this.bounce(s1, s2)!
         };
     };
 
@@ -40,29 +38,29 @@ export class SphereSphereCollider implements Collider {
     //  a collision so the sphere passes through.
     //  - In some cases (e.g. dropping the ball on the extremity of an 45deg inclined wall) the sphere
     //  gets impaled on the wall, maybe I need to move the sphere to make it impossible to get stuck.
-    bounce = (line: PhysicObject, sphere: PhysicObject) => {
-        if (sphere.geometry.type !== 'sphere' || line.geometry.type !== 'line') {
+    bounce = (s1: PhysicObject, s2: PhysicObject) => {
+        if (s1.geometry.type !== 'sphere' || s2.geometry.type !== 'sphere') {
             throw new Error('invalid geometry');
         }
 
-        const intersection = this.intersectionPoint(line, sphere);
+        const intersection = this.intersectionPoint(s1, s2);
         if (!intersection) {
             return;
         }
 
-        const restitutionCoefficient = line.restitution * sphere.restitution;
-        const frictionCoefficient = line.friction * sphere.friction;
+        const restitutionCoefficient = s1.restitution * s2.restitution;
+        const frictionCoefficient = s1.friction * s2.friction;
 
         /* x1,y1, x2,y2: both extremities of the line */
-        const x1 = line.position.x;
-        const y1 = line.position.y;
-        const x2 = line.position.x + line.geometry.vector.x;
-        const y2 = line.position.y + line.geometry.vector.y;
+        const x1 = s2.position.x;
+        const y1 = s2.position.y;
+        const x2 = s2.position.x + s2.velocity.x;
+        const y2 = s2.position.y + s2.velocity.y;
 
-        const x3 = sphere.position.x;
-        const y3 = sphere.position.y;
-        const x4 = sphere.position.x + sphere.velocity.x;
-        const y4 = sphere.position.y + sphere.velocity.y;
+        const x3 = s1.position.x;
+        const y3 = s1.position.y;
+        const x4 = s1.position.x + s1.velocity.x;
+        const y4 = s1.position.y + s1.velocity.y;
 
         /* m1,m2: slope of each line */
         let m1 = (y2 - y1) / (x2 - x1);
@@ -80,7 +78,7 @@ export class SphereSphereCollider implements Collider {
         if (tanTheta === 0) {
             const r = restitutionCoefficient;
             const f = frictionCoefficient;
-            const bouncedVelocity = sphere.velocity.multiplyScalar(1 - f).multiplyScalar(-r);
+            const bouncedVelocity = s1.velocity.multiplyScalar(1 - f).multiplyScalar(-r);
             return { bouncedVelocity, intersection };
         }
 
@@ -99,8 +97,8 @@ export class SphereSphereCollider implements Collider {
 
         let wallNormal: Victor;
         if (
-            sphere.position.distanceSq(testPointWallNormal1) <
-            sphere.position.distanceSq(testPointWallNormal2)
+            s1.position.distanceSq(testPointWallNormal1) <
+            s1.position.distanceSq(testPointWallNormal2)
         ) {
             wallNormal = possibleWallNormal1;
         } else {
@@ -110,7 +108,7 @@ export class SphereSphereCollider implements Collider {
         /* u,w: Components of the speed along the wall and the normal */
         // https://stackoverflow.com/a/573206/4194289
         const n = wallNormal.clone().normalize();
-        const v = sphere.velocity.clone();
+        const v = s1.velocity.clone();
 
         // u = (v · n / n · n) n
         // w = v − u

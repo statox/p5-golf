@@ -24,7 +24,7 @@
             r: 10
         } as Sphere,
         position: new Victor(70, 50),
-        velocity: new Victor(15, 15)
+        velocity: new Victor(0, 45)
     });
     const collider = new SphereSphereCollider();
 
