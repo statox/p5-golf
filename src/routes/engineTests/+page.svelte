@@ -8,8 +8,10 @@
     import EngineSettings from '$lib/components/engineTests/EngineSettings/Main.svelte';
     import MultipleBalls from '$lib/components/engineTests/MultipleBalls/Main.svelte';
     import LineSphereColliderTest from '$lib/components/engineTests/LineSphereColliderTest.svelte';
+    import SphereSphereColliderTest from '$lib/components/engineTests/SphereSphereColliderTest.svelte';
 
     const tabs = [
+        { label: 'Sphere Sphere Collider', value: SphereSphereColliderTest },
         { label: 'Line Sphere Collider', value: LineSphereColliderTest },
         { label: 'Perfs - Multiple balls', value: MultipleBalls },
         { label: 'Playground - Engine settings', value: EngineSettings },
