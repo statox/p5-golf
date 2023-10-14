@@ -2,7 +2,7 @@
     import Victor from 'victor';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { World, type PhysicObject } from '$lib/engine';
+    import { World, type PhysicObject, createPhysicObjects } from '$lib/engine';
     import { onDestroy } from 'svelte';
     import { drawWorld, mouseIsOnScreen, mouseIsPressedOnScreen } from '$lib/services/p5utils';
     import EngineSettings from '$lib/components/engine/EngineSettings.svelte';
@@ -11,11 +11,10 @@
 
     console.clear();
 
-    let pauseOnCollision = false;
     let pause = false;
     let objectsParams = {
         nbBalls: 5,
-        rBalls: 2
+        rBalls: 0.2
     };
     let world: World;
 
@@ -33,6 +32,17 @@
         for (const object of objects.objects) {
             world.addObject(object);
         }
+    };
+    const addBall = ()=> {
+        const s = createPhysicObjects({
+            geometry: {
+                type: 'sphere',
+                r: objectsParams.rBalls
+            },
+            position: new Victor(7, 7),
+            velocity: new Victor(0, 0)
+        });
+        world.addObject(s);
     };
 
     const worldToScreenScale = (value: number | Victor) => {
@@ -128,9 +138,9 @@
 </div>
 
 <div>
-    <button on:click={() => pauseOnCollision = !pauseOnCollision}>{pauseOnCollision? 'Disable' : 'Enable'} pause on collision</button>
     <button on:click={() => pause = !pause}>{pause ? 'Play' : 'Pause'}</button>
     <button on:click={resetWorld}>Reset</button>
+    <button on:click={addBall}>Add ball</button>
 </div>
 
 <Shooter onShoot={shoot} />
