@@ -1,6 +1,7 @@
 <script>
     import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
 
+    import Ballpool from '$lib/components/engineTests/Ballpool/Main.svelte';
     import SingleBallAndGround from '$lib/components/engineTests/SingleBallAndGround.svelte';
     import SphereLinePullAppart from '$lib/components/engineTests/SphereLinePullAppart.svelte';
     import SphereLineDynamicsCollisions1 from '$lib/components/engineTests/SphereLineDynamicsCollisions1.svelte';
@@ -11,6 +12,7 @@
     import SphereSphereColliderTest from '$lib/components/engineTests/SphereSphereColliderTest.svelte';
 
     const tabs = [
+        { label: 'Ball pool', value: Ballpool },
         { label: 'Sphere Sphere Collider', value: SphereSphereColliderTest },
         { label: 'Line Sphere Collider', value: LineSphereColliderTest },
         { label: 'Perfs - Multiple balls', value: MultipleBalls },
