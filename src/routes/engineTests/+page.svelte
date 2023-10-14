@@ -7,8 +7,10 @@
     import SphereLineDynamicsCollisions2 from '$lib/components/engineTests/SphereLineDynamicsCollisions2.svelte';
     import EngineSettings from '$lib/components/engineTests/EngineSettings/Main.svelte';
     import MultipleBalls from '$lib/components/engineTests/MultipleBalls/Main.svelte';
+    import LineSphereColliderTest from '$lib/components/engineTests/LineSphereColliderTest.svelte';
 
     const tabs = [
+        { label: 'Line Sphere Collider', value: LineSphereColliderTest },
         { label: 'Perfs - Multiple balls', value: MultipleBalls },
         { label: 'Playground - Engine settings', value: EngineSettings },
         { label: 'Dynamics + collisions - 1', value: SphereLineDynamicsCollisions2 },
