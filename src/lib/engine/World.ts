@@ -1,9 +1,11 @@
 import Victor from 'victor';
-import { LineSphereCollider } from './collisions';
 import type { PhysicObject } from './PhysicObject';
 import type { Sphere } from './Geometry';
+import { LineSphereCollider } from './LineSphereCollider';
 
 export type WorldReporter = (world: World) => void;
+
+const lineSphereCollider = new LineSphereCollider();
 
 export class World {
     gravityEnabled: boolean;
@@ -83,7 +85,7 @@ export class World {
             // - Apply the velocity to change the position
             for (const wall of walls) {
                 wall.data.isColliding = false;
-                const collision = LineSphereCollider(wall, sphere);
+                const collision = lineSphereCollider.bounce(wall, sphere);
                 if (!collision) {
                     continue;
                 }
