@@ -1,7 +1,7 @@
 import { createPhysicObjects } from '$lib/engine';
 import Victor from 'victor';
 
-export const makeObjects = () => {
+export const makeObjects = (params: { nbBalls: number; rBalls: number }) => {
     const objects = [];
 
     // Borders
@@ -34,11 +34,11 @@ export const makeObjects = () => {
     objects.push(right);
 
     // sphere
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < params.nbBalls; i++) {
         const sphere = createPhysicObjects({
             geometry: {
                 type: 'sphere',
-                r: 0.1
+                r: params.rBalls
             },
             position: new Victor(Math.random() * 15, Math.random() * 15),
             velocity: new Victor(Math.random() * 15, Math.random() * 15)

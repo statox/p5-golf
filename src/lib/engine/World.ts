@@ -1,11 +1,12 @@
 import Victor from 'victor';
 import type { PhysicObject } from './PhysicObject';
-import type { Sphere } from './Geometry';
 import { LineSphereCollider } from './LineSphereCollider';
+import { SphereSphereCollider } from './SphereSphereCollider';
 
 export type WorldReporter = (world: World) => void;
 
 const lineSphereCollider = new LineSphereCollider();
+const sphereSphereCollider = new SphereSphereCollider();
 
 export class World {
     gravityEnabled: boolean;
@@ -73,7 +74,8 @@ export class World {
         const spheres = this.objects.filter((o) => o.geometry.type === 'sphere');
         const walls = this.objects.filter((o) => o.geometry.type === 'line');
 
-        for (const sphere of spheres) {
+        for (let i = 0; i < spheres.length; i++) {
+            const sphere = spheres[i];
             sphere.data.isColliding = false;
 
             const totalVelocity = new Victor(0, 0);
@@ -93,6 +95,21 @@ export class World {
 
                 wall.data.isColliding = true;
                 wall.collisionListener();
+                nbCollisions++;
+
+                totalVelocity.add(bouncedVelocity);
+                sphere.position.add(positionCorrection);
+            }
+            for (let j = 0; j < spheres.length; j++) {
+                if (i === j) {
+                    continue;
+                }
+                const s2 = spheres[j];
+                const collision = sphereSphereCollider.apply(sphere, s2);
+                if (!collision.intersection) {
+                    continue;
+                }
+                const { bouncedVelocity, positionCorrection } = collision;
                 nbCollisions++;
 
                 totalVelocity.add(bouncedVelocity);

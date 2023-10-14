@@ -30,7 +30,7 @@
             enableGravity: true
         });
 
-        const objects = makeObjects();
+        const objects = makeObjects({nbBalls: 5, rBalls: 0.2});
         sphere = objects.sphere;
         for (const object of objects.objects) {
             world.addObject(object);
