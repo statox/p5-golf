@@ -72,13 +72,14 @@
                 }
             }
 
-            // const { intersection, bouncedVelocity } = collider.apply(line, sphere);
-            // for (let _=0; _<10; _++) {
-            //     const { positionCorrection } = collider.apply(line, sphere);
-            //     if (positionCorrection) {
-            //         sphere.position.add(positionCorrection);
-            //     }
-            // }
+            const { intersection, bouncedVelocity } = collider.apply(sphere, sphere2);
+            for (let _=0; _<10; _++) {
+                const { positionCorrection } = collider.apply(sphere, sphere2);
+                if (positionCorrection) {
+                    sphere.position.add(positionCorrection.multiplyScalar(0.5));
+                    sphere2.position.subtract(positionCorrection.multiplyScalar(0.5));
+                }
+            }
 
             p5.stroke(255);
             p5.noFill();
@@ -99,19 +100,19 @@
             p5.line(sphere2Pos.x, p5.height - sphere2Pos.y,  sphere2Pos.x+ velocity2Vec.x,  p5.height - (sphere2Pos.y+ velocity2Vec.y));
 
 
-            // if (intersection) {
-            //     p5.stroke('blue');
-            //     p5.fill('blue');
-            //     const intersectionPos = worldToScreenScale(intersection, SCALE) as Victor;
-            //     p5.circle(intersectionPos.x, p5.height - intersectionPos.y, 5);
-            // }
+            if (intersection) {
+                p5.stroke('#54d7ff');
+                p5.fill('#54d7ff');
+                const intersectionPos = worldToScreenScale(intersection, SCALE) as Victor;
+                p5.circle(intersectionPos.x, p5.height - intersectionPos.y, 5);
+            }
 
-            // if (bouncedVelocity) {
-            //     p5.stroke('green');
-            //     p5.fill('green');
-            //     const bouncedVelWorld = worldToScreenScale(bouncedVelocity, SCALE) as Victor;
-            //     p5.line(spherePos.x, p5.height - spherePos.y,  spherePos.x+ bouncedVelWorld.x,  p5.height - (spherePos.y+ bouncedVelWorld.y));
-            // }
+            if (bouncedVelocity) {
+                p5.stroke('green');
+                p5.fill('green');
+                const bouncedVelWorld = worldToScreenScale(bouncedVelocity, SCALE) as Victor;
+                p5.line(spherePos.x, p5.height - spherePos.y,  spherePos.x+ bouncedVelWorld.x,  p5.height - (spherePos.y+ bouncedVelWorld.y));
+            }
         };
 
     };

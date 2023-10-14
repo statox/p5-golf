@@ -75,7 +75,8 @@
             for (let _=0; _<10; _++) {
                 const { positionCorrection } = collider.apply(line, sphere);
                 if (positionCorrection) {
-                    sphere.position.add(positionCorrection);
+                    sphere.position.add(positionCorrection.multiplyScalar(0.5));
+                    line.position.subtract(positionCorrection.multiplyScalar(0.5));
                 }
             }
 
@@ -94,8 +95,8 @@
             p5.line(lx, p5.height - ly, lx + lVec.x,  p5.height - (ly + lVec.y));
 
             if (intersection) {
-                p5.stroke('blue');
-                p5.fill('blue');
+                p5.stroke('#54d7ff');
+                p5.fill('#54d7ff');
                 const intersectionPos = worldToScreenScale(intersection, SCALE) as Victor;
                 p5.circle(intersectionPos.x, p5.height - intersectionPos.y, 5);
             }
