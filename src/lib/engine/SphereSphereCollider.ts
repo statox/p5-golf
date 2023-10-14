@@ -6,74 +6,33 @@ import type { Sphere } from './Geometry';
 export class SphereSphereCollider implements Collider {
     constructor() {}
 
-    apply = (line: PhysicObject, sphere: PhysicObject) => {
-        const bounce = this.bounce(line, sphere);
-        const pullApart = this.pullApart(line, sphere);
-        return { ...bounce!, ...pullApart! };
+    apply = (s1: PhysicObject, s2: PhysicObject) => {
+        return {
+            intersection: this.intersectionPoint(s1, s2)!,
+            bouncedVelocity: new Victor(0, 0),
+            ...this.pullApart(s1, s2)!
+        };
     };
 
     intersectionPoint = (s1: PhysicObject, s2: PhysicObject) => {
         if (s1.geometry.type !== 'sphere' || s2.geometry.type !== 'sphere') {
-            throw new Error('invalid geometry');
-        }
-
-        // Get the intersection point between a sphere and a line
-        // https://stackoverflow.com/a/1084899
-        const E = line.position.clone();
-        const L = line.position.clone().add(line.geometry.vector);
-        const C = sphere.position.clone();
-        const r = sphere.geometry.r;
-
-        const d = L.clone().subtract(E);
-        const f = E.clone().subtract(C);
-
-        const a = d.dot(d);
-        const b = f.dot(d) * 2;
-        const c = f.dot(f) - r * r;
-
-        let discriminant = b * b - 4 * a * c;
-
-        if (discriminant < 0) {
             return;
         }
 
-        discriminant = Math.sqrt(discriminant);
+        const r1 = s1.geometry.r;
+        const r2 = s2.geometry.r;
 
-        // t1 is the leftmost point of contact between the wall and the sphere
-        // t2 is the rightmost point of contact between the wall and the sphere
-        // To exist t1 and t2 need to be between [0, 1]
-        // At 0 the point is at one extremity of the line and at 1 it is at the
-        // other extremity
-        // To get the 2d point we add to the begining of the line (E) the slope
-        // of the line (d) multiplied by the chosen selection t1 or t2
-        //
-        // Either solution may be on or off the ray so we need to test both
-        // t1 is always the smaller value, because BOTH discriminant and
-        // a are nonnegative.
-        const t1 = (-b - discriminant) / (2 * a);
-        const t2 = (-b + discriminant) / (2 * a);
+        const dSq = s1.position.distanceSq(s2.position);
+        const minDSq = (r1 + r2) ** 2;
 
-        const t1Valid = t1 >= 0 && t1 <= 1;
-        const t2Valid = t2 >= 0 && t2 <= 1;
-
-        console.log(t1 + (t2 - t1) * 0.5);
-
-        // If both points exists the actual interception is in the middle
-        if (t1Valid && t2Valid) {
-            return E.add(d.multiplyScalar(t1 + (t2 - t1) * 0.5));
+        if (dSq > minDSq) {
+            return;
         }
 
-        // If only one point exists we want to put the actual interception at
-        // the end of the line so that objects don't empale themselve on the line
-        if (t1Valid) {
-            return E.add(d.multiplyScalar(t1 + (1 - t1) * 0.5));
-        }
-
-        // ExitWound
-        if (t2Valid) {
-            return E.add(d.multiplyScalar(t2 * 0.5));
-        }
-        return;
+        const l = s2.position.clone().subtract(s1.position);
+        const r = r1 / (r1 + r2);
+        l.multiplyScalar(r);
+        return s1.position.clone().add(l);
     };
 
     // TO FIX:
@@ -166,25 +125,20 @@ export class SphereSphereCollider implements Collider {
         return { bouncedVelocity, intersection };
     };
 
-    pullApart = (line: PhysicObject, sphere: PhysicObject) => {
-        if (sphere.geometry.type !== 'sphere' || line.geometry.type !== 'line') {
+    pullApart = (s1: PhysicObject, s2: PhysicObject) => {
+        if (s1.geometry.type !== 'sphere' || s2.geometry.type !== 'sphere') {
             throw new Error('invalid geometry');
         }
 
-        const intersection = this.intersectionPoint(line, sphere);
+        const intersection = this.intersectionPoint(s1, s2);
         if (!intersection) {
             return;
         }
-        const wallToSphere = sphere.position.clone().subtract(intersection);
-        const distanceToWall = wallToSphere.length();
+        const intersectionToSphere = s1.position.clone().subtract(intersection);
+        const distanceToIntersection = intersectionToSphere.length();
+        const requiredDistance = s1.geometry.r - distanceToIntersection;
+        intersectionToSphere.normalize().multiplyScalar(requiredDistance);
 
-        if (distanceToWall > (sphere.geometry as Sphere).r) {
-            return { positionCorrection: new Victor(0, 0) };
-        }
-
-        const diff = (sphere.geometry as Sphere).r - distanceToWall;
-        const offset = diff;
-        const positionCorrection = wallToSphere.normalize().multiplyScalar(offset);
-        return { positionCorrection };
+        return { positionCorrection: intersectionToSphere };
     };
 }
