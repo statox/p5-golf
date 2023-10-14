@@ -56,6 +56,8 @@ export class LineSphereCollider implements Collider {
         const t1Valid = t1 >= 0 && t1 <= 1;
         const t2Valid = t2 >= 0 && t2 <= 1;
 
+        console.log(t1 + (t2 - t1) * 0.5);
+
         // If both points exists the actual interception is in the middle
         if (t1Valid && t2Valid) {
             return E.add(d.multiplyScalar(t1 + (t2 - t1) * 0.5));
@@ -64,12 +66,12 @@ export class LineSphereCollider implements Collider {
         // If only one point exists we want to put the actual interception at
         // the end of the line so that objects don't empale themselve on the line
         if (t1Valid) {
-            return E.add(d.multiplyScalar(1));
+            return E.add(d.multiplyScalar(t1 + (1 - t1) * 0.5));
         }
 
         // ExitWound
         if (t2Valid) {
-            return E.add(d.multiplyScalar(0));
+            return E.add(d.multiplyScalar(t2 * 0.5));
         }
         return;
     };

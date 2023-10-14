@@ -71,9 +71,12 @@
                 }
             }
 
-            const { intersection, positionCorrection, bouncedVelocity } = collider.apply(line, sphere);
-            if (positionCorrection) {
-                sphere.position.add(positionCorrection);
+            const { intersection, bouncedVelocity } = collider.apply(line, sphere);
+            for (let _=0; _<10; _++) {
+                const { positionCorrection } = collider.apply(line, sphere);
+                if (positionCorrection) {
+                    sphere.position.add(positionCorrection);
+                }
             }
 
             p5.stroke(255);
