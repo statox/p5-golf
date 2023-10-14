@@ -13,24 +13,22 @@
 
     let pauseOnCollision = false;
     let pause = false;
-    let observedData = {
-        t: '0',
-        frameTime: '0',
-        spherePos: new Victor(0, 0),
-        sphereVel: new Victor(0, 0),
-        ballIsColliding: false
+    let objectsParams = {
+        nbBalls: 5,
+        rBalls: 2
     };
     let world: World;
 
     let sphere: PhysicObject;
     const resetWorld = () => {
+        const gravity = world?.gravityEnabled ?? true;
         world = new World({
             dimensions: new Victor(15, 15),
             reporter: () => {},
-            enableGravity: true
+            enableGravity: gravity
         });
 
-        const objects = makeObjects({nbBalls: 5, rBalls: 0.2});
+        const objects = makeObjects(objectsParams);
         sphere = objects.sphere;
         for (const object of objects.objects) {
             world.addObject(object);
@@ -141,29 +139,15 @@
 <table>
     <tbody>
         <tr>
-            <th>Simulation time/Frame duration</th>
+            <th>Number of balls</th>
             <td>
-                {observedData.t}
-            </td>
-            <td>
-                {observedData.frameTime}
+                <input type="number" min=1 on:change={resetWorld} bind:value={objectsParams.nbBalls}/>
             </td>
         </tr>
         <tr>
-            <th>Sphere position</th>
+            <th>Balls radius</th>
             <td>
-                {observedData.spherePos.x.toFixed(2)}
-            </td>
-            <td>
-                {observedData.spherePos.y.toFixed(2)}
-            </td>
-        <tr>
-            <th>Sphere velocity</th>
-            <td>
-                {observedData.sphereVel.x.toFixed(2)}
-            </td>
-            <td>
-                {observedData.sphereVel.y.toFixed(2)}
+                <input type="number" min=1 on:change={resetWorld} bind:value={objectsParams.rBalls}/>
             </td>
         </tr>
     </tbody>

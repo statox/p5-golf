@@ -1,10 +1,19 @@
-import { createPhysicObjects } from '$lib/engine';
+import { createPhysicObjects, type PhysicObject } from '$lib/engine';
 import Victor from 'victor';
 
 export const makeObjects = (params: { nbBalls: number; rBalls: number }) => {
     const objects = [];
 
     // Borders
+    const top = createPhysicObjects({
+        geometry: {
+            type: 'line',
+            vector: new Victor(15, 0)
+        },
+        position: new Victor(0, 15),
+        fixed: true
+    });
+    objects.push(top);
     const bottom = createPhysicObjects({
         geometry: {
             type: 'line',
@@ -34,8 +43,9 @@ export const makeObjects = (params: { nbBalls: number; rBalls: number }) => {
     objects.push(right);
 
     // sphere
+    let sphere: PhysicObject;
     for (let i = 0; i < params.nbBalls; i++) {
-        const sphere = createPhysicObjects({
+        const s = createPhysicObjects({
             geometry: {
                 type: 'sphere',
                 r: params.rBalls
@@ -43,8 +53,11 @@ export const makeObjects = (params: { nbBalls: number; rBalls: number }) => {
             position: new Victor(Math.random() * 15, Math.random() * 15),
             velocity: new Victor(Math.random() * 15, Math.random() * 15)
         });
-        objects.push(sphere);
+        objects.push(s);
+        if (!sphere) {
+            sphere = s;
+        }
     }
 
-    return { objects, sphere: objects[3] };
+    return { objects, sphere };
 };
