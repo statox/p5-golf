@@ -13,15 +13,15 @@
 		<link href="./_app/immutable/assets/0.2d7f1649.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/4.7c2275ea.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/PhysicObject.270a477f.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.cfadd5ec.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.5e3b6213.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.32ebed32.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.f51fa2e1.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/paths.fe4c98d8.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.fd9e1771.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.7cd614f4.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/paths.8121b11f.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.c499c40a.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.a4192956.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.c25c2528.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.1e1a8ee0.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/4.8738855f.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.c62d8995.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/4.80f2990b.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/PhysicObject.d0894205.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/spread.ad56f1ef.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/World.a244ff66.js">
@@ -36,11 +36,11 @@
           3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0
           1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502
           0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0
-          0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg> </div></div>  <input type="hidden" value="{&quot;label&quot;:&quot;Ball pool&quot;,&quot;value&quot;:{}}" class="svelte-82qwg8">   </div> <div class="d-flex justify-content-center"><div style="display: block;" class="m-0"></div></div> <div><button>Enable pause on collision</button> <button>Pause</button> <button data-svelte-h="svelte-tlxueg">Reset</button></div> <p class="title svelte-g74uk9" data-svelte-h="svelte-198ugk3">Shooter</p> <span><label for="angleSlider" data-svelte-h="svelte-lab87n">Angle</label> <input id="angleSlider" type="range" min="0" max="360" value="0"> 0 deg</span> <span><label for="magSlider" data-svelte-h="svelte-1vc5oxa">Magnitude</label> <input id="magSlider" type="range" min="0" max="1" step="0.01" value="0.5"> 0.5</span> <br> <button data-svelte-h="svelte-8jpwxr">Shoot</button> <p class="title svelte-g74uk9" data-svelte-h="svelte-gf3gek">Engine settings</p>  <table><tbody><tr><th data-svelte-h="svelte-eg4byi">Number of balls</th> <td><input type="number" min="1" value="5"></td></tr> <tr><th data-svelte-h="svelte-10gtk36">Balls radius</th> <td><input type="number" min="1" value="2"></td></tr></tbody></table> 
+          0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg> </div></div>  <input type="hidden" value="{&quot;label&quot;:&quot;Ball pool&quot;,&quot;value&quot;:{}}" class="svelte-82qwg8">   </div> <div class="d-flex justify-content-center"><div style="display: block;" class="m-0"></div></div> <div><button>Pause</button> <button data-svelte-h="svelte-tlxueg">Reset</button> <button data-svelte-h="svelte-1xau3n8">Add ball</button></div> <p class="title svelte-g74uk9" data-svelte-h="svelte-198ugk3">Shooter</p> <span><label for="angleSlider" data-svelte-h="svelte-lab87n">Angle</label> <input id="angleSlider" type="range" min="0" max="360" value="0"> 0 deg</span> <span><label for="magSlider" data-svelte-h="svelte-1vc5oxa">Magnitude</label> <input id="magSlider" type="range" min="0" max="1" step="0.01" value="0.5"> 0.5</span> <br> <button data-svelte-h="svelte-8jpwxr">Shoot</button> <p class="title svelte-g74uk9" data-svelte-h="svelte-gf3gek">Engine settings</p>  <table><tbody><tr><th data-svelte-h="svelte-eg4byi">Number of balls</th> <td><input type="number" min="1" value="5"></td></tr> <tr><th data-svelte-h="svelte-10gtk36">Balls radius</th> <td><input type="number" min="1" value="0.2"></td></tr></tbody></table> 
 			
 			<script>
 				{
-					__sveltekit_1ll0opr = {
+					__sveltekit_3gqprm = {
 						assets: "/p5-golf",
 						base: new URL(".", location).pathname.slice(0, -1),
 						env: {}
@@ -51,8 +51,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.cfadd5ec.js"),
-						import("./_app/immutable/entry/app.fd9e1771.js")
+						import("./_app/immutable/entry/start.5e3b6213.js"),
+						import("./_app/immutable/entry/app.c499c40a.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 4],
