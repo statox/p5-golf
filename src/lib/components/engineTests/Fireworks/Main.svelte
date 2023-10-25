@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { GUI } from 'dat.gui';
     import { World, createPhysicObjects } from '$lib/engine';
-    import { drawWorld, mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
+    import { mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
@@ -121,6 +121,26 @@
             drawWorld(p5, world);
         };
 
+    };
+
+    const colors = [[239, 113, 81], [229, 144, 25], [211, 202, 156], [153, 47, 15]];
+    const drawWorld = (p5: p5, world: World) => {
+        const scale = p5.width / world.dimensions.x;
+        for (const o of world.objects) {
+            const colorId = o.data.id % colors.length;
+            const color =  colors[colorId];
+            p5.stroke([...color, 200]);
+
+            const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
+            const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
+
+            if (o.geometry.type !== 'sphere') {
+                continue;
+            }
+            const scaledDiameter = worldToScreenScale(o.geometry.r * 2, scale) as number;
+            p5.strokeWeight(scaledDiameter);
+            p5.point(x, y);
+        }
     };
 
     onDestroy(() => {
