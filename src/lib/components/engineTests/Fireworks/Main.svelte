@@ -24,6 +24,9 @@
             minYVelocity: 30,
             maxYVelocityVariation: 1,
             maxXVelocity: 30
+        },
+        render: {
+            colors: true
         }
     };
 
@@ -52,6 +55,10 @@
         cannonFolder.add(settings.cannon, 'maxYVelocityVariation', 0, 2).name('Y vel. variation');
         cannonFolder.add(settings.cannon, 'maxXVelocity', 0, 100).name('max. X velocity ');
         cannonFolder.add(settings.cannon, 'creationDelay', 1, 30, 1).name('Fire rate');
+
+        const renderFolder = gui.addFolder('Render');
+        renderFolder.open();
+        renderFolder.add(settings.render, 'colors').name('Use colors');
     };
 
     const getRandomInitialVelocity = () => {
@@ -126,10 +133,13 @@
     const colors = [[239, 113, 81], [229, 144, 25], [211, 202, 156], [153, 47, 15]];
     const drawWorld = (p5: p5, world: World) => {
         const scale = p5.width / world.dimensions.x;
+        p5.stroke('white');
         for (const o of world.objects) {
-            const colorId = o.data.id % colors.length;
-            const color =  colors[colorId];
-            p5.stroke([...color, 200]);
+            if (settings.render.colors) {
+                const colorId = o.data.id % colors.length;
+                const color =  colors[colorId];
+                p5.stroke([...color, 200]);
+            }
 
             const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
             const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
