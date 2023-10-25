@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { GUI } from 'dat.gui';
     import { World, createPhysicObjects } from '$lib/engine';
     import { drawWorld, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
@@ -9,15 +10,67 @@
     console.clear();
     let _p5: p5;
 
+    const settings = {
+        world: {
+            gravity: true,
+            collisions: false,
+            ttl: 160,
+            maxNbObjects: 300,
+            particleSize: 1
+        },
+        cannon: {
+            angle: 270,
+            creationDelay: 1,
+            minYVelocity: 30,
+            maxYVelocityVariation: 1,
+            maxXVelocity: 30
+        }
+    };
+
+    let gui: GUI;
+    const initGUI = async () => {
+        // Imported here to avoid "window is not defined" error
+        // https://github.com/dataarts/dat.gui/issues/271
+        const dat = await import('dat.gui');
+        gui = new dat.GUI();
+
+        gui.domElement.setAttribute('style', 'background-color: black');
+
+        const worldFolder = gui.addFolder('World');
+        worldFolder.open();
+        worldFolder.add(world?.objects, 'length').name('Nb objects').listen();
+        worldFolder.add(settings.world, 'gravity').name('Enable gravity').onFinishChange(() => world.gravityEnabled = settings.world.gravity);
+        worldFolder.add(settings.world, 'collisions').name('Enable collisions').onFinishChange(() => world.collisionEnabled = settings.world.collisions);
+        worldFolder.add(settings.world, 'ttl', 0, 10000).name('Particles TTL');
+        worldFolder.add(settings.world, 'maxNbObjects', 0, 3000).name('Max nb particles');
+        worldFolder.add(settings.world, 'particleSize', 1, 20, 1).name('Particles size');
+
+        const cannonFolder = gui.addFolder('Cannon');
+        cannonFolder.open();
+        cannonFolder.add(settings.cannon, 'angle', 0, 360).name('Angle');
+        cannonFolder.add(settings.cannon, 'minYVelocity', 0, 100).name('min. Y velocity');
+        cannonFolder.add(settings.cannon, 'maxYVelocityVariation', 0, 2).name('Y vel. variation');
+        cannonFolder.add(settings.cannon, 'maxXVelocity', 0, 100).name('max. X velocity ');
+        cannonFolder.add(settings.cannon, 'creationDelay', 1, 30, 1).name('Fire rate');
+    };
+
+    const getRandomInitialVelocity = () => {
+        const { minYVelocity, maxYVelocityVariation, maxXVelocity } = settings.cannon;
+
+        const x = Math.random() * maxXVelocity - (maxXVelocity / 2);
+        const y = minYVelocity + (maxYVelocityVariation - Math.random()) * minYVelocity
+
+        return new Victor(x, y).rotateByDeg(settings.cannon.angle);
+    };
     const addParticle = (world: World) => {
         const particle = {
             ...createPhysicObjects({
                 geometry: {
                     type: 'sphere',
-                    r: 1
+                    r: settings.world.particleSize
                 },
                 position: new Victor(world.dimensions.x / 2, 10),
-                velocity: new Victor(Math.random() * 30 - 15, 30 + Math.random() * 20)
+                velocity: getRandomInitialVelocity()
             }),
             age: 0
         };
@@ -39,27 +92,29 @@
                 enableCollisions: false
             });
             addParticle(world);
+            initGUI();
         };
 
         p5.draw = () => {
             p5.background(0);
 
-            if (p5.frameCount % 1 === 0 && world.objects.length < 300) {
+            if (p5.frameCount % settings.cannon.creationDelay === 0 && world.objects.length < settings.world.maxNbObjects) {
                 addParticle(world);
             }
             world.step();
             world.objects.forEach(o => {
-                if (o.data.age > 800) {
+                if (o.data.age > settings.world.ttl) {
                     world.removeObject(o);
                 }
             });
 
-            console.log('nb objects', world.objects.length);
             drawWorld(p5, world);
         };
 
     };
+
     onDestroy(() => {
+        gui?.destroy();
         _p5?.remove();
     });
 </script>
