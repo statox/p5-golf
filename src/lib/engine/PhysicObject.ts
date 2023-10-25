@@ -11,7 +11,9 @@ export interface PhysicObject {
     restitution: number;
     friction: number;
     data: {
+        id: number;
         isColliding: boolean;
+        age: number;
     };
     collisionListener: () => void;
 }
@@ -47,7 +49,9 @@ export const createPhysicObjects = (options: {
         friction: options.friction ?? 0.4,
         fixed: options.fixed ?? false,
         data: {
-            isColliding: false
+            isColliding: false,
+            age: 0,
+            id: -1
         },
         collisionListener: options.collisionListener || (() => {})
     };

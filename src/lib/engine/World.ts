@@ -10,6 +10,7 @@ const sphereSphereCollider = new SphereSphereCollider();
 
 export class World {
     gravityEnabled: boolean;
+    collisionEnabled: boolean;
     dimensions: Victor;
     t: number;
     objects: PhysicObject[];
@@ -23,12 +24,14 @@ export class World {
         reporter?: WorldReporter;
         dimensions?: Victor;
         enableGravity?: boolean;
+        enableCollisions?: boolean;
     }) {
+        this.collisionEnabled = options.enableCollisions ?? true;
         this.gravityEnabled = options.enableGravity ?? true;
         this.dimensions = options.dimensions || new Victor(100, 100);
         this.objects = [];
         this.t = 0;
-        this.reporter = options.reporter || console.log;
+        this.reporter = options.reporter || (() => {});
     }
 
     toggleGravity() {
@@ -36,7 +39,19 @@ export class World {
     }
 
     addObject(o: PhysicObject) {
+        o.data.id = this.objects.length;
         this.objects.push(o);
+    }
+
+    removeObject(o: PhysicObject) {
+        if (o.data.id === -1) {
+            throw new Error('Cant remove an object with uninitialized id');
+        }
+        const i = this.objects.findIndex((worldObject) => worldObject.data.id === o.data.id);
+        if (i === -1) {
+            throw new Error('Object not found in world');
+        }
+        this.objects.splice(i, 1);
     }
 
     applyGravity(o: PhysicObject) {
@@ -132,9 +147,12 @@ export class World {
     }
 
     _step(dt: number) {
-        this.applyCollisions(dt);
+        if (this.collisionEnabled) {
+            this.applyCollisions(dt);
+        }
         for (const o of this.objects) {
             this.applyDynamics(dt, o);
+            o.data.age++;
         }
     }
 
