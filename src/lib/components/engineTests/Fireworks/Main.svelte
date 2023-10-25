@@ -14,19 +14,20 @@
         world: {
             gravity: true,
             collisions: false,
-            ttl: 160,
+            ttl: 265,
             maxNbObjects: 300,
-            particleSize: 1
+            particleSize: 4
         },
         cannon: {
             angle: 270,
-            creationDelay: 1,
-            minYVelocity: 30,
+            minYVelocity: 27,
             maxYVelocityVariation: 1,
-            maxXVelocity: 30
+            maxXVelocity: 30,
+            creationDelay: 1,
         },
         render: {
-            colors: true
+            colors: true,
+            blurPx: 26
         }
     };
 
@@ -59,6 +60,7 @@
         const renderFolder = gui.addFolder('Render');
         renderFolder.open();
         renderFolder.add(settings.render, 'colors').name('Use colors');
+        renderFolder.add(settings.render, 'blurPx', 0, 50).name('Blur (px)');
     };
 
     const getRandomInitialVelocity = () => {
@@ -91,7 +93,7 @@
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
         initialParticlesPosition.x = worldDimensions.x / 2;
-        initialParticlesPosition.y = 10;
+        initialParticlesPosition.y = worldDimensions.y / 3;
 
         p5.setup = () => {
             _p5 = p5;
@@ -151,6 +153,8 @@
             p5.strokeWeight(scaledDiameter);
             p5.point(x, y);
         }
+
+        p5.drawingContext.filter = `blur(${settings.render.blurPx}px)`;
     };
 
     onDestroy(() => {
