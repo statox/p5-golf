@@ -39,7 +39,11 @@ export class World {
     }
 
     addObject(o: PhysicObject) {
-        o.data.id = this.objects.length;
+        // TODO keep that in an external registry to speed up object addition
+        const maxId = this.objects.reduce((max, o) => {
+            return max > o.data.id ? max : o.data.id;
+        }, 0);
+        o.data.id = maxId + 1;
         this.objects.push(o);
     }
 
