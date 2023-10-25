@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { GUI } from 'dat.gui';
     import { World, createPhysicObjects } from '$lib/engine';
-    import { drawWorld, worldToScreenScale } from '$lib/services/p5utils';
+    import { drawWorld, mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
@@ -62,6 +62,7 @@
 
         return new Victor(x, y).rotateByDeg(settings.cannon.angle);
     };
+
     const addParticle = (world: World) => {
         const particle = {
             ...createPhysicObjects({
@@ -69,18 +70,22 @@
                     type: 'sphere',
                     r: settings.world.particleSize
                 },
-                position: new Victor(world.dimensions.x / 2, 10),
+                position: initialParticlesPosition,
                 velocity: getRandomInitialVelocity()
             }),
             age: 0
         };
         world.addObject(particle);
     };
+    const initialParticlesPosition = new Victor(0, 0);
     let world: World;
     const SCALE = 6;
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
+        initialParticlesPosition.x = worldDimensions.x / 2;
+        initialParticlesPosition.y = 10;
+
         p5.setup = () => {
             _p5 = p5;
             p5.createCanvas(screenDimensions.x, screenDimensions.y);
@@ -97,6 +102,11 @@
 
         p5.draw = () => {
             p5.background(0);
+
+            if (mouseIsPressedOnScreen(p5)) {
+                const worldPos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY), SCALE) as Victor;
+                initialParticlesPosition.copy(worldPos);
+            }
 
             if (p5.frameCount % settings.cannon.creationDelay === 0 && world.objects.length < settings.world.maxNbObjects) {
                 addParticle(world);
