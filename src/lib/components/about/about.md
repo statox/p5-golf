@@ -11,6 +11,7 @@ The [Tests engine](./engineTests) page is had various small projects using the e
 ### General introduction
 - ["2D Physics Engine Overview"](https://www.myphysicslab.com/develop/docs/Engine2D.html) An introduction to a 2D Rigid Body Physics Engine distributed with `myphysicslab`
 - ["Physically Based Modeling: Principles and Practice Differential Equation Basics"](https://www.cs.cmu.edu/afs/cs.cmu.edu/user/baraff/www/sigcourse/notesb.pdf) The maths behind Euler's integration and timesteps
+- ["Game Physics Engine Development - Ian Millington"](http://www.r-5.org/files/books/computers/algo-list/realtime-3d/Ian_Millington-Game_Physics_Engine_Development-EN.pdf) A game physics book emphasizing building an actual engine.
 
 ### Engine implementation
 - [Integration bascis](https://gafferongames.com/post/integration_basics/) Discussion of various integration methods to run an engine.
