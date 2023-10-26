@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { page } from '$app/stores';
     import type { GUI } from 'dat.gui';
     import { World, createPhysicObjects } from '$lib/engine';
     import { mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
@@ -12,7 +13,8 @@
     console.clear();
     let _p5: p5;
 
-    let settings = configs.torch;
+    const configNameParam = $page.url.searchParams.get('config')
+    let settings = configs[configNameParam || 'torch'];
 
     let gui: GUI;
     const initGUI = async () => {
@@ -48,13 +50,20 @@
         const configFolder = gui.addFolder('Config');
         configFolder.open();
         configFolder.add(configActions, 'copyCurrentConfig').name('Copy current');
+        configFolder.add(configActions, 'configName', Object.keys(configs)).name('Change preset').onFinishChange((name) => {
+            // Changing the settings object doesn't refresh dat.gui instead we
+            // use a hack to reload the page with a search parameter which is used
+            // to initialize settings
+            window.location.href = window.location.origin + `/engineTests?config=${name}`;
+        });
     };
 
     const configActions = {
         copyCurrentConfig: () => {
             const settingsStr = JSON.stringify(settings);
             copyTextToClipboard(settingsStr);
-        }
+        },
+        configName: configNameParam || 'torch'
     }
 
     const getRandomInitialVelocity = () => {
