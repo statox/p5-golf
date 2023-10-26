@@ -6,30 +6,13 @@
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
     import Victor from 'victor';
+    import { configs } from './presets';
+    import { copyTextToClipboard } from '../../utils/clipboard';
 
     console.clear();
     let _p5: p5;
 
-    const settings = {
-        world: {
-            gravity: true,
-            collisions: false,
-            ttl: 265,
-            maxNbObjects: 300,
-            particleSize: 4
-        },
-        cannon: {
-            angle: 270,
-            minYVelocity: 27,
-            maxYVelocityVariation: 1,
-            maxXVelocity: 30,
-            creationDelay: 1,
-        },
-        render: {
-            colors: true,
-            blurPx: 26
-        }
-    };
+    let settings = configs.torch;
 
     let gui: GUI;
     const initGUI = async () => {
@@ -61,7 +44,18 @@
         renderFolder.open();
         renderFolder.add(settings.render, 'colors').name('Use colors');
         renderFolder.add(settings.render, 'blurPx', 0, 50).name('Blur (px)');
+
+        const configFolder = gui.addFolder('Config');
+        configFolder.open();
+        configFolder.add(configActions, 'copyCurrentConfig').name('Copy current');
     };
+
+    const configActions = {
+        copyCurrentConfig: () => {
+            const settingsStr = JSON.stringify(settings);
+            copyTextToClipboard(settingsStr);
+        }
+    }
 
     const getRandomInitialVelocity = () => {
         const { minYVelocity, maxYVelocityVariation, maxXVelocity } = settings.cannon;
@@ -102,8 +96,8 @@
 
             world = new World({
                 dimensions: worldDimensions,
-                enableGravity: true,
-                enableCollisions: false
+                enableGravity: settings.world.gravity,
+                enableCollisions: settings.world.collisions
             });
             addParticle(world);
             initGUI();
