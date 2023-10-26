@@ -88,7 +88,7 @@
     };
     const initialParticlesPosition = new Victor(0, 0);
     let world: World;
-    const SCALE = 6;
+    const SCALE = 8;
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
@@ -132,7 +132,13 @@
 
     };
 
-    const colors = [[239, 113, 81], [229, 144, 25], [211, 202, 156], [153, 47, 15]];
+    const colors = [
+        [239, 113, 81],
+        [229, 144, 25],
+        [211, 202, 156],
+        [153, 47, 15],
+        [234, 93, 180]
+    ];
     const drawWorld = (p5: p5, world: World) => {
         const scale = p5.width / world.dimensions.x;
         p5.stroke('white');
@@ -140,7 +146,7 @@
             if (settings.render.colors) {
                 const colorId = o.data.id % colors.length;
                 const color =  colors[colorId];
-                p5.stroke([...color, 200]);
+                p5.stroke([...color]);
             }
 
             const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
