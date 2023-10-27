@@ -90,73 +90,121 @@ export class World {
     }
 
     applyCollisions(dt: number) {
-        const spheres = this.objects.filter((o) => o.geometry.type === 'sphere');
-        const walls = this.objects.filter((o) => o.geometry.type === 'line');
+        const updates = new Array(this.objects.length).fill(0).map((_) => {
+            return {
+                totalVelocity: new Victor(0, 0),
+                nbCollisions: 0
+            };
+        });
 
-        for (let i = 0; i < spheres.length; i++) {
-            const sphere = spheres[i];
-            sphere.data.isColliding = false;
-
-            const totalVelocity = new Victor(0, 0);
-            let nbCollisions = 0;
-
-            // When a collision happens:
-            // - Compute the new velocity after bouncing on each wall and make it the new velocity
-            // - Update the position to prevent from clipping in the wall
-            // - Apply the velocity to change the position
-            for (const wall of walls) {
-                wall.data.isColliding = false;
-                const collision = lineSphereCollider.apply(wall, sphere);
-                if (!collision.intersection) {
-                    continue;
-                }
-                const { bouncedVelocity, positionCorrection } = collision;
-
-                wall.data.isColliding = true;
-                wall.collisionListener();
-                nbCollisions++;
-
-                totalVelocity.add(bouncedVelocity);
-                sphere.position.add(positionCorrection);
+        for (let i = 0; i < this.objects.length; i++) {
+            const current = this.objects[i];
+            if (current.fixed) {
+                continue;
             }
-            for (let j = 0; j < spheres.length; j++) {
+            current.data.isColliding = false;
+            for (let j = 0; j < this.objects.length; j++) {
                 if (i === j) {
                     continue;
                 }
-                const s2 = spheres[j];
-                const collision = sphereSphereCollider.apply(sphere, s2);
-                if (!collision.intersection) {
+
+                const other = this.objects[j];
+
+                if (current.geometry.type === 'line' && other.geometry.type === 'line') {
+                    // TODO Implement lineline physics
                     continue;
                 }
-                const { bouncedVelocity, positionCorrection } = collision;
-                nbCollisions++;
 
-                totalVelocity.add(bouncedVelocity);
-                sphere.position.add(positionCorrection);
+                let bouncedVelocity: Victor | undefined;
+                if (current.geometry.type === 'sphere' && other.geometry.type === 'sphere') {
+                    bouncedVelocity = sphereSphereCollider.bounce(current, other)?.bouncedVelocity;
+                } else {
+                    const line = current.geometry.type === 'line' ? current : other;
+                    const sphere = current.geometry.type === 'line' ? other : current;
+
+                    bouncedVelocity = lineSphereCollider.bounce(line, sphere)?.bouncedVelocity;
+                }
+
+                if (!bouncedVelocity) {
+                    continue;
+                }
+
+                updates[i].totalVelocity.add(bouncedVelocity);
+                updates[i].nbCollisions++;
             }
-            if (nbCollisions > 0) {
-                totalVelocity.divideScalar(nbCollisions);
-                sphere.velocity.copy(totalVelocity);
-                sphere.position.add(sphere.velocity.clone().multiplyScalar(dt));
-                sphere.data.isColliding = true;
-                sphere.collisionListener();
+        }
 
-                // Hacky fix to avoid the ball slowly going throug the ground when
-                // its speed is really small we add an artificial force invert to the gravity
-                // TODO There is probably a better way to handle that
-                // TODO This fix might also make non vertical bounces innacurrate
-                sphere.acceleration.push(this.antiGravity);
+        for (let i = 0; i < this.objects.length; i++) {
+            const { totalVelocity, nbCollisions } = updates[i];
+            if (nbCollisions === 0) {
+                continue;
+            }
+            const current = this.objects[i];
+
+            totalVelocity.divideScalar(nbCollisions);
+            current.velocity.copy(totalVelocity);
+            current.position.add(current.velocity.clone().multiplyScalar(dt));
+            current.data.isColliding = true;
+            current.collisionListener();
+        }
+    }
+
+    preventOverlaps(nbSteps: number) {
+        for (let i = 0; i < this.objects.length; i++) {
+            const current = this.objects[i];
+            if (current.fixed) {
+                continue;
+            }
+
+            for (let j = 0; j < this.objects.length; j++) {
+                if (i === j) {
+                    continue;
+                }
+
+                const other = this.objects[j];
+
+                if (current.geometry.type === 'line' && other.geometry.type === 'line') {
+                    // TODO Implement lineline physics
+                    continue;
+                }
+
+                let positionCorrection: Victor | undefined;
+                if (current.geometry.type === 'sphere' && other.geometry.type === 'sphere') {
+                    positionCorrection = sphereSphereCollider.pullApart(current, other)
+                        ?.positionCorrection;
+                } else {
+                    const line = current.geometry.type === 'line' ? current : other;
+                    const sphere = current.geometry.type === 'line' ? other : current;
+
+                    positionCorrection = lineSphereCollider.pullApart(line, sphere)
+                        ?.positionCorrection;
+                }
+
+                if (!positionCorrection) {
+                    continue;
+                }
+
+                current.position.add(positionCorrection.divideScalar(nbSteps).divideScalar(2));
+                if (!other.fixed) {
+                    other.position.add(
+                        positionCorrection.divideScalar(nbSteps).divideScalar(2).multiplyScalar(-1)
+                    );
+                }
             }
         }
     }
 
     _step(dt: number) {
-        if (this.collisionEnabled) {
-            this.applyCollisions(dt);
-        }
         for (const o of this.objects) {
             this.applyDynamics(dt, o);
             o.data.age++;
+        }
+        const nbSubSteps = 1;
+        for (let i = 0; i < nbSubSteps; i++) {
+            this.preventOverlaps(nbSubSteps);
+        }
+        if (this.collisionEnabled) {
+            this.applyCollisions(dt);
         }
     }
 
