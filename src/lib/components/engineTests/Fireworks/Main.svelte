@@ -8,6 +8,7 @@
     import { onDestroy } from 'svelte';
     import Victor from 'victor';
     import { configs } from './presets';
+    import { makeBox, makeWalls } from './worldUtils';
     import { copyTextToClipboard } from '../../utils/clipboard';
 
     console.clear();
@@ -109,6 +110,9 @@
                 enableCollisions: settings.world.collisions
             });
             addParticle(world);
+
+            makeWalls(worldDimensions).forEach(w => world.addObject(w));
+            makeBox(worldDimensions, 0.5).forEach(w => world.addObject(w));
             initGUI();
         };
 
@@ -144,8 +148,11 @@
     ];
     const drawWorld = (p5: p5, world: World) => {
         const scale = p5.width / world.dimensions.x;
-        p5.stroke('white');
         for (const o of world.objects) {
+            if (o.geometry.type !== 'sphere') {
+                continue;
+            }
+
             if (settings.render.colors) {
                 const colorId = o.data.id % colors.length;
                 const color =  colors[colorId];
@@ -155,12 +162,24 @@
             const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
             const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
 
-            if (o.geometry.type !== 'sphere') {
-                continue;
-            }
             const scaledDiameter = worldToScreenScale(o.geometry.r * 2, scale) as number;
             p5.strokeWeight(scaledDiameter);
             p5.point(x, y);
+        }
+
+        for (const o of world.objects) {
+            if (o.geometry.type !== 'line') {
+                continue;
+            }
+            p5.stroke('white');
+
+            const x1 = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
+            const y1 = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
+            const x2 = p5.map(o.position.x + o.geometry.vector.x, 0, world.dimensions.x, 0, p5.width);
+            const y2 = p5.map(o.position.y + o.geometry.vector.y, 0, world.dimensions.y, p5.height, 0);
+
+            p5.strokeWeight(3);
+            p5.line(x1, y1, x2, y2);
         }
 
         p5.drawingContext.filter = `blur(${settings.render.blurPx}px)`;

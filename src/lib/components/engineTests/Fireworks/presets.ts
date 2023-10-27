@@ -53,7 +53,7 @@ const fireworks = {
     world: {
         ttl: 2471.1356195071517,
         gravity: true,
-        collisions: false,
+        collisions: true,
         maxNbObjects: 300,
         particleSize: 1
     },
