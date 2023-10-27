@@ -177,12 +177,11 @@ export class LineSphereCollider implements Collider {
         const distanceToWall = wallToSphere.length();
 
         if (distanceToWall > (sphere.geometry as Sphere).r) {
-            return { positionCorrection: new Victor(0, 0) };
+            return;
         }
 
         const diff = (sphere.geometry as Sphere).r - distanceToWall;
-        const offset = diff;
-        const positionCorrection = wallToSphere.normalize().multiplyScalar(offset);
+        const positionCorrection = wallToSphere.normalize().multiplyScalar(diff);
         return { positionCorrection };
     };
 }
