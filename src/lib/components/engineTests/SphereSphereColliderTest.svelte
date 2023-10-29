@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { createPhysicObjects } from '$lib/engine';
+    import { World, createPhysicObjects } from '$lib/engine';
     import type { Sphere } from '$lib/engine/Geometry';
     import { SphereSphereCollider } from '$lib/engine/SphereSphereCollider';
-    import { mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
+    import { drawWorldDebug, mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
@@ -16,7 +16,7 @@
             r: 10
         } as Sphere,
         position: new Victor(30, 50),
-        velocity: new Victor(15, 15)
+        velocity: new Victor(15, -15)
     });
     const sphere2 = createPhysicObjects({
         geometry: {
@@ -32,45 +32,23 @@
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
+        let world: World;
         p5.setup = () => {
             _p5 = p5;
             p5.createCanvas(screenDimensions.x, screenDimensions.y);
             p5.noFill();
+            world = new World({
+                dimensions: worldDimensions,
+                enableGravity: false,
+            });
+            world.addObject(sphere);
+            world.addObject(sphere2);
         };
 
-        let selected: string | undefined;
         p5.draw = () => {
             p5.background(0);
-
-            if (!mouseIsPressedOnScreen(p5)) {
-                selected = undefined;
-            } else {
-                const worldPos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY), SCALE) as Victor;
-
-                if (!selected) {
-                    if (worldPos.distance(sphere.position) <= (sphere.geometry as Sphere).r) {
-                        selected = 'sphere';
-                    } else if (worldPos.distance(sphere.position.clone().add(sphere.velocity)) <= 6) {
-                        selected = 'spherevelocity';
-                    } else if (worldPos.distance(sphere2.position) <= (sphere2.geometry as Sphere).r) {
-                        selected = 'sphere2';
-                    } else if (worldPos.distance(sphere2.position.clone().add(sphere2.velocity)) <= 6) {
-                        selected = 'sphere2velocity';
-                    }
-                }
-
-                if (selected === 'sphere') {
-                    sphere.position.copy(worldPos);
-                } else if (selected === 'spherevelocity') {
-                    const diff = worldPos.clone().subtract(sphere.position);
-                    sphere.velocity.copy(diff);
-                } else if (selected === 'sphere2') {
-                    sphere2.position.copy(worldPos);
-                } else if (selected === 'sphere2velocity') {
-                    const diff = worldPos.clone().subtract(sphere2.position);
-                    sphere2.velocity.copy(diff);
-                }
-            }
+            moveObjects(p5);
+            drawWorldDebug(p5, world);
 
             const { intersection, bouncedVelocity } = collider.apply(sphere, sphere2);
             for (let _=0; _<10; _++) {
@@ -115,6 +93,39 @@
             }
         };
 
+    };
+
+    let selected: string | undefined;
+    const moveObjects = (p5: p5) => {
+        if (!mouseIsPressedOnScreen(p5)) {
+            selected = undefined;
+        } else {
+            const worldPos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY), SCALE) as Victor;
+
+            if (!selected) {
+                if (worldPos.distance(sphere.position) <= (sphere.geometry as Sphere).r) {
+                    selected = 'sphere';
+                } else if (worldPos.distance(sphere.position.clone().add(sphere.velocity)) <= 6) {
+                    selected = 'spherevelocity';
+                } else if (worldPos.distance(sphere2.position) <= (sphere2.geometry as Sphere).r) {
+                    selected = 'sphere2';
+                } else if (worldPos.distance(sphere2.position.clone().add(sphere2.velocity)) <= 6) {
+                    selected = 'sphere2velocity';
+                }
+            }
+
+            if (selected === 'sphere') {
+                sphere.position.copy(worldPos);
+            } else if (selected === 'spherevelocity') {
+                const diff = worldPos.clone().subtract(sphere.position);
+                sphere.velocity.copy(diff);
+            } else if (selected === 'sphere2') {
+                sphere2.position.copy(worldPos);
+            } else if (selected === 'sphere2velocity') {
+                const diff = worldPos.clone().subtract(sphere2.position);
+                sphere2.velocity.copy(diff);
+            }
+        }
     };
     onDestroy(() => {
         _p5?.remove();

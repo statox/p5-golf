@@ -53,3 +53,34 @@ export const drawWorld = (p5: p5, world: World) => {
         }
     }
 };
+
+export const drawWorldDebug = (p5: p5, world: World) => {
+    p5.noFill();
+    p5.strokeWeight(2);
+    const scale = p5.width / world.dimensions.x;
+    for (const o of world.objects) {
+        const { x, y } = worldToScreenScale(o.position, scale) as Victor;
+
+        if (o.geometry.type === 'sphere') {
+            const scaledDiameter = worldToScreenScale(o.geometry.r * 2, scale) as number;
+            p5.stroke('white');
+            p5.circle(x, p5.height - y, scaledDiameter);
+        }
+
+        if (o.geometry.type === 'line') {
+            const { x: dx, y: dy } = worldToScreenScale(o.geometry.vector, scale) as Victor;
+            const x1 = x + dx;
+            const y1 = y + dy;
+            p5.stroke('white');
+            p5.line(x, p5.height - y, x1, p5.height - y1);
+        }
+
+        if (!o.fixed) {
+            p5.stroke('white');
+            const { x: dx, y: dy } = worldToScreenScale(o.velocity, scale) as Victor;
+            const x1 = x + dx;
+            const y1 = y + dy;
+            p5.line(x, p5.height - y, x1, p5.height - y1);
+        }
+    }
+};
