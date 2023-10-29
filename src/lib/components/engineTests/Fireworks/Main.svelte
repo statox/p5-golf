@@ -1,21 +1,31 @@
 <script lang="ts">
+    import { base } from '$app/paths';
     import { page } from '$app/stores';
     import type { GUI } from 'dat.gui';
     import { World, createPhysicObjects } from '$lib/engine';
     import { mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import Victor from 'victor';
     import { configs } from './presets';
+    import type { Config } from './presets';
     import { makeBox, makeWalls } from './worldUtils';
     import { copyTextToClipboard } from '../../utils/clipboard';
 
     console.clear();
     let _p5: p5;
 
-    const configNameParam = $page.url.searchParams.get('config')
-    let settings = configs[configNameParam || 'torch'];
+    let settings: Config = configs['torch'];
+
+    let configNameParam = 'torch';
+    onMount(() => {
+        configNameParam = $page.url.searchParams.get('config') || 'torch';
+        if (configNameParam) {
+            settings = configs[configNameParam];
+            configActions.configName = configNameParam;
+        }
+    });
 
     let gui: GUI;
     const initGUI = async () => {
@@ -55,7 +65,7 @@
             // Changing the settings object doesn't refresh dat.gui instead we
             // use a hack to reload the page with a search parameter which is used
             // to initialize settings
-            window.location.href = window.location.origin + `/engineTests?config=${name}`;
+            window.location.href = window.location.origin + `${base}/engineTests?config=${name}`;
         });
     };
 
@@ -64,7 +74,7 @@
             const settingsStr = JSON.stringify(settings);
             copyTextToClipboard(settingsStr);
         },
-        configName: configNameParam || 'torch'
+        configName: configNameParam
     }
 
     const getRandomInitialVelocity = () => {

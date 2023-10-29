@@ -85,7 +85,7 @@ const smoke = {
     render: { colors: false, blurPx: 0 }
 };
 
-export const configs = {
+export const configs: { [name: string]: Config } = {
     torch,
     pullApart,
     blob,
@@ -93,4 +93,23 @@ export const configs = {
     smoke
 };
 
-console.log(configs);
+export type Config = {
+    world: {
+        ttl: number;
+        gravity: boolean;
+        collisions: boolean;
+        maxNbObjects: number;
+        particleSize: number;
+    };
+    cannon: {
+        angle: number;
+        minYVelocity: number;
+        maxYVelocityVariation: number;
+        maxXVelocity: number;
+        creationDelay: number;
+    };
+    render: {
+        colors: boolean;
+        blurPx: number;
+    };
+};
