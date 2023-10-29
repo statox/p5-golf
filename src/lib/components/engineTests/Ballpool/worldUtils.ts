@@ -43,7 +43,6 @@ export const makeObjects = (params: { nbBalls: number; rBalls: number }) => {
     objects.push(right);
 
     // sphere
-    let sphere: PhysicObject;
     for (let i = 0; i < params.nbBalls; i++) {
         const s = createPhysicObjects({
             geometry: {
@@ -54,10 +53,8 @@ export const makeObjects = (params: { nbBalls: number; rBalls: number }) => {
             velocity: new Victor(Math.random() * 15, Math.random() * 15)
         });
         objects.push(s);
-        if (!sphere) {
-            sphere = s;
-        }
     }
+    const sphere = objects[objects.length - 1];
 
     return { objects, sphere };
 };
