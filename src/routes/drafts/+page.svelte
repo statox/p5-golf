@@ -1,6 +1,7 @@
 <script lang="ts">
     import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
 
+    import Forces from '$lib/components/drafts/Forces.svelte';
     import TerrainGenerator from '$lib/components/drafts/TerrainGenerator.svelte';
     import Ball from '$lib/components/drafts/Ball.svelte';
     import BouncingBallGraph from '$lib/components/drafts/BouncingBallGraph.svelte';
@@ -11,6 +12,7 @@
     import SphereSphereIntersection from '$lib/components/drafts/SphereSphereIntersection.svelte';
 
     const tabs = [
+        { label: 'Forces', value: Forces },
         { label: 'Intersection - Sphere-Sphere', value: SphereSphereIntersection },
         { label: 'Intersection - Sphere-Line', value: SphereLineIntersection },
         { label: 'Intersection - Line-Line', value: LineLineIntersection },
