@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { createPhysicObjects } from '$lib/engine';
+    import { World, createPhysicObjects } from '$lib/engine';
     import type { Sphere, Line } from '$lib/engine/Geometry';
-    import { mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
+    import { dragAndDropObject, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
@@ -9,22 +9,25 @@
 
     console.clear();
     let _p5: p5;
-    const sphere = createPhysicObjects({
+    const s1 = createPhysicObjects({
         geometry: {
             type: 'sphere',
-            r: 10
+            r: 5
         } as Sphere,
-        position: new Victor(30, 50),
+        position: new Victor(10, 90),
+        velocity: new Victor(0, 0)
     });
-    const line = createPhysicObjects({
+    const s2 = createPhysicObjects({
         geometry: {
             type: 'line',
-            vector: new Victor(10, 0)
+            vector: new Victor(20, 0)
         } as Line,
-        position: new Victor(60, 50)
+        position: new Victor(50, 50),
+        fixed: true
     });
 
     const SCALE = 6;
+    let world: World;;
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
@@ -32,45 +35,23 @@
             _p5 = p5;
             p5.createCanvas(screenDimensions.x, screenDimensions.y);
             p5.noFill();
+            world = new World({
+                enableGravity: false,
+                enableCollisions: false,
+                dimensions: worldDimensions,
+                drag: 0
+            });
+
+            world.addObjects([s1, s2]);
         };
 
-        let selected: string | undefined;
+        const selectionState = { selectedId: undefined, selectedPart: undefined };
         p5.draw = () => {
             p5.background(0);
+            world.step();
 
-            if (!mouseIsPressedOnScreen(p5)) {
-                selected = undefined;
-            } else {
-                const worldPos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY), SCALE) as Victor;
-
-                if (!selected) {
-                    if (worldPos.distance(sphere.position) <= (sphere.geometry as Sphere).r) {
-                        selected = 'sphere';
-                    } else if (worldPos.distance(line.position) <= 6) {
-                        selected = 'linestart';
-                    } else if (worldPos.distance((line.geometry as Line).vector.clone().add(line.position)) <= 6) {
-                        selected = 'lineend';
-                    }
-                }
-
-                if (selected === 'sphere') {
-                    sphere.position.copy(worldPos);
-                } else if (selected === 'linestart') {
-                    line.position.copy(worldPos);
-                } else if (selected === 'lineend') {
-                    const diff = worldPos.clone().subtract(line.position);
-                    (line.geometry as Line).vector.copy(diff);
-                }
-            }
-
-            p5.stroke(255);
-            const spherepos = worldToScreenScale(sphere.position, SCALE) as Victor;
-            p5.circle(spherepos.x, p5.height - spherepos.y, 2 * (sphere.geometry as Sphere).r * SCALE);
-
-            p5.stroke(255);
-            const {x, y} = worldToScreenScale(line.position, SCALE) as Victor;
-            const linevec = worldToScreenScale((line.geometry as Line).vector, SCALE) as Victor;
-            p5.line(x, p5.height - y, x + linevec.x,  p5.height - (y + linevec.y));
+            dragAndDropObject(p5, world, selectionState);
+            drawWorldDebug(p5, world);
         };
 
     };
