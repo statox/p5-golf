@@ -1,7 +1,7 @@
 <script lang="ts">
     import { World, createPhysicObjects } from '$lib/engine';
     import type { Sphere, Line } from '$lib/engine/Geometry';
-    import { drawWorldDebug, mouseIsPressedOnScreen, screenToWorldScale, worldToScreenScale } from '$lib/services/p5utils';
+    import { dragAndDropObject, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
     import { onDestroy } from 'svelte';
@@ -15,14 +15,15 @@
             r: 5
         } as Sphere,
         position: new Victor(10, 90),
-        velocity: new Victor(20, 0)
+        velocity: new Victor(0, 0)
     });
     const s2 = createPhysicObjects({
         geometry: {
-            type: 'sphere',
-            r: 5
-        } as Sphere,
-        position: new Victor(50, 50)
+            type: 'line',
+            vector: new Victor(20, 0)
+        } as Line,
+        position: new Victor(50, 50),
+        fixed: true
     });
 
     const SCALE = 6;
@@ -44,31 +45,12 @@
             world.addObjects([s1, s2]);
         };
 
-        let selected: string | undefined;
+        const selectionState = { selectedId: undefined, selectedPart: undefined };
         p5.draw = () => {
             p5.background(0);
             world.step();
 
-            if (!mouseIsPressedOnScreen(p5)) {
-                selected = undefined;
-            } else {
-                const worldPos = screenToWorldScale(new Victor(p5.mouseX, p5.height - p5.mouseY), SCALE) as Victor;
-
-                if (!selected) {
-                    if (worldPos.distance(s1.position) <= (s1.geometry as Sphere).r) {
-                        selected = 's1';
-                    } else if (worldPos.distance(s2.position) <= (s2.geometry as Sphere).r) {
-                        selected = 's2';
-                    }
-                }
-
-                if (selected === 's1') {
-                    s1.position.copy(worldPos);
-                } else if (selected === 's2') {
-                    s2.position.copy(worldPos);
-                }
-            }
-
+            dragAndDropObject(p5, world, selectionState);
             drawWorldDebug(p5, world);
         };
 

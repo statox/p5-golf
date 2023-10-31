@@ -1,6 +1,6 @@
-import type { World } from '$lib/engine';
+import type { PhysicObject, World } from '$lib/engine';
 import type p5 from 'p5';
-import type Victor from 'victor';
+import Victor from 'victor';
 
 export const mouseIsPressedOnScreen = (p5: p5) => {
     if (!p5.mouseIsPressed) {
@@ -83,4 +83,83 @@ export const drawWorldDebug = (p5: p5, world: World) => {
             p5.line(x, p5.height - y, x1, p5.height - y1);
         }
     }
+};
+
+export const dragAndDropObject = (
+    p5: p5,
+    world: World,
+    state: { selectedId: number | undefined; selectedPart: 'position' | 'vector' | undefined }
+) => {
+    if (!mouseIsPressedOnScreen(p5)) {
+        state.selectedId = undefined;
+        state.selectedPart = undefined;
+        return;
+    }
+
+    const ATTRACTION_RADIUS_PX = 25;
+    const scale = p5.width / world.dimensions.x;
+    const attractionRadius = screenToWorldScale(ATTRACTION_RADIUS_PX, scale) as number;
+    const clickWorldPos = screenToWorldScale(
+        new Victor(p5.mouseX, p5.height - p5.mouseY),
+        scale
+    ) as Victor;
+
+    if (state.selectedId) {
+        const o = world.objects.find((o) => o.data.id === state.selectedId);
+        if (o) {
+            if (
+                o.geometry.type === 'sphere' &&
+                clickWorldPos.distance(o.position) <= o.geometry.r
+            ) {
+                o.position.copy(clickWorldPos);
+                return;
+            } else if (o.geometry.type === 'line') {
+                if (
+                    state.selectedPart === 'position' &&
+                    clickWorldPos.distance(o.position) <= attractionRadius
+                ) {
+                    o.position.copy(clickWorldPos);
+                    return;
+                }
+                const endPos = o.position.clone().add(o.geometry.vector);
+                if (
+                    state.selectedPart === 'vector' &&
+                    clickWorldPos.distance(endPos) <= attractionRadius
+                ) {
+                    const diff = clickWorldPos.clone().subtract(o.position);
+                    o.geometry.vector.copy(diff);
+                    return;
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < world.objects.length; i++) {
+        const o = world.objects[i];
+
+        if (o.geometry.type === 'sphere' && clickWorldPos.distance(o.position) <= o.geometry.r) {
+            o.position.copy(clickWorldPos);
+            state.selectedId = o.data.id;
+            state.selectedPart = 'position';
+            return;
+        } else if (o.geometry.type === 'line') {
+            if (clickWorldPos.distance(o.position) <= attractionRadius) {
+                o.position.copy(clickWorldPos);
+                state.selectedId = o.data.id;
+                state.selectedPart = 'position';
+                return;
+            }
+            const endPos = o.position.clone().add(o.geometry.vector);
+            if (clickWorldPos.distance(endPos) <= attractionRadius) {
+                const diff = clickWorldPos.clone().subtract(o.position);
+                o.geometry.vector.copy(diff);
+                state.selectedId = o.data.id;
+                state.selectedPart = 'vector';
+                return;
+            }
+        }
+    }
+
+    state.selectedId = undefined;
+    state.selectedPart = undefined;
 };
