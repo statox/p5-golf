@@ -25,6 +25,7 @@ export class World {
         dimensions?: Victor;
         enableGravity?: boolean;
         enableCollisions?: boolean;
+        drag?: number;
     }) {
         this.collisionEnabled = options.enableCollisions ?? true;
         this.gravityEnabled = options.enableGravity ?? true;
@@ -32,6 +33,7 @@ export class World {
         this.objects = [];
         this.t = 0;
         this.reporter = options.reporter || (() => {});
+        this.drag = options.drag ?? this.drag;
     }
 
     toggleGravity() {
@@ -45,6 +47,10 @@ export class World {
         }, 0);
         o.data.id = maxId + 1;
         this.objects.push(o);
+    }
+
+    addObjects(objects: PhysicObject[]) {
+        objects.forEach((o) => this.addObject(o));
     }
 
     removeObject(o: PhysicObject) {
