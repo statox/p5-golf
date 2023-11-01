@@ -20,9 +20,9 @@
         world = new World({
             enableGravity: false,
             enableCollisions: false,
-            enableOverlaps: true,
+            enableOverlaps: false,
             dimensions: worldDimensions,
-            drag: 0
+            drag: 0.01
         });
 
         const objects: PhysicObject[] = [];
@@ -48,17 +48,20 @@
         };
 
         const selectionState = { selectedId: undefined, selectedPart: undefined };
-        const MAX_VEL = 20;
+        // const MAX_VEL = 50;
         p5.draw = () => {
             p5.background(0);
             for (const o of world.objects) {
-                if (o.position.x < 0 || o.position.y < 0 || o.position.x > worldDimensions.x || o.position.y > worldDimensions.y) {
-                    o.position = new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y);
-                    o.velocity = new Victor(0, 0);
-                }
-                if (o.velocity.length() > MAX_VEL) {
-                    o.velocity.normalize().multiplyScalar(MAX_VEL);
-                }
+                // reset out of bound particles
+                // if (o.position.x < 0 || o.position.y < 0 || o.position.x > worldDimensions.x || o.position.y > worldDimensions.y) {
+                //     o.position = new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y);
+                //     o.velocity = new Victor(0, 0);
+                // }
+
+                // Limit velocity
+                // if (o.velocity.length() > MAX_VEL) {
+                //     o.velocity.normalize().multiplyScalar(MAX_VEL);
+                // }
             }
             // randomWobble();
             for (let i=0; i<world.objects.length; i++) {

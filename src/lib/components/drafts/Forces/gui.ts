@@ -19,13 +19,13 @@ export type Settings = {
 
 const settings: Settings = {
     physics: {
-        attraction: 100,
-        attractionRadius: 50,
-        repulsion: 200,
-        repulsionRadius: 48
+        attraction: 400,
+        attractionRadius: 100,
+        repulsion: 100,
+        repulsionRadius: 50
     },
     world: {
-        nbParticles: 700
+        nbParticles: 450
     },
     render: {
         showPerception: false,
