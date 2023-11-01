@@ -1,16 +1,18 @@
 <script lang="ts">
-    import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
-    import type { Sphere, Line } from '$lib/engine/Geometry';
-    import { dragAndDropObject, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
+    import Victor from 'victor';
     import type p5 from 'p5';
     import P5, { type Sketch } from 'p5-svelte';
-    import { onDestroy } from 'svelte';
-    import Victor from 'victor';
+    import { onDestroy, onMount } from 'svelte';
+    import type { Sphere } from '$lib/engine/Geometry';
+    import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
+    import { dragAndDropObject, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
+    import { initGUI, destroyGUI } from './gui';
+    import type { Settings } from './gui';
 
     console.clear();
     let _p5: p5;
     const objects: PhysicObject[] = [];
-    for (let i=0; i<10; i++) {
+    for (let i=0; i<200; i++) {
         objects.push(createPhysicObjects({
             geometry: {
                 type: 'sphere',
@@ -83,7 +85,7 @@
     const attraction = (o1: PhysicObject, o2: PhysicObject) => {
         const F = o2.position.clone().subtract(o1.position);
         const d = o2.position.distance(o1.position);
-        const G = 5000;
+        const G = settings.physics.attraction;;
 
         const Fmag = G / (d*d);
         F.norm().multiplyScalar(Fmag);
@@ -96,14 +98,19 @@
             return;
         }
         const F = o1.position.clone().subtract(o2.position);
-        const G = 5000;
+        const G = settings.physics.repulsion;
 
         const Fmag = G / (d*d);
         F.norm().multiplyScalar(Fmag);
         world.applyForce(o1, F);
     };
 
+    let settings: Settings;
+    onMount(async () => {
+        settings = await initGUI();
+    });
     onDestroy(() => {
+        destroyGUI();
         _p5?.remove();
     });
 </script>
@@ -111,4 +118,3 @@
 <div class="d-flex justify-content-center">
     <P5 {sketch} />
 </div>
-

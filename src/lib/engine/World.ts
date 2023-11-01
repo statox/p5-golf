@@ -17,7 +17,7 @@ export class World {
     objects: PhysicObject[];
     gravity = new Victor(0, -9.8);
     antiGravity = new Victor(0, 9.8);
-    drag = 0.001; // [0. 1] 0= no drag
+    drag = 0.001; // [0, 1] - 0: no drag
     dt = 0.005;
     reporter: WorldReporter;
 
