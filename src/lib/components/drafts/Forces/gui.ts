@@ -14,9 +14,9 @@ export type Settings = {
 const settings: Settings = {
     physics: {
         attraction: 0,
-        attractionRadius: 100,
+        attractionRadius: 10,
         repulsion: 0,
-        repulsionRadius: 100
+        repulsionRadius: 8
     }
 };
 
@@ -33,9 +33,9 @@ export const initGUI = async () => {
     const programFolder = gui.addFolder('Physics');
     programFolder.open();
     programFolder.add(settings.physics, 'attraction');
-    programFolder.add(settings.physics, 'attractionRadius');
+    programFolder.add(settings.physics, 'attractionRadius', 0, 20);
     programFolder.add(settings.physics, 'repulsion');
-    programFolder.add(settings.physics, 'repulsionRadius');
+    programFolder.add(settings.physics, 'repulsionRadius', 0, 20);
 
     return settings;
 };

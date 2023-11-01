@@ -30,7 +30,7 @@
                 drag: 0
             });
 
-            for (let i=0; i<200; i++) {
+            for (let i=0; i<10; i++) {
                 objects.push(createPhysicObjects({
                     geometry: {
                         type: 'sphere',
@@ -73,16 +73,30 @@
 
             dragAndDropObject(p5, world, selectionState);
             drawWorldDebug(p5, world);
+            drawWorldMoreDebug(p5, world);
         };
 
     };
 
-    const randomWobble = (o: PhysicObject) => {
-        const x = _p5.noise(_p5.frameCount);
-        const y = _p5.noise(_p5.frameCount + 1231023);
-        const diff = new Victor(x * 2 -1, y * 2 -1);
-        o.position.add(diff);
-    }
+    const drawWorldMoreDebug = (p5: p5, world: World) => {
+        const attractionR = worldToScreenScale(settings.physics.attractionRadius, SCALE) as number;
+        const repulsionR = worldToScreenScale(settings.physics.repulsionRadius, SCALE) as number;
+        p5.noFill();
+        for (const o of world.objects) {
+            const worldPos = worldToScreenScale(o.position, SCALE) as Victor;
+            p5.stroke([ 0, 255, 0, 80]);
+            p5.circle(worldPos.x, p5.height - worldPos.y, attractionR)
+            p5.stroke([ 255,0,  80]);
+            p5.circle(worldPos.x, p5.height - worldPos.y, repulsionR)
+        }
+    };
+
+    // const randomWobble = (o: PhysicObject) => {
+    //     const x = _p5.noise(_p5.frameCount);
+    //     const y = _p5.noise(_p5.frameCount + 1231023);
+    //     const diff = new Victor(x * 2 -1, y * 2 -1);
+    //     o.position.add(diff);
+    // }
 
     const attraction = (o1: PhysicObject, o2: PhysicObject) => {
         const d = o2.position.distance(o1.position);
