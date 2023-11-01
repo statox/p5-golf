@@ -11,6 +11,7 @@ const sphereSphereCollider = new SphereSphereCollider();
 export class World {
     gravityEnabled: boolean;
     collisionEnabled: boolean;
+    overlapsAllowed: boolean;
     dimensions: Victor;
     t: number;
     objects: PhysicObject[];
@@ -25,10 +26,12 @@ export class World {
         dimensions?: Victor;
         enableGravity?: boolean;
         enableCollisions?: boolean;
+        enableOverlaps?: boolean;
         drag?: number;
     }) {
         this.collisionEnabled = options.enableCollisions ?? true;
         this.gravityEnabled = options.enableGravity ?? true;
+        this.overlapsAllowed = options.enableOverlaps ?? false;
         this.dimensions = options.dimensions || new Victor(100, 100);
         this.objects = [];
         this.t = 0;
@@ -205,9 +208,11 @@ export class World {
             this.applyDynamics(dt, o);
             o.data.age++;
         }
-        const nbSubSteps = 1;
-        for (let i = 0; i < nbSubSteps; i++) {
-            this.preventOverlaps(nbSubSteps);
+        if (!this.overlapsAllowed) {
+            const nbSubSteps = 1;
+            for (let i = 0; i < nbSubSteps; i++) {
+                this.preventOverlaps(nbSubSteps);
+            }
         }
         if (this.collisionEnabled) {
             this.applyCollisions(dt);
