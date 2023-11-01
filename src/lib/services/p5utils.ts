@@ -54,7 +54,11 @@ export const drawWorld = (p5: p5, world: World) => {
     }
 };
 
-export const drawWorldDebug = (p5: p5, world: World, params: { showVelocity?: boolean }) => {
+export const drawWorldDebug = (
+    p5: p5,
+    world: World,
+    params: { showVelocity?: boolean; uniformVelocities?: boolean }
+) => {
     p5.noFill();
     p5.strokeWeight(2);
     const scale = p5.width / world.dimensions.x;
@@ -75,9 +79,13 @@ export const drawWorldDebug = (p5: p5, world: World, params: { showVelocity?: bo
             p5.line(x, p5.height - y, x1, p5.height - y1);
         }
 
-        if ((params.showVelocity ?? true) && !o.fixed) {
+        if ((params.showVelocity ?? true) && !o.fixed && o.geometry.type === 'sphere') {
             p5.stroke('white');
-            const { x: dx, y: dy } = worldToScreenScale(o.velocity, scale) as Victor;
+            const vel = o.velocity.clone();
+            if (params.uniformVelocities) {
+                vel.normalize().multiplyScalar(o.geometry.r * 4);
+            }
+            const { x: dx, y: dy } = worldToScreenScale(vel, scale) as Victor;
             const x1 = x + dx;
             const y1 = y + dy;
             p5.line(x, p5.height - y, x1, p5.height - y1);

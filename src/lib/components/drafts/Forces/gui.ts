@@ -28,9 +28,9 @@ const settings: Settings = {
         nbParticles: 200
     },
     render: {
-        showPerception: true,
+        showPerception: false,
         showVelocity: true,
-        scaledVelocity: true // if false velocities are all the same size
+        uniformVelocities: true // if false velocities are all the same size
     }
 };
 
@@ -60,6 +60,7 @@ export const initGUI = async (resetWorld: () => void) => {
     renderFolder.open();
     renderFolder.add(settings.render, 'showPerception');
     renderFolder.add(settings.render, 'showVelocity');
+    renderFolder.add(settings.render, 'uniformVelocities');
 
     return settings;
 };
