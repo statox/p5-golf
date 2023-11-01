@@ -11,19 +11,10 @@
 
     console.clear();
     let _p5: p5;
-    const objects: PhysicObject[] = [];
-    for (let i=0; i<200; i++) {
-        objects.push(createPhysicObjects({
-            geometry: {
-                type: 'sphere',
-                r: 0.5
-            } as Sphere,
-            position: new Victor(50, 50)
-        }));
-    }
 
     const SCALE = 6;
-    let world: World;;
+    let world: World;
+    const objects: PhysicObject[] = [];
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
@@ -35,9 +26,20 @@
                 enableGravity: false,
                 enableCollisions: false,
                 enableOverlaps: true,
-                dimensions: worldDimensions
+                dimensions: worldDimensions,
+                drag: 0
             });
 
+            for (let i=0; i<200; i++) {
+                objects.push(createPhysicObjects({
+                    geometry: {
+                        type: 'sphere',
+                        r: 0.5
+                    } as Sphere,
+
+                    position: new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y)
+                }));
+            }
             world.addObjects(objects);
         };
 
@@ -48,7 +50,7 @@
             for (const o of world.objects) {
                 if (o.position.x < 0 || o.position.y < 0 || o.position.x > worldDimensions.x || o.position.y > worldDimensions.y) {
                     o.position = new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y);
-                    o.velocity = new Victor(Math.random() * 20 - 10, Math.random() * 20 - 10);
+                    o.velocity = new Victor(0, 0);
                 }
                 if (o.velocity.length() > MAX_VEL) {
                     o.velocity.normalize().multiplyScalar(MAX_VEL);
@@ -83,18 +85,22 @@
     }
 
     const attraction = (o1: PhysicObject, o2: PhysicObject) => {
-        const F = o2.position.clone().subtract(o1.position);
         const d = o2.position.distance(o1.position);
+        if (d > settings.physics.attractionRadius) {
+            return;
+        }
+        const F = o2.position.clone().subtract(o1.position);
         const G = settings.physics.attraction;;
 
         const Fmag = G / (d*d);
         F.norm().multiplyScalar(Fmag);
         world.applyForce(o1, F);
+        world.applyForce(o2, F.clone().multiplyScalar(-1));
     };
 
     const repulsion = (o1: PhysicObject, o2: PhysicObject) => {
         const d = o2.position.distance(o1.position);
-        if (d > 100) {
+        if (d > settings.physics.repulsionRadius) {
             return;
         }
         const F = o1.position.clone().subtract(o2.position);
@@ -103,6 +109,7 @@
         const Fmag = G / (d*d);
         F.norm().multiplyScalar(Fmag);
         world.applyForce(o1, F);
+        world.applyForce(o2, F.clone().multiplyScalar(-1));
     };
 
     let settings: Settings;

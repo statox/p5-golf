@@ -5,14 +5,18 @@ let gui: GUI;
 export type Settings = {
     physics: {
         attraction: number;
+        attractionRadius: number;
         repulsion: number;
+        repulsionRadius: number;
     };
 };
 
 const settings: Settings = {
     physics: {
-        attraction: 5000,
-        repulsion: 5000
+        attraction: 0,
+        attractionRadius: 100,
+        repulsion: 0,
+        repulsionRadius: 100
     }
 };
 
@@ -29,7 +33,9 @@ export const initGUI = async () => {
     const programFolder = gui.addFolder('Physics');
     programFolder.open();
     programFolder.add(settings.physics, 'attraction');
+    programFolder.add(settings.physics, 'attractionRadius');
     programFolder.add(settings.physics, 'repulsion');
+    programFolder.add(settings.physics, 'repulsionRadius');
 
     return settings;
 };
