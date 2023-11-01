@@ -11,6 +11,7 @@ export type Settings = {
     };
     world: {
         nbParticles: number;
+        allowOverlaps: boolean;
     };
     render: {
         showPerception: boolean;
@@ -25,7 +26,8 @@ const settings: Settings = {
         repulsionRadius: 50
     },
     world: {
-        nbParticles: 450
+        nbParticles: 450,
+        allowOverlaps: true
     },
     render: {
         showPerception: false,
@@ -53,7 +55,8 @@ export const initGUI = async (resetWorld: () => void) => {
 
     const worldFolder = gui.addFolder('World');
     worldFolder.open();
-    worldFolder.add(settings.world, 'nbParticles', 0, 1000);
+    worldFolder.add(settings.world, 'nbParticles', 0, 5000);
+    worldFolder.add(settings.world, 'allowOverlaps').onChange(resetWorld);
     worldFolder.add({ resetWorld }, 'resetWorld');
 
     const renderFolder = gui.addFolder('Render');

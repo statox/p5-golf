@@ -20,7 +20,7 @@
         world = new World({
             enableGravity: false,
             enableCollisions: false,
-            enableOverlaps: false,
+            enableOverlaps: settings.world.allowOverlaps,
             dimensions: worldDimensions,
             drag: 0.01
         });
