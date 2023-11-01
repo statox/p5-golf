@@ -9,14 +9,20 @@ export type Settings = {
         repulsion: number;
         repulsionRadius: number;
     };
+    world: {
+        nbParticles: number;
+    };
 };
 
 const settings: Settings = {
     physics: {
-        attraction: 0,
+        attraction: 10,
         attractionRadius: 10,
-        repulsion: 0,
+        repulsion: 20,
         repulsionRadius: 8
+    },
+    world: {
+        nbParticles: 10
     }
 };
 
@@ -30,13 +36,17 @@ export const initGUI = async (resetWorld: () => void) => {
 
     gui.domElement.setAttribute('style', 'background-color: black');
 
-    const programFolder = gui.addFolder('Physics');
-    programFolder.open();
-    programFolder.add(settings.physics, 'attraction');
-    programFolder.add(settings.physics, 'attractionRadius', 0, 20);
-    programFolder.add(settings.physics, 'repulsion');
-    programFolder.add(settings.physics, 'repulsionRadius', 0, 20);
-    programFolder.add({ resetWorld }, 'resetWorld');
+    const physicsFolder = gui.addFolder('Physics');
+    physicsFolder.open();
+    physicsFolder.add(settings.physics, 'attraction');
+    physicsFolder.add(settings.physics, 'attractionRadius', 0, 50);
+    physicsFolder.add(settings.physics, 'repulsion');
+    physicsFolder.add(settings.physics, 'repulsionRadius', 0, 50);
+
+    const worldFolder = gui.addFolder('World');
+    worldFolder.open();
+    worldFolder.add(settings.world, 'nbParticles', 0, 200);
+    worldFolder.add({ resetWorld }, 'resetWorld');
 
     return settings;
 };

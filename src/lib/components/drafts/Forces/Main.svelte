@@ -13,7 +13,6 @@
     let _p5: p5;
 
     const SCALE = 6;
-    let NB_PARTICLES = 10;
     let world: World;
 
     const resetWorld = (worldDimensions: Victor) => {
@@ -26,7 +25,7 @@
         });
 
         const objects: PhysicObject[] = [];
-        for (let i=0; i<NB_PARTICLES; i++) {
+        for (let i=0; i< settings.world.nbParticles; i++) {
             objects.push(createPhysicObjects({
                 geometry: {
                     type: 'sphere',
