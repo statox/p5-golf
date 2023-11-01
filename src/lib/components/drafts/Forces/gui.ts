@@ -20,12 +20,12 @@ export type Settings = {
 const settings: Settings = {
     physics: {
         attraction: 100,
-        attractionRadius: 10,
+        attractionRadius: 50,
         repulsion: 200,
-        repulsionRadius: 8
+        repulsionRadius: 48
     },
     world: {
-        nbParticles: 200
+        nbParticles: 700
     },
     render: {
         showPerception: false,
@@ -39,7 +39,7 @@ export const initGUI = async (resetWorld: () => void) => {
     // https://github.com/dataarts/dat.gui/issues/271
     const dat = await import('dat.gui');
     gui = new dat.GUI({
-        width: 500
+        width: 200
     });
 
     gui.domElement.setAttribute('style', 'background-color: black');
@@ -47,9 +47,9 @@ export const initGUI = async (resetWorld: () => void) => {
     const physicsFolder = gui.addFolder('Physics');
     physicsFolder.open();
     physicsFolder.add(settings.physics, 'attraction');
-    physicsFolder.add(settings.physics, 'attractionRadius', 0, 50);
+    physicsFolder.add(settings.physics, 'attractionRadius', 0, 150);
     physicsFolder.add(settings.physics, 'repulsion');
-    physicsFolder.add(settings.physics, 'repulsionRadius', 0, 50);
+    physicsFolder.add(settings.physics, 'repulsionRadius', 0, 150);
 
     const worldFolder = gui.addFolder('World');
     worldFolder.open();

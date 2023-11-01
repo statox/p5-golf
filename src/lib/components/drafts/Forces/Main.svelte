@@ -12,8 +12,9 @@
     console.clear();
     let _p5: p5;
 
-    const SCALE = 6;
+    const SCALE = 1;
     let world: World;
+    const worldDimensions = new Victor(800, 800)
 
     const resetWorld = (worldDimensions: Victor) => {
         world = new World({
@@ -38,7 +39,6 @@
         world.addObjects(objects);
     };
 
-    const worldDimensions = new Victor(100, 100)
     const sketch: Sketch = (p5) => {
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
         p5.setup = () => {
@@ -90,9 +90,9 @@
             p5.noFill();
             for (const o of world.objects) {
                 const worldPos = worldToScreenScale(o.position, SCALE) as Victor;
-                p5.stroke([ 0, 255, 0, 80]);
+                p5.stroke(0, 255, 0, 50);
                 p5.circle(worldPos.x, p5.height - worldPos.y, attractionR)
-                p5.stroke([ 255,0,  80]);
+                p5.stroke(255,0, 0, 50);
                 p5.circle(worldPos.x, p5.height - worldPos.y, repulsionR)
             }
         }
