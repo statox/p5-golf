@@ -12,17 +12,25 @@ export type Settings = {
     world: {
         nbParticles: number;
     };
+    render: {
+        showPerception: boolean;
+    };
 };
 
 const settings: Settings = {
     physics: {
-        attraction: 10,
+        attraction: 100,
         attractionRadius: 10,
-        repulsion: 20,
+        repulsion: 200,
         repulsionRadius: 8
     },
     world: {
-        nbParticles: 10
+        nbParticles: 200
+    },
+    render: {
+        showPerception: true,
+        showVelocity: true,
+        scaledVelocity: true // if false velocities are all the same size
     }
 };
 
@@ -45,8 +53,13 @@ export const initGUI = async (resetWorld: () => void) => {
 
     const worldFolder = gui.addFolder('World');
     worldFolder.open();
-    worldFolder.add(settings.world, 'nbParticles', 0, 200);
+    worldFolder.add(settings.world, 'nbParticles', 0, 1000);
     worldFolder.add({ resetWorld }, 'resetWorld');
+
+    const renderFolder = gui.addFolder('Render');
+    renderFolder.open();
+    renderFolder.add(settings.render, 'showPerception');
+    renderFolder.add(settings.render, 'showVelocity');
 
     return settings;
 };

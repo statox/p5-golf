@@ -5,7 +5,7 @@
     import { onDestroy, onMount } from 'svelte';
     import type { Sphere } from '$lib/engine/Geometry';
     import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
-    import { dragAndDropObject, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
+    import { dragAndDropObject, drawWorld, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
     import { initGUI, destroyGUI } from './gui';
     import type { Settings } from './gui';
 
@@ -37,14 +37,14 @@
         }
         world.addObjects(objects);
     };
+
+    const worldDimensions = new Victor(100, 100)
     const sketch: Sketch = (p5) => {
-        const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
         p5.setup = () => {
             _p5 = p5;
             p5.createCanvas(screenDimensions.x, screenDimensions.y);
             p5.noFill();
-            resetWorld(worldDimensions);
         };
 
         const selectionState = { selectedId: undefined, selectedPart: undefined };
@@ -76,22 +76,25 @@
             world.step();
 
             dragAndDropObject(p5, world, selectionState);
-            drawWorldDebug(p5, world);
+            // drawWorld(p5, world);
+            drawWorldDebug(p5, world, settings.render);
             drawWorldMoreDebug(p5, world);
         };
 
     };
 
     const drawWorldMoreDebug = (p5: p5, world: World) => {
-        const attractionR = worldToScreenScale(settings.physics.attractionRadius, SCALE) as number;
-        const repulsionR = worldToScreenScale(settings.physics.repulsionRadius, SCALE) as number;
-        p5.noFill();
-        for (const o of world.objects) {
-            const worldPos = worldToScreenScale(o.position, SCALE) as Victor;
-            p5.stroke([ 0, 255, 0, 80]);
-            p5.circle(worldPos.x, p5.height - worldPos.y, attractionR)
-            p5.stroke([ 255,0,  80]);
-            p5.circle(worldPos.x, p5.height - worldPos.y, repulsionR)
+        if (settings.render.showPerception) {
+            const attractionR = worldToScreenScale(settings.physics.attractionRadius, SCALE) as number;
+            const repulsionR = worldToScreenScale(settings.physics.repulsionRadius, SCALE) as number;
+            p5.noFill();
+            for (const o of world.objects) {
+                const worldPos = worldToScreenScale(o.position, SCALE) as Victor;
+                p5.stroke([ 0, 255, 0, 80]);
+                p5.circle(worldPos.x, p5.height - worldPos.y, attractionR)
+                p5.stroke([ 255,0,  80]);
+                p5.circle(worldPos.x, p5.height - worldPos.y, repulsionR)
+            }
         }
     };
 
@@ -133,6 +136,7 @@
     let settings: Settings;
     onMount(async () => {
         settings = await initGUI(() => resetWorld(world.dimensions));
+        resetWorld(worldDimensions);
     });
     onDestroy(() => {
         destroyGUI();

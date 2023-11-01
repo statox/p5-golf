@@ -54,7 +54,7 @@ export const drawWorld = (p5: p5, world: World) => {
     }
 };
 
-export const drawWorldDebug = (p5: p5, world: World) => {
+export const drawWorldDebug = (p5: p5, world: World, params: { showVelocity?: boolean }) => {
     p5.noFill();
     p5.strokeWeight(2);
     const scale = p5.width / world.dimensions.x;
@@ -75,7 +75,7 @@ export const drawWorldDebug = (p5: p5, world: World) => {
             p5.line(x, p5.height - y, x1, p5.height - y1);
         }
 
-        if (!o.fixed) {
+        if ((params.showVelocity ?? true) && !o.fixed) {
             p5.stroke('white');
             const { x: dx, y: dy } = worldToScreenScale(o.velocity, scale) as Victor;
             const x1 = x + dx;
