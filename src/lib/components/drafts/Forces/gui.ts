@@ -20,7 +20,7 @@ const settings: Settings = {
     }
 };
 
-export const initGUI = async () => {
+export const initGUI = async (resetWorld: () => void) => {
     // Imported here to avoid "window is not defined" error
     // https://github.com/dataarts/dat.gui/issues/271
     const dat = await import('dat.gui');
@@ -36,6 +36,7 @@ export const initGUI = async () => {
     programFolder.add(settings.physics, 'attractionRadius', 0, 20);
     programFolder.add(settings.physics, 'repulsion');
     programFolder.add(settings.physics, 'repulsionRadius', 0, 20);
+    programFolder.add({ resetWorld }, 'resetWorld');
 
     return settings;
 };

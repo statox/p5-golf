@@ -13,8 +13,31 @@
     let _p5: p5;
 
     const SCALE = 6;
+    let NB_PARTICLES = 10;
     let world: World;
-    const objects: PhysicObject[] = [];
+
+    const resetWorld = (worldDimensions: Victor) => {
+        world = new World({
+            enableGravity: false,
+            enableCollisions: false,
+            enableOverlaps: true,
+            dimensions: worldDimensions,
+            drag: 0
+        });
+
+        const objects: PhysicObject[] = [];
+        for (let i=0; i<NB_PARTICLES; i++) {
+            objects.push(createPhysicObjects({
+                geometry: {
+                    type: 'sphere',
+                    r: 0.5
+                } as Sphere,
+
+                position: new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y)
+            }));
+        }
+        world.addObjects(objects);
+    };
     const sketch: Sketch = (p5) => {
         const worldDimensions = new Victor(100, 100)
         const screenDimensions = worldToScreenScale(worldDimensions, SCALE) as Victor;
@@ -22,25 +45,7 @@
             _p5 = p5;
             p5.createCanvas(screenDimensions.x, screenDimensions.y);
             p5.noFill();
-            world = new World({
-                enableGravity: false,
-                enableCollisions: false,
-                enableOverlaps: true,
-                dimensions: worldDimensions,
-                drag: 0
-            });
-
-            for (let i=0; i<10; i++) {
-                objects.push(createPhysicObjects({
-                    geometry: {
-                        type: 'sphere',
-                        r: 0.5
-                    } as Sphere,
-
-                    position: new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y)
-                }));
-            }
-            world.addObjects(objects);
+            resetWorld(worldDimensions);
         };
 
         const selectionState = { selectedId: undefined, selectedPart: undefined };
@@ -57,13 +62,13 @@
                 }
             }
             // randomWobble();
-            for (let i=0; i<objects.length; i++) {
-                for (let j=0; j<objects.length; j++) {
+            for (let i=0; i<world.objects.length; i++) {
+                for (let j=0; j<world.objects.length; j++) {
                     if (i === j) {
                         continue;
                     }
-                    const s1 = objects[i];
-                    const s2 = objects[j];
+                    const s1 = world.objects[i];
+                    const s2 = world.objects[j];
 
                     repulsion(s1, s2);
                     attraction(s1, s2);
@@ -128,7 +133,7 @@
 
     let settings: Settings;
     onMount(async () => {
-        settings = await initGUI();
+        settings = await initGUI(() => resetWorld(world.dimensions));
     });
     onDestroy(() => {
         destroyGUI();
