@@ -63,6 +63,7 @@
                 //     o.velocity.normalize().multiplyScalar(MAX_VEL);
                 // }
             }
+            // randomWobble();
             for (let i=0; i<world.objects.length; i++) {
                 for (let j=0; j<world.objects.length; j++) {
                     if (i === j) {
@@ -103,6 +104,13 @@
             }
         }
     };
+
+    // const randomWobble = (o: PhysicObject) => {
+    //     const x = _p5.noise(_p5.frameCount);
+    //     const y = _p5.noise(_p5.frameCount + 1231023);
+    //     const diff = new Victor(x * 2 -1, y * 2 -1);
+    //     o.position.add(diff);
+    // }
 
     const attraction = (o1: PhysicObject, o2: PhysicObject) => {
         const d = o2.position.distance(o1.position);
