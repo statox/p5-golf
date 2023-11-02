@@ -41,7 +41,7 @@ export const drawWorld = (p5: p5, world: World) => {
 
         if (o.geometry.type === 'sphere') {
             const scaledDiameter = worldToScreenScale(o.geometry.r * 2, scale) as number;
-            p5.strokeWeight(scaledDiameter);
+            p5.strokeWeight(scaledDiameter * 2);
             p5.point(x, y);
         }
 

@@ -79,8 +79,12 @@
 
             dragAndDropObject(p5, world, selectionState);
             // drawWorld(p5, world);
-            drawWorldDebug(p5, world, settings.render);
-            drawWorldMoreDebug(p5, world);
+            if (!settings.render.showPerception && !settings.render.showVelocity) {
+                drawWorld(p5, world);
+            } else {
+                drawWorldDebug(p5, world, settings.render);
+                drawWorldMoreDebug(p5, world);
+            }
         };
 
     };
