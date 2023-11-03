@@ -2,7 +2,10 @@
     import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
 
     import Bucket from '$lib/components/demos/Bucket/Main.svelte';
+    import Particles from '$lib/components/demos/Particles/Main.svelte';
+
     const tabs = [
+        { label: 'Particles', value: Particles },
         { label: 'Bucket', value: Bucket }
     ];
 </script>
