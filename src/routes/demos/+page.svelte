@@ -1,7 +1,7 @@
 <script>
     import ComponentSelector from '$lib/components/utils/ComponentSelector.svelte';
 
-    import Bucket from '$lib/components/games/Bucket/Main.svelte';
+    import Bucket from '$lib/components/demos/Bucket/Main.svelte';
     const tabs = [
         { label: 'Bucket', value: Bucket }
     ];
