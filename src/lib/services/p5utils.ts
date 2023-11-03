@@ -79,10 +79,10 @@ export const drawWorldDebug = (
             p5.line(x, p5.height - y, x1, p5.height - y1);
         }
 
-        if ((params.showVelocity ?? true) && !o.fixed && o.geometry.type === 'sphere') {
+        if ((params?.showVelocity ?? true) && !o.fixed && o.geometry.type === 'sphere') {
             p5.stroke('white');
             const vel = o.velocity.clone();
-            if (params.uniformVelocities) {
+            if (params?.uniformVelocities) {
                 vel.normalize().multiplyScalar(o.geometry.r * 4);
             }
             const { x: dx, y: dy } = worldToScreenScale(vel, scale) as Victor;
