@@ -20,18 +20,18 @@ export type Settings = {
 
 const settings: Settings = {
     physics: {
-        attraction: 400,
-        attractionRadius: 100,
-        repulsion: 100,
-        repulsionRadius: 50
+        attraction: 1580,
+        attractionRadius: 90,
+        repulsion: 2000,
+        repulsionRadius: 20
     },
     world: {
-        nbParticles: 450,
+        nbParticles: 2000,
         allowOverlaps: true
     },
     render: {
         showPerception: false,
-        showVelocity: true,
+        showVelocity: false,
         uniformVelocities: true // if false velocities are all the same size
     }
 };
