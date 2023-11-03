@@ -57,7 +57,7 @@ export const drawWorld = (p5: p5, world: World) => {
 export const drawWorldDebug = (
     p5: p5,
     world: World,
-    params: { showVelocity?: boolean; uniformVelocities?: boolean }
+    params?: { showVelocity?: boolean; uniformVelocities?: boolean }
 ) => {
     p5.noFill();
     p5.strokeWeight(2);

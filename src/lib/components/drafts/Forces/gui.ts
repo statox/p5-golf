@@ -15,6 +15,8 @@ export type Settings = {
     };
     render: {
         showPerception: boolean;
+        showVelocity: boolean;
+        uniformVelocities: boolean; // if false velocities are all the same size
     };
 };
 
@@ -32,7 +34,7 @@ const settings: Settings = {
     render: {
         showPerception: false,
         showVelocity: false,
-        uniformVelocities: true // if false velocities are all the same size
+        uniformVelocities: true
     }
 };
 

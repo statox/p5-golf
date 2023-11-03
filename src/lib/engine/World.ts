@@ -37,7 +37,7 @@ export class World {
         enableCollisions?: boolean;
         enableOverlaps?: boolean;
         drag?: number;
-        bordersMode: BordersMode;
+        bordersMode?: BordersMode;
     }) {
         this.collisionEnabled = options.enableCollisions ?? true;
         this.gravityEnabled = options.enableGravity ?? true;
