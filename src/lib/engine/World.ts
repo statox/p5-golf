@@ -4,6 +4,7 @@ import { LineSphereCollider } from './LineSphereCollider';
 import { SphereSphereCollider } from './SphereSphereCollider';
 
 export type WorldReporter = (world: World) => void;
+export type BordersMode = 'none' | 'wrap' | 'hard';
 
 const lineSphereCollider = new LineSphereCollider();
 const sphereSphereCollider = new SphereSphereCollider();
@@ -17,9 +18,17 @@ export class World {
     objects: PhysicObject[];
     gravity = new Victor(0, -9.8);
     antiGravity = new Victor(0, 9.8);
+    // Drag [0, 1]
+    // Damp all velocities by at each step
+    // 0 = no damping
     drag = 0.001; // [0, 1] - 0: no drag
     dt = 0.005;
     reporter: WorldReporter;
+    // Behavior of objects when they hit the borders of the world
+    // none: Objects can move past the borders (effectively infinite world)
+    // wrap: Objects are moved to the other side of the world (will mess with neighbor detections)
+    // hard: Enforce objects not moving out of the world (might mess with the physics)
+    bordersMode: BordersMode;
 
     constructor(options: {
         reporter?: WorldReporter;
@@ -28,6 +37,7 @@ export class World {
         enableCollisions?: boolean;
         enableOverlaps?: boolean;
         drag?: number;
+        bordersMode: BordersMode;
     }) {
         this.collisionEnabled = options.enableCollisions ?? true;
         this.gravityEnabled = options.enableGravity ?? true;
@@ -37,6 +47,7 @@ export class World {
         this.t = 0;
         this.reporter = options.reporter || (() => {});
         this.drag = options.drag ?? this.drag;
+        this.bordersMode = options.bordersMode ?? 'none';
     }
 
     toggleGravity() {
@@ -203,6 +214,46 @@ export class World {
         }
     }
 
+    enforceBordersMode() {
+        if (this.bordersMode === 'none') {
+            return;
+        }
+
+        if (this.bordersMode === 'wrap') {
+            for (const o of this.objects) {
+                if (o.position.x < 0) {
+                    o.position.x = this.dimensions.x + o.position.x;
+                }
+                if (o.position.y < 0) {
+                    o.position.y = this.dimensions.y + o.position.y;
+                }
+                if (o.position.x > this.dimensions.x) {
+                    o.position.x = o.position.x - this.dimensions.x;
+                }
+                if (o.position.y > this.dimensions.y) {
+                    o.position.y = o.position.y - this.dimensions.y;
+                }
+            }
+        }
+
+        if (this.bordersMode === 'hard') {
+            for (const o of this.objects) {
+                if (o.position.x < 0) {
+                    o.position.x = 0;
+                }
+                if (o.position.y < 0) {
+                    o.position.y = 0;
+                }
+                if (o.position.x > this.dimensions.x) {
+                    o.position.x = this.dimensions.x;
+                }
+                if (o.position.y > this.dimensions.y) {
+                    o.position.y = this.dimensions.y;
+                }
+            }
+        }
+    }
+
     _step(dt: number) {
         for (const o of this.objects) {
             this.applyDynamics(dt, o);
@@ -216,6 +267,9 @@ export class World {
         }
         if (this.collisionEnabled) {
             this.applyCollisions(dt);
+        }
+        if (this.bordersMode !== 'none') {
+            this.enforceBordersMode();
         }
     }
 
