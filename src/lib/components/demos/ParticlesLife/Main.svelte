@@ -5,10 +5,11 @@
     import { onDestroy, onMount } from 'svelte';
     import type { Sphere } from '$lib/engine/Geometry';
     import { World, createPhysicObjects, type PhysicObject } from '$lib/engine';
-    import { dragAndDropObject, drawWorld, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
+    import { dragAndDropObject, drawWorldDebug, worldToScreenScale } from '$lib/services/p5utils';
     import { initGUI, destroyGUI } from './gui';
     import type { Settings } from './gui';
     import { lifeStep } from './life';
+    import type { ParticleType, TypesData } from './life';
 
     console.clear();
     let _p5: p5;
@@ -17,6 +18,46 @@
     let world: World;
     const worldDimensions = new Victor(800, 800)
 
+    const particlesType: ParticleType = {};
+    const typesData: TypesData[] = [
+        {
+            color: '#fc55ae',
+            reactions: {
+                0: 0,
+                1: 50000,
+                2: 0,
+                3: 0
+            }
+        },
+        {
+            color: '#eab410',
+            reactions: {
+                0: -25000,
+                1: 25000,
+                2: 0,
+                3: 0
+            }
+        },
+        {
+            color: '#40f78c',
+            reactions: {
+                0: -10000,
+                1: -10000,
+                2: -10000,
+                3: -10000
+            }
+        },
+        {
+            color: '#406ef7',
+            reactions: {
+                0: 50000,
+                1: -10000,
+                2: -10000,
+                3: -10000
+            }
+        }
+    ];
+
     const resetWorld = (worldDimensions: Victor) => {
         world = new World({
             enableGravity: false,
@@ -24,21 +65,26 @@
             enableOverlaps: settings.world.allowOverlaps,
             dimensions: worldDimensions,
             drag: 0.01,
-            bordersMode: 'wrap'
+            bordersMode: 'none'
         });
 
         const objects: PhysicObject[] = [];
         for (let i=0; i< settings.world.nbParticles; i++) {
-            objects.push(createPhysicObjects({
+            const o = createPhysicObjects({
                 geometry: {
                     type: 'sphere',
-                    r: 0.5
+                    r: 1
                 } as Sphere,
 
                 position: new Victor(Math.random() * worldDimensions.x, Math.random() * worldDimensions.y)
-            }));
+            });
+
+            objects.push(o);
+            const worldObject = world.addObject(o);
+            const id = worldObject.data.id;
+
+            particlesType[id] =  Math.floor(Math.random() * typesData.length);
         }
-        world.addObjects(objects);
     };
 
     const sketch: Sketch = (p5) => {
@@ -52,7 +98,7 @@
         const selectionState = { selectedId: undefined, selectedPart: undefined };
         p5.draw = () => {
             p5.background(0);
-            lifeStep(world, settings);
+            lifeStep(world, typesData, particlesType);
             world.step();
 
             dragAndDropObject(p5, world, selectionState);
@@ -65,6 +111,24 @@
             }
         };
 
+    };
+
+    export const drawWorld = (p5: p5, world: World) => {
+        const scale = p5.width / world.dimensions.x;
+        for (const o of world.objects) {
+            const type = particlesType[o.data.id];
+            const { color } = typesData[type];
+            p5.stroke(color);
+
+            const x = p5.map(o.position.x, 0, world.dimensions.x, 0, p5.width);
+            const y = p5.map(o.position.y, 0, world.dimensions.y, p5.height, 0);
+
+            if (o.geometry.type === 'sphere') {
+                const scaledDiameter = worldToScreenScale(o.geometry.r * 2, scale) as number;
+                p5.strokeWeight(scaledDiameter * 2);
+                p5.point(x, y);
+            }
+        }
     };
 
     const drawWorldMoreDebug = (p5: p5, world: World) => {

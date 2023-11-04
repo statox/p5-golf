@@ -61,10 +61,12 @@ export class World {
         }, 0);
         o.data.id = maxId + 1;
         this.objects.push(o);
+        return o;
     }
 
     addObjects(objects: PhysicObject[]) {
         objects.forEach((o) => this.addObject(o));
+        return this.objects;
     }
 
     removeObject(o: PhysicObject) {

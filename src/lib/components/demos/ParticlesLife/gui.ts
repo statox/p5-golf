@@ -28,8 +28,8 @@ const settings: Settings = {
         repulsionRadius: 20
     },
     world: {
-        nbParticles: 2000,
-        allowOverlaps: true
+        nbParticles: 700,
+        allowOverlaps: false
     },
     render: {
         showPerception: false,
